@@ -220,9 +220,9 @@ rm_robot/rm_msgs/CMakeFiles/rm_msgs_generate_messages_cpp: /home/cn/catkin_rm/de
 
 /home/cn/catkin_rm/devel/include/rm_msgs/Cabinet.h: /opt/ros/noetic/lib/gencpp/gen_cpp.py
 /home/cn/catkin_rm/devel/include/rm_msgs/Cabinet.h: /home/cn/catkin_rm/src/rm_robot/rm_msgs/msg/Cabinet.msg
+/home/cn/catkin_rm/devel/include/rm_msgs/Cabinet.h: /opt/ros/noetic/share/std_msgs/msg/Header.msg
 /home/cn/catkin_rm/devel/include/rm_msgs/Cabinet.h: /opt/ros/noetic/share/geometry_msgs/msg/Point.msg
 /home/cn/catkin_rm/devel/include/rm_msgs/Cabinet.h: /opt/ros/noetic/share/geometry_msgs/msg/Pose.msg
-/home/cn/catkin_rm/devel/include/rm_msgs/Cabinet.h: /opt/ros/noetic/share/std_msgs/msg/Header.msg
 /home/cn/catkin_rm/devel/include/rm_msgs/Cabinet.h: /opt/ros/noetic/share/geometry_msgs/msg/Quaternion.msg
 /home/cn/catkin_rm/devel/include/rm_msgs/Cabinet.h: /opt/ros/noetic/share/gencpp/msg.h.template
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold --progress-dir=/home/cn/catkin_rm/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_17) "Generating C++ code from rm_msgs/Cabinet.msg"

@@ -7,8 +7,5 @@
 # new environment variables
 
 # modified environment variables
-export CMAKE_PREFIX_PATH="/home/cn/catkin_rm/devel:$CMAKE_PREFIX_PATH"
-export PATH='/opt/ros/noetic/bin:/home/cn/anaconda3/envs/realman/bin:/home/cn/.pyenv/shims:/home/cn/.pyenv/bin:/home/cn/anaconda3/condabin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/home/cn/julia-1.6.2-linux-x86_64/julia-1.6.2/bin'
+export PATH='/opt/ros/noetic/bin:/home/cn/.pyenv/versions/3.6.6/bin:/home/cn/.pyenv/shims:/home/cn/.pyenv/bin:/home/cn/anaconda3/condabin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/home/cn/julia-1.6.2-linux-x86_64/julia-1.6.2/bin'
 export PWD='/home/cn/catkin_rm/build'
-export ROSLISP_PACKAGE_DIRECTORIES="/home/cn/catkin_rm/devel/share/common-lisp:$ROSLISP_PACKAGE_DIRECTORIES"
-export ROS_PACKAGE_PATH="/home/cn/catkin_rm/src:$ROS_PACKAGE_PATH"
