@@ -1,0 +1,20 @@
+vi_msgs
+/home/rm/catkin_rm/devel/.private/vi_msgs/cmake.lock /home/rm/catkin_rm/devel/./cmake.lock
+/home/rm/catkin_rm/devel/.private/vi_msgs/lib/python3/dist-packages/vi_msgs/__init__.py /home/rm/catkin_rm/devel/lib/python3/dist-packages/vi_msgs/__init__.py
+/home/rm/catkin_rm/devel/.private/vi_msgs/lib/python3/dist-packages/vi_msgs/msg/__init__.py /home/rm/catkin_rm/devel/lib/python3/dist-packages/vi_msgs/msg/__init__.py
+/home/rm/catkin_rm/devel/.private/vi_msgs/lib/python3/dist-packages/vi_msgs/msg/_ObjectInfo.py /home/rm/catkin_rm/devel/lib/python3/dist-packages/vi_msgs/msg/_ObjectInfo.py
+/home/rm/catkin_rm/devel/.private/vi_msgs/lib/pkgconfig/vi_msgs.pc /home/rm/catkin_rm/devel/lib/pkgconfig/vi_msgs.pc
+/home/rm/catkin_rm/devel/.private/vi_msgs/include/vi_msgs/ObjectInfo.h /home/rm/catkin_rm/devel/include/vi_msgs/ObjectInfo.h
+/home/rm/catkin_rm/devel/.private/vi_msgs/share/gennodejs/ros/vi_msgs/_index.js /home/rm/catkin_rm/devel/share/gennodejs/ros/vi_msgs/_index.js
+/home/rm/catkin_rm/devel/.private/vi_msgs/share/gennodejs/ros/vi_msgs/msg/_index.js /home/rm/catkin_rm/devel/share/gennodejs/ros/vi_msgs/msg/_index.js
+/home/rm/catkin_rm/devel/.private/vi_msgs/share/gennodejs/ros/vi_msgs/msg/ObjectInfo.js /home/rm/catkin_rm/devel/share/gennodejs/ros/vi_msgs/msg/ObjectInfo.js
+/home/rm/catkin_rm/devel/.private/vi_msgs/share/roseus/ros/vi_msgs/manifest.l /home/rm/catkin_rm/devel/share/roseus/ros/vi_msgs/manifest.l
+/home/rm/catkin_rm/devel/.private/vi_msgs/share/roseus/ros/vi_msgs/msg/ObjectInfo.l /home/rm/catkin_rm/devel/share/roseus/ros/vi_msgs/msg/ObjectInfo.l
+/home/rm/catkin_rm/devel/.private/vi_msgs/share/common-lisp/ros/vi_msgs/msg/_package_ObjectInfo.lisp /home/rm/catkin_rm/devel/share/common-lisp/ros/vi_msgs/msg/_package_ObjectInfo.lisp
+/home/rm/catkin_rm/devel/.private/vi_msgs/share/common-lisp/ros/vi_msgs/msg/ObjectInfo.lisp /home/rm/catkin_rm/devel/share/common-lisp/ros/vi_msgs/msg/ObjectInfo.lisp
+/home/rm/catkin_rm/devel/.private/vi_msgs/share/common-lisp/ros/vi_msgs/msg/vi_msgs-msg.asd /home/rm/catkin_rm/devel/share/common-lisp/ros/vi_msgs/msg/vi_msgs-msg.asd
+/home/rm/catkin_rm/devel/.private/vi_msgs/share/common-lisp/ros/vi_msgs/msg/_package.lisp /home/rm/catkin_rm/devel/share/common-lisp/ros/vi_msgs/msg/_package.lisp
+/home/rm/catkin_rm/devel/.private/vi_msgs/share/vi_msgs/cmake/vi_msgs-msg-extras.cmake /home/rm/catkin_rm/devel/share/vi_msgs/cmake/vi_msgs-msg-extras.cmake
+/home/rm/catkin_rm/devel/.private/vi_msgs/share/vi_msgs/cmake/vi_msgsConfig.cmake /home/rm/catkin_rm/devel/share/vi_msgs/cmake/vi_msgsConfig.cmake
+/home/rm/catkin_rm/devel/.private/vi_msgs/share/vi_msgs/cmake/vi_msgsConfig-version.cmake /home/rm/catkin_rm/devel/share/vi_msgs/cmake/vi_msgsConfig-version.cmake
+/home/rm/catkin_rm/devel/.private/vi_msgs/share/vi_msgs/cmake/vi_msgs-msg-paths.cmake /home/rm/catkin_rm/devel/share/vi_msgs/cmake/vi_msgs-msg-paths.cmake
