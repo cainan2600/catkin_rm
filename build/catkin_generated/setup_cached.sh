@@ -7,5 +7,11 @@
 # new environment variables
 
 # modified environment variables
+export CMAKE_PREFIX_PATH="/home/cn/catkin_rm/devel:$CMAKE_PREFIX_PATH"
+export LD_LIBRARY_PATH="/home/cn/catkin_rm/devel/lib:$LD_LIBRARY_PATH"
 export PATH='/opt/ros/noetic/bin:/home/cn/.pyenv/versions/3.6.6/bin:/home/cn/.pyenv/shims:/home/cn/.pyenv/bin:/home/cn/anaconda3/condabin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/home/cn/julia-1.6.2-linux-x86_64/julia-1.6.2/bin'
+export PKG_CONFIG_PATH="/home/cn/catkin_rm/devel/lib/pkgconfig:$PKG_CONFIG_PATH"
 export PWD='/home/cn/catkin_rm/build'
+export PYTHONPATH="/home/cn/catkin_rm/devel/lib/python3/dist-packages:$PYTHONPATH"
+export ROSLISP_PACKAGE_DIRECTORIES="/home/cn/catkin_rm/devel/share/common-lisp:$ROSLISP_PACKAGE_DIRECTORIES"
+export ROS_PACKAGE_PATH="/home/cn/catkin_rm/src:$ROS_PACKAGE_PATH"

@@ -11,7 +11,7 @@ from vi_msgs.msg import ObjectInfo
 from geometry_msgs.msg import TransformStamped,PointStamped
 from geometry_msgs.msg import Point, Quaternion
 import actionlib
-from geometry_msgs.msg import Pose
+# from geometry_msgs.msg import Pose
 from move_base_msgs.msg import MoveBaseAction, MoveBaseGoal
 from actionlib import SimpleActionClient
 from actionlib import GoalStatus
@@ -88,18 +88,18 @@ def object_pose_callback(data):
         object_msg = ''
 
 
-def movej_type(joint,speed):
-    '''
-    函数功能：通过输入机械臂每个关节的数值（弧度），让机械臂以指定速度（0-1，最好小于0.5，否则太快）运动到指定姿态
-    输入参数：[joint1,joint2,joint3,joint4,joint5,joint6]、speed
-    返回值：无
-    '''
-    moveJ_pub = rospy.Publisher("/rm_driver/MoveJ_Cmd", MoveJ, queue_size=1)
-    rospy.sleep(0.5)
-    move_joint = MoveJ()
-    move_joint.joint = joint
-    move_joint.speed = speed
-    moveJ_pub.publish(move_joint)
+# def movej_type(joint,speed):
+#     '''
+#     函数功能：通过输入机械臂每个关节的数值（弧度），让机械臂以指定速度（0-1，最好小于0.5，否则太快）运动到指定姿态
+#     输入参数：[joint1,joint2,joint3,joint4,joint5,joint6]、speed
+#     返回值：无
+#     '''
+#     moveJ_pub = rospy.Publisher("/rm_driver/MoveJ_Cmd", MoveJ, queue_size=1)
+#     rospy.sleep(0.5)
+#     move_joint = MoveJ()
+#     move_joint.joint = joint
+#     move_joint.speed = speed
+#     moveJ_pub.publish(move_joint)
 
 
 def movejp_type(pose,speed):
@@ -141,19 +141,19 @@ def movel_type(pose,speed):
     move_line_pose.speed = speed
     moveL_pub.publish(move_line_pose)
 
-def arm_ready_pose():
-    '''
-    函数功能：执行整个抓取流程前先运动到一个能够稳定获取物体坐标信息的姿态，让机械臂在此姿态下获取识别物体的三维坐标，机械臂以关节运动的方式到达拍照姿态，
-    此关节数值可以根据示教得到，将机械臂通过按住绿色按钮拖动到能够获取较好效果的姿态
-    输入参数：无
-    返回值：无
-    '''
-    moveJ_pub = rospy.Publisher("/rm_driver/MoveJ_Cmd", MoveJ, queue_size=1)
-    rospy.sleep(1)
-    pic_joint = MoveJ()
-    pic_joint.joint = [-0.09342730045318604, -0.8248963952064514, 1.5183943510055542, 0.06789795309305191, 0.8130478262901306, 0.015879500657320023]
-    pic_joint.speed = 0.3
-    moveJ_pub.publish(pic_joint)
+# def arm_ready_pose():
+#     '''
+#     函数功能：执行整个抓取流程前先运动到一个能够稳定获取物体坐标信息的姿态，让机械臂在此姿态下获取识别物体的三维坐标，机械臂以关节运动的方式到达拍照姿态，
+#     此关节数值可以根据示教得到，将机械臂通过按住绿色按钮拖动到能够获取较好效果的姿态
+#     输入参数：无
+#     返回值：无
+#     '''
+#     moveJ_pub = rospy.Publisher("/rm_driver/MoveJ_Cmd", MoveJ, queue_size=1)
+#     rospy.sleep(1)
+#     pic_joint = MoveJ()
+#     pic_joint.joint = [-0.09342730045318604, -0.8248963952064514, 1.5183943510055542, 0.06789795309305191, 0.8130478262901306, 0.015879500657320023]
+#     pic_joint.speed = 0.3
+#     moveJ_pub.publish(pic_joint)
 
 
 def catch(result,arm_orientation_msg):
@@ -201,62 +201,62 @@ def navigateToGoal(x, y, orientation_z, orientation_w):
 
 
 
-def set_mode():
-    '''
-    函数功能：设置modbus模式
-    输入参数：无
-    返回值：无
-    '''
-    pub_modbus_mode = rospy.Publisher("/rm_driver/Set_Modbus_Mode_Cmd", set_modbus_mode, queue_size=1)
-    rospy.sleep(1)
-    set_modbus_mode = set_modbus_mode()
-    set_modbus_mode.port = 1
-    set_modbus_mode.baudrate = 9600
-    set_modbus_mode.timeout = 5
-    pub_modbus_mode.publish(set_modbusmode)
+# def set_mode():
+#     '''
+#     函数功能：设置modbus模式
+#     输入参数：无
+#     返回值：无
+#     '''
+#     pub_modbus_mode = rospy.Publisher("/rm_driver/Set_Modbus_Mode_Cmd", set_modbus_mode, queue_size=1)
+#     rospy.sleep(1)
+#     set_modbus_mode = set_modbus_mode()
+#     set_modbus_mode.port = 1
+#     set_modbus_mode.baudrate = 9600
+#     set_modbus_mode.timeout = 5
+#     pub_modbus_mode.publish(set_modbusmode)
 
-def modbus_gripper_set(num1, num2, num3, num4, num5 ):
-    '''
-    函数功能：写多个寄存器
-    输入参数：port、address、num、data、device
-    返回值：无
-    '''
-    pub_write_register = rospy.Publisher("/rm_driver/Write_Register_Cmd", write_register, queue_size=1)
-    rospy.sleep(1)
-    write_reg = write_register()
-    write_reg.port = num1
-    write_reg.address = num2
-    write_reg.num = num3
-    write_reg.data = num4
-    write_reg.device = num5
-    pub_write_register.publish(write_reg)
+# def modbus_gripper_set(num1, num2, num3, num4, num5 ):
+#     '''
+#     函数功能：写多个寄存器
+#     输入参数：port、address、num、data、device
+#     返回值：无
+#     '''
+#     pub_write_register = rospy.Publisher("/rm_driver/Write_Register_Cmd", write_register, queue_size=1)
+#     rospy.sleep(1)
+#     write_reg = write_register()
+#     write_reg.port = num1
+#     write_reg.address = num2
+#     write_reg.num = num3
+#     write_reg.data = num4
+#     write_reg.device = num5
+#     pub_write_register.publish(write_reg)
 
-def modbus_gripper_control():
-    '''
-    函数功能：写单个寄存器
-    输入参数：无
-    返回值：无
-    '''
-    pub_write_single_register = rospy.Publisher("/rm_driver/Write_Single_Register_Cmd", write_single_register, queue_size=1)
-    rospy.sleep(1)
-    write_sin_reg = write_register()
-    write_sin_reg.port = 1
-    write_sin_reg.address = 45
-    write_sin_reg.data = 0
-    write_sin_reg.device = 1
-    pub_write_single_register.publish(write_sin_reg)
+# def modbus_gripper_control():
+#     '''
+#     函数功能：写单个寄存器
+#     输入参数：无
+#     返回值：无
+#     '''
+#     pub_write_single_register = rospy.Publisher("/rm_driver/Write_Single_Register_Cmd", write_single_register, queue_size=1)
+#     rospy.sleep(1)
+#     write_sin_reg = write_register()
+#     write_sin_reg.port = 1
+#     write_sin_reg.address = 45
+#     write_sin_reg.data = 0
+#     write_sin_reg.device = 1
+#     pub_write_single_register.publish(write_sin_reg)
 
-def set_tool():
-    '''
-    函数功能：设置工具端电压输出
-    输入参数：无
-    返回值：无
-    '''
-    pub_tool_voltage = rospy.Publisher("/rm_driver/Tool_Analog_Output",Tool_Analog_Output,queue_size=1)
-    rospy.sleep(1)
-    set_vol = Tool_Analog_Output()
-    set_vol.voltage = 24
-    pub_tool_voltage.publish(set_vol)
+# def set_tool():
+#     '''
+#     函数功能：设置工具端电压输出
+#     输入参数：无
+#     返回值：无
+#     '''
+#     pub_tool_voltage = rospy.Publisher("/rm_driver/Tool_Analog_Output",Tool_Analog_Output,queue_size=1)
+#     rospy.sleep(1)
+#     set_vol = Tool_Analog_Output()
+#     set_vol.voltage = 24
+#     pub_tool_voltage.publish(set_vol)
 
 
 def gripper_open():

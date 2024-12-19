@@ -54,7 +54,7 @@ CMAKE_BINARY_DIR = /home/cn/catkin_rm/build
 include navigation_msgs/move_base_msgs/CMakeFiles/_move_base_msgs_generate_messages_check_deps_MoveBaseGoal.dir/progress.make
 
 navigation_msgs/move_base_msgs/CMakeFiles/_move_base_msgs_generate_messages_check_deps_MoveBaseGoal:
-	cd /home/cn/catkin_rm/build/navigation_msgs/move_base_msgs && ../../catkin_generated/env_cached.sh /usr/bin/python3 /opt/ros/noetic/share/genmsg/cmake/../../../lib/genmsg/genmsg_check_deps.py move_base_msgs /home/cn/catkin_rm/devel/share/move_base_msgs/msg/MoveBaseGoal.msg geometry_msgs/PoseStamped:geometry_msgs/Point:geometry_msgs/Quaternion:geometry_msgs/Pose:std_msgs/Header
+	cd /home/cn/catkin_rm/build/navigation_msgs/move_base_msgs && ../../catkin_generated/env_cached.sh /usr/bin/python3 /opt/ros/noetic/share/genmsg/cmake/../../../lib/genmsg/genmsg_check_deps.py move_base_msgs /home/cn/catkin_rm/devel/share/move_base_msgs/msg/MoveBaseGoal.msg geometry_msgs/Quaternion:std_msgs/Header:geometry_msgs/PoseStamped:geometry_msgs/Point:geometry_msgs/Pose
 
 _move_base_msgs_generate_messages_check_deps_MoveBaseGoal: navigation_msgs/move_base_msgs/CMakeFiles/_move_base_msgs_generate_messages_check_deps_MoveBaseGoal
 _move_base_msgs_generate_messages_check_deps_MoveBaseGoal: navigation_msgs/move_base_msgs/CMakeFiles/_move_base_msgs_generate_messages_check_deps_MoveBaseGoal.dir/build.make
