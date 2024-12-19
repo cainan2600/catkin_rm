@@ -23,6 +23,52 @@ rotation_matrix = np.array([[0, 1, 0],
 # 相机坐标系到机械臂末端坐标系的平移向量，通过手眼标定得到
 translation_vector = np.array([-0.08039019, 0.03225555, -0.09756825])
 
+#move to point
+def navigateToGoal(x, y, orientation_z, orientation_w):
+    ac = actionlib.SimpleActionClient('move_base', MoveBaseAction)
+    ac.wait_for_server(rospy.Duration(5.0))
+
+    goal = MoveBaseGoal()
+    goal.target_pose.header.frame_id = 'map'
+    goal.target_pose.header.stamp = rospy.Time.now()
+    goal.target_pose.pose.position.x = x
+    goal.target_pose.pose.position.y = y
+    goal.target_pose.pose.orientation.z = orientation_z
+    goal.target_pose.pose.orientation.w = orientation_w
+    ac.send_goal(goal)
+    ac.wait_for_result()
+    state = ac.get_state()
+    if state == GoalStatus.SUCCEEDED:
+        rospy.loginfo("Successfully reached the goal location")
+    else:
+        rospy.loginfo("Failed to reach the goal location")
+
+# 接收到识别物体的回调函数
+def object_pose_callback(data):
+    """
+    函数功能：每帧图像经过识别后的回调函数，若有抓取指令，则判断当前画面帧中是否有被抓物体，如果有则将物体坐标进行转换，并让机械臂执行抓取动作
+    输入参数：无
+    返回值：无
+    """
+    global object_msg
+    # 判断当前帧的识别结果是否有要抓取的物体
+    if data.object_class == object_msg:
+
+        # 等待当前的机械臂位姿
+        arm_pose_msg = rospy.wait_for_message("/rm_driver/Arm_Current_State", Arm_Current_State, timeout=None)
+        print(arm_pose_msg)
+        #rospy.sleep(1)
+        # 等待接收当前机械臂位姿四元数形式
+        arm_orientation_msg = rospy.wait_for_message("/rm_driver/ArmCurrentState", ArmState, timeout=None)
+        print(arm_orientation_msg)
+        # 计算机械臂基坐标系下的物体坐标
+        result = convert(data.x,data.y,data.z,arm_pose_msg.Pose[0],arm_pose_msg.Pose[1],arm_pose_msg.Pose[2],arm_pose_msg.Pose[3],arm_pose_msg.Pose[4],arm_pose_msg.Pose[5])
+        print(data.object_class,':',result)
+        # 抓取物体
+        catch(result,arm_orientation_msg)
+        # # 清除object_msg的信息，之后二次发布抓取物体信息可以再执行
+        # object_msg = ''
+
 # 相机坐标系物体到机械臂基坐标系转换函数
 def convert(x,y,z,x1,y1,z1,rx,ry,rz):
     """
@@ -61,45 +107,30 @@ def convert(x,y,z,x1,y1,z1,rx,ry,rz):
     obj_base_pose[3:] = rx,ry,rz
     return obj_base_pose
 
-# 接收到识别物体的回调函数
-def object_pose_callback(data):
-    """
-    函数功能：每帧图像经过识别后的回调函数，若有抓取指令，则判断当前画面帧中是否有被抓物体，如果有则将物体坐标进行转换，并让机械臂执行抓取动作
-    输入参数：无
+def catch(result,arm_orientation_msg):
+    '''
+    函数功能：机械臂执行抓取动作
+    输入参数：经过convert函数转换得到的‘result’和机械臂当前的四元数位姿‘arm_orientation_msg’
     返回值：无
-    """
-    global object_msg
-    # 判断当前帧的识别结果是否有要抓取的物体
-    if data.object_class == object_msg:
-
-        # 等待当前的机械臂位姿
-        arm_pose_msg = rospy.wait_for_message("/rm_driver/Arm_Current_State", Arm_Current_State, timeout=None)
-        print(arm_pose_msg)
-        #rospy.sleep(1)
-        # 等待接收当前机械臂位姿四元数形式
-        arm_orientation_msg = rospy.wait_for_message("/rm_driver/ArmCurrentState", ArmState, timeout=None)
-        print(arm_orientation_msg)
-        # 计算机械臂基坐标系下的物体坐标
-        result = convert(data.x,data.y,data.z,arm_pose_msg.Pose[0],arm_pose_msg.Pose[1],arm_pose_msg.Pose[2],arm_pose_msg.Pose[3],arm_pose_msg.Pose[4],arm_pose_msg.Pose[5])
-        print(data.object_class,':',result)
-        # 抓取物体
-        catch(result,arm_orientation_msg)
-        # 清除object_msg的信息，之后二次发布抓取物体信息可以再执行
-        object_msg = ''
-
-
-# def movej_type(joint,speed):
-#     '''
-#     函数功能：通过输入机械臂每个关节的数值（弧度），让机械臂以指定速度（0-1，最好小于0.5，否则太快）运动到指定姿态
-#     输入参数：[joint1,joint2,joint3,joint4,joint5,joint6]、speed
-#     返回值：无
-#     '''
-#     moveJ_pub = rospy.Publisher("/rm_driver/MoveJ_Cmd", MoveJ, queue_size=1)
-#     rospy.sleep(0.5)
-#     move_joint = MoveJ()
-#     move_joint.joint = joint
-#     move_joint.speed = speed
-#     moveJ_pub.publish(move_joint)
+    '''
+    # 上一步通过pic_joint运动到了识别较好的姿态，然后就开始抓取流程
+    # 流程第一步：经过convert转换后，得到了机械臂坐标系下的物体位置坐标result，通过movej_p运动到result目标附近，因为不能一下就到达
+    movejp_type([result[0]+0.07,result[1],result[2],arm_orientation_msg.Pose.orientation.x,arm_orientation_msg.Pose.orientation.y,
+                 arm_orientation_msg.Pose.orientation.z,arm_orientation_msg.Pose.orientation.w],0.3)
+    print('*************************catching  step1*************************')
+    time.sleep(4)
+    # 抓取第二步：通过抓取第一步已经到达了物体前方，后续使用movel运动方式让机械臂直线运动到物体坐标处
+    movel_type([result[0],result[1],result[2],arm_orientation_msg.Pose.orientation.x,arm_orientation_msg.Pose.orientation.y,
+                 arm_orientation_msg.Pose.orientation.z,arm_orientation_msg.Pose.orientation.w],0.3)
+    print('*************************catching  step2*************************')
+    time.sleep(4)
+    # 抓取第三步：到达目标处，闭合夹爪
+    gripper_close()
+    print('*************************catching  step3*************************')
+    time.sleep(4)
+    # gripper_open()
+    arm_ready_pose()
+    print('*************************catching  step4*************************')
 
 
 def movejp_type(pose,speed):
@@ -141,65 +172,58 @@ def movel_type(pose,speed):
     move_line_pose.speed = speed
     moveL_pub.publish(move_line_pose)
 
-# def arm_ready_pose():
+def arm_ready_pose():
+    '''
+    函数功能：执行整个抓取流程前先运动到一个能够稳定获取物体坐标信息的姿态，让机械臂在此姿态下获取识别物体的三维坐标，机械臂以关节运动的方式到达拍照姿态，
+    此关节数值可以根据示教得到，将机械臂通过按住绿色按钮拖动到能够获取较好效果的姿态
+    输入参数：无
+    返回值：无
+    '''
+    moveJ_pub = rospy.Publisher("/rm_driver/MoveJ_Cmd", MoveJ, queue_size=1)
+    rospy.sleep(1)
+    pic_joint = MoveJ()
+    pic_joint.joint = [-0.09342730045318604, -0.8248963952064514, 1.5183943510055542, 0.06789795309305191, 0.8130478262901306, 0.015879500657320023]
+    pic_joint.speed = 0.3
+    moveJ_pub.publish(pic_joint)
+
+    
+def gripper_open():
+    '''
+    函数功能：打开4C2夹爪
+    输入参数：无
+    返回值：无
+    '''
+    set_pub = rospy.Publisher("rm_driver/Gripper_Set", Gripper_Set, queue_size=1)
+    rospy.sleep(1)
+    set = Gripper_Set()
+    set.position = 1000
+    set_pub.publish(set)
+
+def gripper_close():
+    '''
+    函数功能：闭合4C2夹爪
+    输入参数：无
+    返回值：无
+    '''
+    pick_pub = rospy.Publisher("rm_driver/Gripper_Pick_On", Gripper_Pick, queue_size=1)
+    rospy.sleep(1)
+    pick1 = Gripper_Pick()
+    pick1.speed = 200
+    pick1.force = 1000
+    pick_pub.publish(pick1)
+
+# def movej_type(joint,speed):
 #     '''
-#     函数功能：执行整个抓取流程前先运动到一个能够稳定获取物体坐标信息的姿态，让机械臂在此姿态下获取识别物体的三维坐标，机械臂以关节运动的方式到达拍照姿态，
-#     此关节数值可以根据示教得到，将机械臂通过按住绿色按钮拖动到能够获取较好效果的姿态
-#     输入参数：无
+#     函数功能：通过输入机械臂每个关节的数值（弧度），让机械臂以指定速度（0-1，最好小于0.5，否则太快）运动到指定姿态
+#     输入参数：[joint1,joint2,joint3,joint4,joint5,joint6]、speed
 #     返回值：无
 #     '''
 #     moveJ_pub = rospy.Publisher("/rm_driver/MoveJ_Cmd", MoveJ, queue_size=1)
-#     rospy.sleep(1)
-#     pic_joint = MoveJ()
-#     pic_joint.joint = [-0.09342730045318604, -0.8248963952064514, 1.5183943510055542, 0.06789795309305191, 0.8130478262901306, 0.015879500657320023]
-#     pic_joint.speed = 0.3
-#     moveJ_pub.publish(pic_joint)
-
-
-def catch(result,arm_orientation_msg):
-    '''
-    函数功能：机械臂执行抓取动作
-    输入参数：经过convert函数转换得到的‘result’和机械臂当前的四元数位姿‘arm_orientation_msg’
-    返回值：无
-    '''
-    # 上一步通过pic_joint运动到了识别较好的姿态，然后就开始抓取流程
-    # 流程第一步：经过convert转换后，得到了机械臂坐标系下的物体位置坐标result，通过movej_p运动到result目标附近，因为不能一下就到达
-    movejp_type([result[0]+0.07,result[1],result[2],arm_orientation_msg.Pose.orientation.x,arm_orientation_msg.Pose.orientation.y,
-                 arm_orientation_msg.Pose.orientation.z,arm_orientation_msg.Pose.orientation.w],0.3)
-    print('*************************catching  step1*************************')
-    time.sleep(4)
-    # 抓取第二步：通过抓取第一步已经到达了物体前方，后续使用movel运动方式让机械臂直线运动到物体坐标处
-    movel_type([result[0],result[1],result[2],arm_orientation_msg.Pose.orientation.x,arm_orientation_msg.Pose.orientation.y,
-                 arm_orientation_msg.Pose.orientation.z,arm_orientation_msg.Pose.orientation.w],0.3)
-    print('*************************catching  step2*************************')
-    time.sleep(4)
-    # 抓取第三步：到达目标处，闭合夹爪
-    gripper_close()
-    print('*************************catching  step3*************************')
-    time.sleep(4)
-    gripper_open()
-
-#move to point
-def navigateToGoal(x, y, orientation_z, orientation_w):
-    ac = actionlib.SimpleActionClient('move_base', MoveBaseAction)
-    ac.wait_for_server(rospy.Duration(5.0))
-
-    goal = MoveBaseGoal()
-    goal.target_pose.header.frame_id = 'map'
-    goal.target_pose.header.stamp = rospy.Time.now()
-    goal.target_pose.pose.position.x = x
-    goal.target_pose.pose.position.y = y
-    goal.target_pose.pose.orientation.z = orientation_z
-    goal.target_pose.pose.orientation.w = orientation_w
-    ac.send_goal(goal)
-    ac.wait_for_result()
-    state = ac.get_state()
-    if state == GoalStatus.SUCCEEDED:
-        rospy.loginfo("Successfully reached the goal location")
-    else:
-        rospy.loginfo("Failed to reach the goal location")
-
-
+#     rospy.sleep(0.5)
+#     move_joint = MoveJ()
+#     move_joint.joint = joint
+#     move_joint.speed = speed
+#     moveJ_pub.publish(move_joint)
 
 # def set_mode():
 #     '''
@@ -258,31 +282,6 @@ def navigateToGoal(x, y, orientation_z, orientation_w):
 #     set_vol.voltage = 24
 #     pub_tool_voltage.publish(set_vol)
 
-
-def gripper_open():
-    '''
-    函数功能：打开4C2夹爪
-    输入参数：无
-    返回值：无
-    '''
-    set_pub = rospy.Publisher("rm_driver/Gripper_Set", Gripper_Set, queue_size=1)
-    rospy.sleep(1)
-    set = Gripper_Set()
-    set.position = 1000
-    set_pub.publish(set)
-
-def gripper_close():
-    '''
-    函数功能：闭合4C2夹爪
-    输入参数：无
-    返回值：无
-    '''
-    pick_pub = rospy.Publisher("rm_driver/Gripper_Pick_On", Gripper_Pick, queue_size=1)
-    rospy.sleep(1)
-    pick1 = Gripper_Pick()
-    pick1.speed = 200
-    pick1.force = 1000
-    pick_pub.publish(pick1)
 
 if __name__ == '__main__':
     rospy.init_node('object_catch')
