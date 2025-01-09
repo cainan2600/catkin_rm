@@ -178,11 +178,12 @@ def arm_ready_pose():
     此关节数值可以根据示教得到，将机械臂通过按住绿色按钮拖动到能够获取较好效果的姿态
     输入参数：无
     返回值：无
+    0, -50, 110, 0, 60, 0
     '''
     moveJ_pub = rospy.Publisher("/rm_driver/MoveJ_Cmd", MoveJ, queue_size=1)
     rospy.sleep(1)
     pic_joint = MoveJ()
-    pic_joint.joint = [-0.09342730045318604, -0.8248963952064514, 1.5183943510055542, 0.06789795309305191, 0.8130478262901306, 0.015879500657320023]
+    pic_joint.joint = [0, -0.8726646, 1.91986218, 0, 1.04719755, 0]
     pic_joint.speed = 0.3
     moveJ_pub.publish(pic_joint)
 
@@ -284,11 +285,27 @@ def gripper_close():
 
 
 if __name__ == '__main__':
-    rospy.init_node('object_catch')
-    pub_arm_pose = rospy.Publisher("/rm_driver/GetCurrentArmState",Empty,queue_size=1)
-    gripper_open()   #初始化打开夹爪
+    # 机械臂移动到合适观察的位置，打开夹爪
+    # rospy.init_node('object_catch')
+    # pub_arm_pose = rospy.Publisher("/rm_driver/GetCurrentArmState",Empty,queue_size=1)
+    arm_ready_pose()
+    gripper_open()
+
+    # 1.得到gpt的处理结果，处理为输入神经网络的点位，得到底盘位置，一个一个的顺序发布底盘位置
+    # 2.接受每一个点位，使用函数navigateToGoal发布到底盘执行
+
+    # 拿起来
     navigateToGoal(2.6124, 0.225573, 0.0001736, 1)
-    #time.sleep(5)
-    object_msg = 'bottle'
+    object_msg = 'plate'
+    rospy.init_node('object_catch')
     sub_object_pose = rospy.Subscriber("/object_pose", ObjectInfo, object_pose_callback, queue_size=1)
     rospy.spin()
+
+    # 放下
+    navigateToGoal(2.6124, 0.225573, 0.0001736, 1)
+    object_msg = 'plate'
+    rospy.init_node('object_catch')
+    sub_object_pose = rospy.Subscriber("/object_pose", ObjectInfo, object_pose_callback, queue_size=1)
+    rospy.spin()
+    # #time.sleep(5)
+
