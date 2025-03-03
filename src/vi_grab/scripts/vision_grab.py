@@ -7,6 +7,7 @@ from rm_msgs.msg import MoveJ_P,Arm_Current_State,Gripper_Set, Gripper_Pick,ArmS
 from geometry_msgs.msg import Pose
 import numpy as np
 from scipy.spatial.transform import Rotation as R
+# from scipy.spatial.transform import 
 from vi_msgs.msg import ObjectInfo
 from geometry_msgs.msg import TransformStamped,PointStamped
 from geometry_msgs.msg import Point, Quaternion
@@ -15,6 +16,9 @@ import actionlib
 from move_base_msgs.msg import MoveBaseAction, MoveBaseGoal
 from actionlib import SimpleActionClient
 from actionlib import GoalStatus
+from .trans_all_rm import *
+from .run_LLM import main_LLM
+from .run_RPSN import main_RPSN
 
 # 相机坐标系到机械臂末端坐标系的旋转矩阵，通过手眼标定得到
 rotation_matrix = np.array([[0, 1, 0],
@@ -54,18 +58,22 @@ def object_pose_callback(data):
     # 判断当前帧的识别结果是否有要抓取的物体
     if data.object_class == object_msg:
 
-        # 等待当前的机械臂位姿
+        # 等待当前的机械臂末端位姿（相对于机械臂基座）
         arm_pose_msg = rospy.wait_for_message("/rm_driver/Arm_Current_State", Arm_Current_State, timeout=None)
         print(arm_pose_msg)
         #rospy.sleep(1)
-        # 等待接收当前机械臂位姿四元数形式
+        # 等待接收当前机械臂位姿四元数形式（相对与世界坐标系）
         arm_orientation_msg = rospy.wait_for_message("/rm_driver/ArmCurrentState", ArmState, timeout=None)
         print(arm_orientation_msg)
         # 计算机械臂基坐标系下的物体坐标
         result = convert(data.x,data.y,data.z,arm_pose_msg.Pose[0],arm_pose_msg.Pose[1],arm_pose_msg.Pose[2],arm_pose_msg.Pose[3],arm_pose_msg.Pose[4],arm_pose_msg.Pose[5])
         print(data.object_class,':',result)
-        # 抓取物体
-        catch(result,arm_orientation_msg)
+        # 放下物体
+        if object_msg == "plate" or object_msg == "tar_zone":
+            place(result,arm_orientation_msg)
+        else:
+            # 抓取物体
+            catch(result,arm_orientation_msg)
         # # 清除object_msg的信息，之后二次发布抓取物体信息可以再执行
         # object_msg = ''
 
@@ -132,6 +140,25 @@ def catch(result,arm_orientation_msg):
     arm_ready_pose()
     print('*************************catching  step4*************************')
 
+def place(result,arm_orientation_msg):
+    '''
+    函数功能：机械臂执行抓取动作
+    输入参数：经过convert函数转换得到的‘result’和机械臂当前的四元数位姿‘arm_orientation_msg’
+    返回值：无
+    '''
+    # 上一步通过pic_joint运动到了识别较好的姿态，然后就开始抓取流程
+    # 流程第一步：经过convert转换后，得到了机械臂坐标系下的物体位置坐标result，通过movej_p运动到result目标附近，因为不能一下就到达
+    print('*************************place  step1*************************')
+    movejp_type([result[0]+0.07,result[1],result[2],arm_orientation_msg.Pose.orientation.x,arm_orientation_msg.Pose.orientation.y,
+                 arm_orientation_msg.Pose.orientation.z,arm_orientation_msg.Pose.orientation.w],0.3)
+    print('*************************place  step2*************************')
+    # 抓取第三步：到达目标处，闭合夹爪
+    time.sleep(4)
+    gripper_open()
+    print('*************************catching  step3*************************')
+    time.sleep(4)
+    arm_ready_pose()
+
 
 def movejp_type(pose,speed):
     '''
@@ -176,7 +203,7 @@ def arm_ready_pose():
     '''
     函数功能：执行整个抓取流程前先运动到一个能够稳定获取物体坐标信息的姿态，让机械臂在此姿态下获取识别物体的三维坐标，机械臂以关节运动的方式到达拍照姿态，
     此关节数值可以根据示教得到，将机械臂通过按住绿色按钮拖动到能够获取较好效果的姿态
-    输入参数：无
+    输入参数：角度（弧度）
     返回值：无
     0, -50, 110, 0, 60, 0
     '''
@@ -212,6 +239,111 @@ def gripper_close():
     pick1.speed = 200
     pick1.force = 1000
     pick_pub.publish(pick1)
+
+def read_value(input):
+    x = input[0]
+    y = input[1]
+    z = input[2]
+    w = input[3]
+    return x, y, z, w
+
+def get_see_pose():
+    '''
+    使机械臂末端执行器Z轴与目标物体处于同一直线，找到适合观察的位置
+    '''
+    global object_msg, tar_chasis_position, object_position, rotation_matrix, translation_vector
+    corrent_chasis_position = tar_chasis_position
+    tar_object_name = object_msg
+    tar_object_position = object_position
+
+    # 神经网络输出的基座位置
+    x_chasis, y_chasis, z_chasis, w_chasis = read_value(tar_chasis_position)
+    x_boject, y_object = read_value(object_position)
+    position_object_to_world = [x_boject, y_object, 0.52, 1]
+
+    # T_base_to_end_effector
+    arm_pose_msg = rospy.wait_for_message("/rm_driver/Arm_Current_State", Arm_Current_State, timeout=None)
+    end_effector_pose = np.array(
+                                    [arm_pose_msg.Pose[0],arm_pose_msg.Pose[1],arm_pose_msg.Pose[2],
+                                    arm_pose_msg.Pose[3],arm_pose_msg.Pose[4],arm_pose_msg.Pose[5]]
+                            )
+    position = end_effector_pose[:3]
+    orientation = R.from_euler('xyz', end_effector_pose[3:], degrees=False).as_matrix()
+    T_base_to_end_effector = np.eye(4)
+    T_base_to_end_effector[:3, :3] = orientation
+    T_base_to_end_effector[:3, 3] = position
+
+    # T_world_to_end_effector
+    arm_orientation_msg = rospy.wait_for_message("/rm_driver/ArmCurrentState", ArmState, timeout=None)
+    # quaternion = [
+    #                 arm_orientation_msg.Pose.orientation.x, arm_orientation_msg.Pose.orientation.y,
+    #                 arm_orientation_msg.Pose.orientation.z, arm_orientation_msg.Pose.orientation.w
+    #     ]
+    # rotation = R.from_quat(quaternion)
+    # position_1 = [arm_orientation_msg.position.x, arm_orientation_msg.position.y, arm_orientation_msg.position.z]
+    # T_world_to_end_effector = np.eye(4)
+    # T_world_to_end_effector[:3, :3] = rotation
+    # T_world_to_end_effector[:3, 3] = position_1
+
+    # T_world_to_base
+    T_world_to_base = np.array([
+        [1 - 2 * z_chasis**2, -2 * w_chasis * z_chasis, 0, x_chasis],
+        [2 * w_chasis * z_chasis, 1 - 2 * z_chasis**2, 0, y_chasis],
+        [0, 0, 1, 0],
+        [0, 0, 0, 1]
+    ])
+
+    # # T_world_to_base
+    # inv_T_base_to_end_effector = np.linalg.inv(T_base_to_end_effector)
+    # T_world_to_base = T_world_to_end_effector.dot(inv_T_base_to_end_effector)
+
+    # position_object_to_base(4x4 * 4x1)
+    position_object_to_world = np.linalg.inv(position_object_to_world)
+    position_object_to_base41 = T_world_to_base.dot(position_object_to_world)
+    position_object_to_base_x = position_object_to_base41[0][0]
+    position_object_to_base_y = position_object_to_base41[1][0]
+    position_object_to_base_z = position_object_to_base41[2][0]
+    position_object_to_base = [position_object_to_base_x, position_object_to_base_y, position_object_to_base_z]
+
+    # 方向向量
+    position_end_effector_to_base = position
+    xiangliang_d = position_object_to_base - position_end_effector_to_base
+    d_norm = xiangliang_d / np.linalg.norm(xiangliang_d)
+
+    # # T_camera_to_end_effector
+    # T_camera_to_end_effector = np.eye(4)
+    # T_camera_to_end_effector[:3, :3] = rotation_matrix
+    # T_camera_to_end_effector[:3, 3] = translation_vector
+
+    # # position_object_to_camera
+    # position_object_to_camera = T_camera_to_end_effector.dot(position_object_to_base)
+
+    # 计算新旋转矩阵
+    # 选择参考向量，确保不与z_new共线
+    ref_vec = np.array([1, 0, 0], dtype=float)
+    if np.linalg.norm(np.cross(ref_vec, d_norm)) < 1e-6:
+        ref_vec = np.array([0, 1, 0], dtype=float)
+    # 计算新的X轴
+    x_new = ref_vec - np.dot(ref_vec, d_norm) * d_norm
+    x_new /= np.linalg.norm(x_new)
+    # 计算新的Y轴
+    y_new = np.cross(d_norm, x_new)
+    # 构造旋转矩阵
+    R_new = np.column_stack((x_new, y_new, d_norm))
+
+    # 转换为四元数形式
+    q_target = rotation_matrix_to_quaternion(R_new)
+
+    # move
+    movejp_type(
+        [
+            arm_orientation_msg.position.x, arm_orientation_msg.position.y, arm_orientation_msg.position.z,
+            q_target[0], q_target[1], q_target[2], q_target[3]
+        ],
+        0.3
+    )
+    time.sleep(4)
+
 
 # def movej_type(joint,speed):
 #     '''
@@ -285,27 +417,77 @@ def gripper_close():
 
 
 if __name__ == '__main__':
-    # 机械臂移动到合适观察的位置，打开夹爪
-    # rospy.init_node('object_catch')
-    # pub_arm_pose = rospy.Publisher("/rm_driver/GetCurrentArmState",Empty,queue_size=1)
+    
+    print('*************************step1————————LLM*************************')
+
+    all_object_name, all_object_position, all_object_position_input_to_RPSN = main_LLM()
+
+    print('*************************step2————————RPSN*************************')
+
+    all_tar_chasis_position = main_RPSN(all_object_position_input_to_RPSN)
+
+    print('*************************step3——————开始验证*************************')
+
+    # all_object_name = [[[apple, plate], [orange, plate]], [[milk, None]], [[None, tar_zone]]]
+    # all_object_position = [[[[x, y, z, w], [x, y, z, w]], [[x, y, z, w], [x, y, z, w]]], [[[x, y, z, w], [None]]], [[[None], [x, y, z, w]]]]
+    # all_tar_chasis_position = [[x, y, z, w], [x, y, z, w], [x, y, z, w]]
+
+    rospy.init_node('object_catch')
     arm_ready_pose()
     gripper_open()
+    for i_chasis_positon, step in enumerate(len(all_tar_chasis_position)):
 
-    # 1.得到gpt的处理结果，处理为输入神经网络的点位，得到底盘位置，一个一个的顺序发布底盘位置
-    # 2.接受每一个点位，使用函数navigateToGoal发布到底盘执行
+        tar_chasis_position = all_tar_chasis_position[step]
+        x_chasis, y_chasis, z_chasis, w_chasis = read_value(tar_chasis_position)
+        # 导航之前需要将机械臂基座位姿转换为底盘位姿
+        T_world_to_base = np.array([
+            [1 - 2 * z_chasis**2, -2 * w_chasis * z_chasis, 0],
+            [2 * w_chasis * z_chasis, 1 - 2 * z_chasis**2, 0],
+            [0, 0, 1]
+        ])
+        # T_chasis_to_base 仅绕Z旋转
+        T_chasis_to_base = [
+            '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
+        ]
+        T_chasis_to_world = T_world_to_base.dot(np.linalg.inv(T_chasis_to_base))
+        # 旋转矩阵转四元数
+        navigateToGoal_4 = rotation_matrix_to_quaternion(T_chasis_to_world)
+        assert navigateToGoal_4==0 and navigateToGoal_4[1] == 0
+        # 导航
+        navigateToGoal(x_chasis, y_chasis, navigateToGoal_4[2], navigateToGoal_4[3])
 
-    # 拿起来
-    navigateToGoal(2.6124, 0.225573, 0.0001736, 1)
-    object_msg = 'plate'
-    rospy.init_node('object_catch')
-    sub_object_pose = rospy.Subscriber("/object_pose", ObjectInfo, object_pose_callback, queue_size=1)
-    rospy.spin()
+        sub_step = all_object_position[step]
 
-    # 放下
-    navigateToGoal(2.6124, 0.225573, 0.0001736, 1)
-    object_msg = 'plate'
-    rospy.init_node('object_catch')
-    sub_object_pose = rospy.Subscriber("/object_pose", ObjectInfo, object_pose_callback, queue_size=1)
-    rospy.spin()
-    # #time.sleep(5)
+        for i_sub_position, sub_sub_step in enumerate(sub_step):
+
+            object_position = sub_sub_step[0]
+            tar_place_position = sub_sub_step[1]
+
+            if object_position is None:
+                # 放下
+                object_msg = str(all_object_name[i_chasis_positon][i_sub_position][1])
+                # rospy.init_node('object_catch')
+                get_see_pose()
+                sub_object_pose = rospy.Subscriber("/object_pose", ObjectInfo, object_pose_callback, queue_size=1)
+                rospy.spin()
+                #time.sleep(5)
+            else:
+                # 拿起来
+                object_msg = str(all_object_name[i_chasis_positon][i_sub_position][0])
+                # rospy.init_node('object_catch')
+                get_see_pose()
+                sub_object_pose = rospy.Subscriber("/object_pose", ObjectInfo, object_pose_callback, queue_size=1)
+                rospy.spin()
+                #time.sleep(5)
+
+            if not tar_place_position is None:
+                # 放下
+                object_msg = str(all_object_name[i_chasis_positon][i_sub_position][1])
+                # rospy.init_node('object_catch')
+                get_see_pose()
+                sub_object_pose = rospy.Subscriber("/object_pose", ObjectInfo, object_pose_callback, queue_size=1)
+                rospy.spin()
+                #time.sleep(5)
+            else:
+                pass
 
