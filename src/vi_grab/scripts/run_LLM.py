@@ -78,21 +78,17 @@ def str_to_num_input_to_RPSN(result_gpt_2):
     result2 = []
     for step_objects in result_gpt_2:
         for step_of_objects in step_objects:
-            for object_1 in step_of_objects:
-                item = object_1
-                num_none = 0
-                if item is None:
-                    num_none += 1
+            for item in step_of_objects:
+
                 if item not in step_objectss:
-                    
-                    return
+                    step_objectss.append(item)
 
     return result2
 
 
 # 测试函数
 def main_LLM():
-    openai.api_key = "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"
+
     # 1.输入命令
     xxxxxxxxxxx = {
         "Target": "引号内是需要实现的目标",
