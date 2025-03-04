@@ -70,32 +70,72 @@ def str_to_num(all_object_name, xxxxxxxxxxx):
 
                 return result1
 
-def str_to_num_input_to_RPSN(result_gpt_2):
+def str_to_num_input_to_RPSN(result_gpt_2, Location_of_objects_list):
     """
     将LLM输出转换为输入RPSN的形式
     """
-    step_objectss = []
     result2 = []
     for step_objects in result_gpt_2:
+        step_objectss = []
         for step_of_objects in step_objects:
             for item in step_of_objects:
 
-                if item not in step_objectss:
+                if item not in step_objectss and item is not None:
                     step_objectss.append(item)
+        result2.append(step_objectss)
 
-    return result2
+    result3 = []
+    for result2_to_num in result2:
+        result3_step = []
+        for result2_to_num_object in result2_to_num:
+            if result2_to_num_object == "plate":
+                aaaaaaa = Location_of_objects_list[0]
+            elif result2_to_num_object == "apple":
+                aaaaaaa = Location_of_objects_list[1]
+            elif result2_to_num_object == "orange":
+                aaaaaaa = Location_of_objects_list[2]
+            elif result2_to_num_object == "peach":
+                aaaaaaa = Location_of_objects_list[3]
+            elif result2_to_num_object == "milk":
+                aaaaaaa = Location_of_objects_list[4]
+            elif result2_to_num_object == "juice":
+                aaaaaaa = Location_of_objects_list[5]
+            elif result2_to_num_object == "soda":
+                aaaaaaa = Location_of_objects_list[6]
+            result3_step.append(aaaaaaa)
+        result3.append(result3_step)
+
+    return result3
 
 
 # 测试函数
 def main_LLM():
-
+    openai.api_key = "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"
     # 1.输入命令
+    Location_of_objects_list = [
+        [1.0795431990611055, -0.651733994125367, 2.3202460294687204, 3.359652528665011, 0.14049140175077102, 0.043154842569564665],
+        [2.414453562280456, 0.3016376404923616, -0.9324502881535464, 3.8533742591570808, 0.004817449442475252, 0.05296482461208256],
+        [-2.5870679261087712, 0.2627746184031503, 1.6741349722522685, 2.740858388572259, 0.210222602052977, 0.03833761843056219],
+        [-1.5381527451771089, 0.3492733294929023, 3.127002040915903, 3.731611643324439, 0.14583353860873177, 0.032363500315085815],
+        [2.079981464438941, 1.5406901242609825, 0.4278294944284019,3.0330625281428505, 0.04235119928988959, 0.05668868563346661],
+        [1.816117760202489, 1.4113224159181246, -2.009506160620853, 3.6895157232542517, 0.04988997499705217, 0.027776114858980322],
+        [1.3528615748031758, 0.4567567315212199, 1.8470664086382256, 3.3490107619168166, 0.7646220864967979, 0.020519138612814267]
+    ]
+    # for ii, tensor in enumerate(Location_of_objects_list):
+    #     tensor = [round(val, 3) for val in tensor]
+    #     Location_of_objects_list[ii] = tensor
     xxxxxxxxxxx = {
-        "Target": "引号内是需要实现的目标",
-        "Initial_position_of_AMMR": [AMMR的x轴坐标, AMMR的y轴坐标],
-        "target_zone": [[目标区域的x轴坐标, 目标区域的y轴坐标],[目标区域的x轴坐标, 目标区域的y轴坐标]],
-        "Location_of_objects": {"苹果":[苹果x轴坐标, 苹果y轴坐标], "橘子":[橘子x轴坐标, 橘子y轴坐标], "桃子":[桃子x轴坐标, 桃子y轴坐标], "牛奶":[牛奶x轴坐标, 牛奶y轴坐标], "果汁":[果汁x轴坐标, 果汁y轴坐标], "苏打水":[苏打水x轴坐标, 苏打水y轴坐标]}
+        "Target": "将所有物品放回目标区域，盘子不论",
+        "Initial_position_of_AMMR": [0, 0],
+        "target_zone": [[1, 1],[1.4, 1.4]],
+        "Location_of_objects": {
+            "plate":[Location_of_objects_list[0][3], Location_of_objects_list[0][4]], 
+            "apple":[Location_of_objects_list[1][3], Location_of_objects_list[1][4]], "orange":[Location_of_objects_list[2][3], Location_of_objects_list[2][4]], 
+            "peach":[Location_of_objects_list[3][3], Location_of_objects_list[3][4]], "milk":[Location_of_objects_list[4][3], Location_of_objects_list[4][4]], 
+            "juice":[Location_of_objects_list[5][3], Location_of_objects_list[5][4]], "soda":[Location_of_objects_list[6][3], Location_of_objects_list[6][4]]
+        }
     }
+    # xxxxxxxxxxx = "你理解了吗"
     test_prompt = "{}".format(xxxxxxxxxxx)
     result_gpt = test_openai_api(test_prompt)
     print("模型回复：")
@@ -108,9 +148,10 @@ def main_LLM():
     result1 = str_to_num(result_gpt_2, xxxxxxxxxxx)
 
     # 4.str_to_num_input_to_RPSN
-    result2 = str_to_num_input_to_RPSN(result_gpt_2)
+    result2 = str_to_num_input_to_RPSN(result_gpt_2, Location_of_objects_list)
 
-    return result_gpt_2, result1, result2
+    print(result_gpt_2, result1, result2)
+    # return result_gpt_2, result1, result2
 
 if __name__ == "__main__":
     main_LLM()

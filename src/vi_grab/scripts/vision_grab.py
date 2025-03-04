@@ -439,22 +439,23 @@ if __name__ == '__main__':
 
         tar_chasis_position = all_tar_chasis_position[step]
         x_chasis, y_chasis, z_chasis, w_chasis = read_value(tar_chasis_position)
-        # 导航之前需要将机械臂基座位姿转换为底盘位姿
-        T_world_to_base = np.array([
-            [1 - 2 * z_chasis**2, -2 * w_chasis * z_chasis, 0],
-            [2 * w_chasis * z_chasis, 1 - 2 * z_chasis**2, 0],
-            [0, 0, 1]
-        ])
-        # T_chasis_to_base 仅绕Z旋转
-        T_chasis_to_base = [
-            '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
-        ]
-        T_chasis_to_world = T_world_to_base.dot(np.linalg.inv(T_chasis_to_base))
-        # 旋转矩阵转四元数
-        navigateToGoal_4 = rotation_matrix_to_quaternion(T_chasis_to_world)
-        assert navigateToGoal_4==0 and navigateToGoal_4[1] == 0
-        # 导航
-        navigateToGoal(x_chasis, y_chasis, navigateToGoal_4[2], navigateToGoal_4[3])
+        # # 导航之前需要将机械臂基座位姿转换为底盘位姿
+        # T_world_to_base = np.array([
+        #     [1 - 2 * z_chasis**2, -2 * w_chasis * z_chasis, 0],
+        #     [2 * w_chasis * z_chasis, 1 - 2 * z_chasis**2, 0],
+        #     [0, 0, 1]
+        # ])
+        # # T_chasis_to_base 仅绕Z旋转
+        # T_chasis_to_base = [
+        #     '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
+        # ]
+        # T_chasis_to_world = T_world_to_base.dot(np.linalg.inv(T_chasis_to_base))
+        # # 旋转矩阵转四元数
+        # navigateToGoal_4 = rotation_matrix_to_quaternion(T_chasis_to_world)
+        # assert navigateToGoal_4==0 and navigateToGoal_4[1] == 0
+        # # 导航
+        # navigateToGoal(x_chasis, y_chasis, navigateToGoal_4[2], navigateToGoal_4[3])
+        navigateToGoal(x_chasis, y_chasis, z_chasis, w_chasis)
 
         sub_step = all_object_position[step]
 
