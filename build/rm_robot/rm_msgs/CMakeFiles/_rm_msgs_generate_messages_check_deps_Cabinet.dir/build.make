@@ -54,7 +54,7 @@ CMAKE_BINARY_DIR = /home/cn/catkin_rm/build
 include rm_robot/rm_msgs/CMakeFiles/_rm_msgs_generate_messages_check_deps_Cabinet.dir/progress.make
 
 rm_robot/rm_msgs/CMakeFiles/_rm_msgs_generate_messages_check_deps_Cabinet:
-	cd /home/cn/catkin_rm/build/rm_robot/rm_msgs && ../../catkin_generated/env_cached.sh /usr/bin/python3 /opt/ros/noetic/share/genmsg/cmake/../../../lib/genmsg/genmsg_check_deps.py rm_msgs /home/cn/catkin_rm/src/rm_robot/rm_msgs/msg/Cabinet.msg geometry_msgs/Point:geometry_msgs/Pose:std_msgs/Header:geometry_msgs/Quaternion
+	cd /home/cn/catkin_rm/build/rm_robot/rm_msgs && ../../catkin_generated/env_cached.sh /usr/bin/python3 /opt/ros/noetic/share/genmsg/cmake/../../../lib/genmsg/genmsg_check_deps.py rm_msgs /home/cn/catkin_rm/src/rm_robot/rm_msgs/msg/Cabinet.msg geometry_msgs/Pose:std_msgs/Header:geometry_msgs/Point:geometry_msgs/Quaternion
 
 _rm_msgs_generate_messages_check_deps_Cabinet: rm_robot/rm_msgs/CMakeFiles/_rm_msgs_generate_messages_check_deps_Cabinet
 _rm_msgs_generate_messages_check_deps_Cabinet: rm_robot/rm_msgs/CMakeFiles/_rm_msgs_generate_messages_check_deps_Cabinet.dir/build.make

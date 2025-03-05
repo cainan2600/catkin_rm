@@ -112,7 +112,7 @@ def str_to_num_input_to_RPSN(result_gpt_2, Location_of_objects_list):
 def main_LLM():
     openai.api_key = "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"
     # 1.输入命令
-    Location_of_objects_list = [
+    Location_of_objects_lists = [
         [1.0795431990611055, -0.651733994125367, 2.3202460294687204, 3.359652528665011, 0.14049140175077102, 0.043154842569564665],
         [2.414453562280456, 0.3016376404923616, -0.9324502881535464, 3.8533742591570808, 0.004817449442475252, 0.05296482461208256],
         [-2.5870679261087712, 0.2627746184031503, 1.6741349722522685, 2.740858388572259, 0.210222602052977, 0.03833761843056219],
@@ -121,11 +121,11 @@ def main_LLM():
         [1.816117760202489, 1.4113224159181246, -2.009506160620853, 3.6895157232542517, 0.04988997499705217, 0.027776114858980322],
         [1.3528615748031758, 0.4567567315212199, 1.8470664086382256, 3.3490107619168166, 0.7646220864967979, 0.020519138612814267]
     ]
-    # for ii, tensor in enumerate(Location_of_objects_list):
-    #     tensor = [round(val, 3) for val in tensor]
-    #     Location_of_objects_list[ii] = tensor
+    for ii, tensor in enumerate(Location_of_objects_lists):
+        tensor = [round(val, 3) for val in tensor]
+        Location_of_objects_list[ii] = tensor
     xxxxxxxxxxx = {
-        "Target": "将所有物品放回目标区域，盘子不论",
+        "Target": "Put all items back in the target area, regardless of the plates.",
         "Initial_position_of_AMMR": [0, 0],
         "target_zone": [[1, 1],[1.4, 1.4]],
         "Location_of_objects": {
@@ -148,9 +148,9 @@ def main_LLM():
     result1 = str_to_num(result_gpt_2, xxxxxxxxxxx)
 
     # 4.str_to_num_input_to_RPSN
-    result2 = str_to_num_input_to_RPSN(result_gpt_2, Location_of_objects_list)
+    result22 = str_to_num_input_to_RPSN(result_gpt_2, Location_of_objects_lists)
 
-    print(result_gpt_2, result1, result2)
+    print(result_gpt_2, result1, result22)
     # return result_gpt_2, result1, result2
 
 if __name__ == "__main__":

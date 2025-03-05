@@ -138,6 +138,7 @@ class main():
                 # 将batch_size中的每一组数据输入网络
                 num_zu_in_epoch = 0
                 for inputs_xx6 in inputs_bxxx6:
+                    # print(inputs_xx6)
                     num_zu_in_epoch += 1
                     # inputs = inputs_xx6
                     # 将7x6打乱并转换为1x42

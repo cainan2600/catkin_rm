@@ -163,8 +163,8 @@ rm_robot/rm_msgs/CMakeFiles/rm_msgs_generate_messages_cpp: /home/cn/catkin_rm/de
 
 /home/cn/catkin_rm/devel/include/rm_msgs/MoveC.h: /opt/ros/noetic/lib/gencpp/gen_cpp.py
 /home/cn/catkin_rm/devel/include/rm_msgs/MoveC.h: /home/cn/catkin_rm/src/rm_robot/rm_msgs/msg/MoveC.msg
-/home/cn/catkin_rm/devel/include/rm_msgs/MoveC.h: /opt/ros/noetic/share/geometry_msgs/msg/Point.msg
 /home/cn/catkin_rm/devel/include/rm_msgs/MoveC.h: /opt/ros/noetic/share/geometry_msgs/msg/Pose.msg
+/home/cn/catkin_rm/devel/include/rm_msgs/MoveC.h: /opt/ros/noetic/share/geometry_msgs/msg/Point.msg
 /home/cn/catkin_rm/devel/include/rm_msgs/MoveC.h: /opt/ros/noetic/share/geometry_msgs/msg/Quaternion.msg
 /home/cn/catkin_rm/devel/include/rm_msgs/MoveC.h: /opt/ros/noetic/share/gencpp/msg.h.template
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold --progress-dir=/home/cn/catkin_rm/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Generating C++ code from rm_msgs/MoveC.msg"
@@ -178,8 +178,8 @@ rm_robot/rm_msgs/CMakeFiles/rm_msgs_generate_messages_cpp: /home/cn/catkin_rm/de
 
 /home/cn/catkin_rm/devel/include/rm_msgs/MoveJ_P.h: /opt/ros/noetic/lib/gencpp/gen_cpp.py
 /home/cn/catkin_rm/devel/include/rm_msgs/MoveJ_P.h: /home/cn/catkin_rm/src/rm_robot/rm_msgs/msg/MoveJ_P.msg
-/home/cn/catkin_rm/devel/include/rm_msgs/MoveJ_P.h: /opt/ros/noetic/share/geometry_msgs/msg/Point.msg
 /home/cn/catkin_rm/devel/include/rm_msgs/MoveJ_P.h: /opt/ros/noetic/share/geometry_msgs/msg/Pose.msg
+/home/cn/catkin_rm/devel/include/rm_msgs/MoveJ_P.h: /opt/ros/noetic/share/geometry_msgs/msg/Point.msg
 /home/cn/catkin_rm/devel/include/rm_msgs/MoveJ_P.h: /opt/ros/noetic/share/geometry_msgs/msg/Quaternion.msg
 /home/cn/catkin_rm/devel/include/rm_msgs/MoveJ_P.h: /opt/ros/noetic/share/gencpp/msg.h.template
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold --progress-dir=/home/cn/catkin_rm/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Generating C++ code from rm_msgs/MoveJ_P.msg"
@@ -187,8 +187,8 @@ rm_robot/rm_msgs/CMakeFiles/rm_msgs_generate_messages_cpp: /home/cn/catkin_rm/de
 
 /home/cn/catkin_rm/devel/include/rm_msgs/MoveL.h: /opt/ros/noetic/lib/gencpp/gen_cpp.py
 /home/cn/catkin_rm/devel/include/rm_msgs/MoveL.h: /home/cn/catkin_rm/src/rm_robot/rm_msgs/msg/MoveL.msg
-/home/cn/catkin_rm/devel/include/rm_msgs/MoveL.h: /opt/ros/noetic/share/geometry_msgs/msg/Point.msg
 /home/cn/catkin_rm/devel/include/rm_msgs/MoveL.h: /opt/ros/noetic/share/geometry_msgs/msg/Pose.msg
+/home/cn/catkin_rm/devel/include/rm_msgs/MoveL.h: /opt/ros/noetic/share/geometry_msgs/msg/Point.msg
 /home/cn/catkin_rm/devel/include/rm_msgs/MoveL.h: /opt/ros/noetic/share/geometry_msgs/msg/Quaternion.msg
 /home/cn/catkin_rm/devel/include/rm_msgs/MoveL.h: /opt/ros/noetic/share/gencpp/msg.h.template
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold --progress-dir=/home/cn/catkin_rm/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Generating C++ code from rm_msgs/MoveL.msg"
@@ -220,9 +220,9 @@ rm_robot/rm_msgs/CMakeFiles/rm_msgs_generate_messages_cpp: /home/cn/catkin_rm/de
 
 /home/cn/catkin_rm/devel/include/rm_msgs/Cabinet.h: /opt/ros/noetic/lib/gencpp/gen_cpp.py
 /home/cn/catkin_rm/devel/include/rm_msgs/Cabinet.h: /home/cn/catkin_rm/src/rm_robot/rm_msgs/msg/Cabinet.msg
-/home/cn/catkin_rm/devel/include/rm_msgs/Cabinet.h: /opt/ros/noetic/share/geometry_msgs/msg/Point.msg
 /home/cn/catkin_rm/devel/include/rm_msgs/Cabinet.h: /opt/ros/noetic/share/geometry_msgs/msg/Pose.msg
 /home/cn/catkin_rm/devel/include/rm_msgs/Cabinet.h: /opt/ros/noetic/share/std_msgs/msg/Header.msg
+/home/cn/catkin_rm/devel/include/rm_msgs/Cabinet.h: /opt/ros/noetic/share/geometry_msgs/msg/Point.msg
 /home/cn/catkin_rm/devel/include/rm_msgs/Cabinet.h: /opt/ros/noetic/share/geometry_msgs/msg/Quaternion.msg
 /home/cn/catkin_rm/devel/include/rm_msgs/Cabinet.h: /opt/ros/noetic/share/gencpp/msg.h.template
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold --progress-dir=/home/cn/catkin_rm/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_17) "Generating C++ code from rm_msgs/Cabinet.msg"
@@ -356,8 +356,8 @@ rm_robot/rm_msgs/CMakeFiles/rm_msgs_generate_messages_cpp: /home/cn/catkin_rm/de
 
 /home/cn/catkin_rm/devel/include/rm_msgs/Force_Position_Move_Pose.h: /opt/ros/noetic/lib/gencpp/gen_cpp.py
 /home/cn/catkin_rm/devel/include/rm_msgs/Force_Position_Move_Pose.h: /home/cn/catkin_rm/src/rm_robot/rm_msgs/msg/Force_Position_Move_Pose.msg
-/home/cn/catkin_rm/devel/include/rm_msgs/Force_Position_Move_Pose.h: /opt/ros/noetic/share/geometry_msgs/msg/Point.msg
 /home/cn/catkin_rm/devel/include/rm_msgs/Force_Position_Move_Pose.h: /opt/ros/noetic/share/geometry_msgs/msg/Pose.msg
+/home/cn/catkin_rm/devel/include/rm_msgs/Force_Position_Move_Pose.h: /opt/ros/noetic/share/geometry_msgs/msg/Point.msg
 /home/cn/catkin_rm/devel/include/rm_msgs/Force_Position_Move_Pose.h: /opt/ros/noetic/share/geometry_msgs/msg/Quaternion.msg
 /home/cn/catkin_rm/devel/include/rm_msgs/Force_Position_Move_Pose.h: /opt/ros/noetic/share/gencpp/msg.h.template
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold --progress-dir=/home/cn/catkin_rm/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_39) "Generating C++ code from rm_msgs/Force_Position_Move_Pose.msg"
@@ -383,8 +383,8 @@ rm_robot/rm_msgs/CMakeFiles/rm_msgs_generate_messages_cpp: /home/cn/catkin_rm/de
 
 /home/cn/catkin_rm/devel/include/rm_msgs/CartePos.h: /opt/ros/noetic/lib/gencpp/gen_cpp.py
 /home/cn/catkin_rm/devel/include/rm_msgs/CartePos.h: /home/cn/catkin_rm/src/rm_robot/rm_msgs/msg/CartePos.msg
-/home/cn/catkin_rm/devel/include/rm_msgs/CartePos.h: /opt/ros/noetic/share/geometry_msgs/msg/Point.msg
 /home/cn/catkin_rm/devel/include/rm_msgs/CartePos.h: /opt/ros/noetic/share/geometry_msgs/msg/Pose.msg
+/home/cn/catkin_rm/devel/include/rm_msgs/CartePos.h: /opt/ros/noetic/share/geometry_msgs/msg/Point.msg
 /home/cn/catkin_rm/devel/include/rm_msgs/CartePos.h: /opt/ros/noetic/share/geometry_msgs/msg/Quaternion.msg
 /home/cn/catkin_rm/devel/include/rm_msgs/CartePos.h: /opt/ros/noetic/share/gencpp/msg.h.template
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold --progress-dir=/home/cn/catkin_rm/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_43) "Generating C++ code from rm_msgs/CartePos.msg"
@@ -416,8 +416,8 @@ rm_robot/rm_msgs/CMakeFiles/rm_msgs_generate_messages_cpp: /home/cn/catkin_rm/de
 
 /home/cn/catkin_rm/devel/include/rm_msgs/ArmState.h: /opt/ros/noetic/lib/gencpp/gen_cpp.py
 /home/cn/catkin_rm/devel/include/rm_msgs/ArmState.h: /home/cn/catkin_rm/src/rm_robot/rm_msgs/msg/ArmState.msg
-/home/cn/catkin_rm/devel/include/rm_msgs/ArmState.h: /opt/ros/noetic/share/geometry_msgs/msg/Point.msg
 /home/cn/catkin_rm/devel/include/rm_msgs/ArmState.h: /opt/ros/noetic/share/geometry_msgs/msg/Pose.msg
+/home/cn/catkin_rm/devel/include/rm_msgs/ArmState.h: /opt/ros/noetic/share/geometry_msgs/msg/Point.msg
 /home/cn/catkin_rm/devel/include/rm_msgs/ArmState.h: /opt/ros/noetic/share/geometry_msgs/msg/Quaternion.msg
 /home/cn/catkin_rm/devel/include/rm_msgs/ArmState.h: /opt/ros/noetic/share/gencpp/msg.h.template
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold --progress-dir=/home/cn/catkin_rm/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_48) "Generating C++ code from rm_msgs/ArmState.msg"

@@ -156,8 +156,8 @@ rm_robot/rm_msgs/CMakeFiles/rm_msgs_generate_messages_py: /home/cn/catkin_rm/dev
 
 /home/cn/catkin_rm/devel/lib/python3/dist-packages/rm_msgs/msg/_MoveC.py: /opt/ros/noetic/lib/genpy/genmsg_py.py
 /home/cn/catkin_rm/devel/lib/python3/dist-packages/rm_msgs/msg/_MoveC.py: /home/cn/catkin_rm/src/rm_robot/rm_msgs/msg/MoveC.msg
-/home/cn/catkin_rm/devel/lib/python3/dist-packages/rm_msgs/msg/_MoveC.py: /opt/ros/noetic/share/geometry_msgs/msg/Point.msg
 /home/cn/catkin_rm/devel/lib/python3/dist-packages/rm_msgs/msg/_MoveC.py: /opt/ros/noetic/share/geometry_msgs/msg/Pose.msg
+/home/cn/catkin_rm/devel/lib/python3/dist-packages/rm_msgs/msg/_MoveC.py: /opt/ros/noetic/share/geometry_msgs/msg/Point.msg
 /home/cn/catkin_rm/devel/lib/python3/dist-packages/rm_msgs/msg/_MoveC.py: /opt/ros/noetic/share/geometry_msgs/msg/Quaternion.msg
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold --progress-dir=/home/cn/catkin_rm/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Generating Python from MSG rm_msgs/MoveC"
 	cd /home/cn/catkin_rm/build/rm_robot/rm_msgs && ../../catkin_generated/env_cached.sh /usr/bin/python3 /opt/ros/noetic/share/genpy/cmake/../../../lib/genpy/genmsg_py.py /home/cn/catkin_rm/src/rm_robot/rm_msgs/msg/MoveC.msg -Irm_msgs:/home/cn/catkin_rm/src/rm_robot/rm_msgs/msg -Igeometry_msgs:/opt/ros/noetic/share/geometry_msgs/cmake/../msg -Istd_msgs:/opt/ros/noetic/share/std_msgs/cmake/../msg -p rm_msgs -o /home/cn/catkin_rm/devel/lib/python3/dist-packages/rm_msgs/msg
@@ -169,16 +169,16 @@ rm_robot/rm_msgs/CMakeFiles/rm_msgs_generate_messages_py: /home/cn/catkin_rm/dev
 
 /home/cn/catkin_rm/devel/lib/python3/dist-packages/rm_msgs/msg/_MoveJ_P.py: /opt/ros/noetic/lib/genpy/genmsg_py.py
 /home/cn/catkin_rm/devel/lib/python3/dist-packages/rm_msgs/msg/_MoveJ_P.py: /home/cn/catkin_rm/src/rm_robot/rm_msgs/msg/MoveJ_P.msg
-/home/cn/catkin_rm/devel/lib/python3/dist-packages/rm_msgs/msg/_MoveJ_P.py: /opt/ros/noetic/share/geometry_msgs/msg/Point.msg
 /home/cn/catkin_rm/devel/lib/python3/dist-packages/rm_msgs/msg/_MoveJ_P.py: /opt/ros/noetic/share/geometry_msgs/msg/Pose.msg
+/home/cn/catkin_rm/devel/lib/python3/dist-packages/rm_msgs/msg/_MoveJ_P.py: /opt/ros/noetic/share/geometry_msgs/msg/Point.msg
 /home/cn/catkin_rm/devel/lib/python3/dist-packages/rm_msgs/msg/_MoveJ_P.py: /opt/ros/noetic/share/geometry_msgs/msg/Quaternion.msg
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold --progress-dir=/home/cn/catkin_rm/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Generating Python from MSG rm_msgs/MoveJ_P"
 	cd /home/cn/catkin_rm/build/rm_robot/rm_msgs && ../../catkin_generated/env_cached.sh /usr/bin/python3 /opt/ros/noetic/share/genpy/cmake/../../../lib/genpy/genmsg_py.py /home/cn/catkin_rm/src/rm_robot/rm_msgs/msg/MoveJ_P.msg -Irm_msgs:/home/cn/catkin_rm/src/rm_robot/rm_msgs/msg -Igeometry_msgs:/opt/ros/noetic/share/geometry_msgs/cmake/../msg -Istd_msgs:/opt/ros/noetic/share/std_msgs/cmake/../msg -p rm_msgs -o /home/cn/catkin_rm/devel/lib/python3/dist-packages/rm_msgs/msg
 
 /home/cn/catkin_rm/devel/lib/python3/dist-packages/rm_msgs/msg/_MoveL.py: /opt/ros/noetic/lib/genpy/genmsg_py.py
 /home/cn/catkin_rm/devel/lib/python3/dist-packages/rm_msgs/msg/_MoveL.py: /home/cn/catkin_rm/src/rm_robot/rm_msgs/msg/MoveL.msg
-/home/cn/catkin_rm/devel/lib/python3/dist-packages/rm_msgs/msg/_MoveL.py: /opt/ros/noetic/share/geometry_msgs/msg/Point.msg
 /home/cn/catkin_rm/devel/lib/python3/dist-packages/rm_msgs/msg/_MoveL.py: /opt/ros/noetic/share/geometry_msgs/msg/Pose.msg
+/home/cn/catkin_rm/devel/lib/python3/dist-packages/rm_msgs/msg/_MoveL.py: /opt/ros/noetic/share/geometry_msgs/msg/Point.msg
 /home/cn/catkin_rm/devel/lib/python3/dist-packages/rm_msgs/msg/_MoveL.py: /opt/ros/noetic/share/geometry_msgs/msg/Quaternion.msg
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold --progress-dir=/home/cn/catkin_rm/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Generating Python from MSG rm_msgs/MoveL"
 	cd /home/cn/catkin_rm/build/rm_robot/rm_msgs && ../../catkin_generated/env_cached.sh /usr/bin/python3 /opt/ros/noetic/share/genpy/cmake/../../../lib/genpy/genmsg_py.py /home/cn/catkin_rm/src/rm_robot/rm_msgs/msg/MoveL.msg -Irm_msgs:/home/cn/catkin_rm/src/rm_robot/rm_msgs/msg -Igeometry_msgs:/opt/ros/noetic/share/geometry_msgs/cmake/../msg -Istd_msgs:/opt/ros/noetic/share/std_msgs/cmake/../msg -p rm_msgs -o /home/cn/catkin_rm/devel/lib/python3/dist-packages/rm_msgs/msg
@@ -205,9 +205,9 @@ rm_robot/rm_msgs/CMakeFiles/rm_msgs_generate_messages_py: /home/cn/catkin_rm/dev
 
 /home/cn/catkin_rm/devel/lib/python3/dist-packages/rm_msgs/msg/_Cabinet.py: /opt/ros/noetic/lib/genpy/genmsg_py.py
 /home/cn/catkin_rm/devel/lib/python3/dist-packages/rm_msgs/msg/_Cabinet.py: /home/cn/catkin_rm/src/rm_robot/rm_msgs/msg/Cabinet.msg
-/home/cn/catkin_rm/devel/lib/python3/dist-packages/rm_msgs/msg/_Cabinet.py: /opt/ros/noetic/share/geometry_msgs/msg/Point.msg
 /home/cn/catkin_rm/devel/lib/python3/dist-packages/rm_msgs/msg/_Cabinet.py: /opt/ros/noetic/share/geometry_msgs/msg/Pose.msg
 /home/cn/catkin_rm/devel/lib/python3/dist-packages/rm_msgs/msg/_Cabinet.py: /opt/ros/noetic/share/std_msgs/msg/Header.msg
+/home/cn/catkin_rm/devel/lib/python3/dist-packages/rm_msgs/msg/_Cabinet.py: /opt/ros/noetic/share/geometry_msgs/msg/Point.msg
 /home/cn/catkin_rm/devel/lib/python3/dist-packages/rm_msgs/msg/_Cabinet.py: /opt/ros/noetic/share/geometry_msgs/msg/Quaternion.msg
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold --progress-dir=/home/cn/catkin_rm/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_17) "Generating Python from MSG rm_msgs/Cabinet"
 	cd /home/cn/catkin_rm/build/rm_robot/rm_msgs && ../../catkin_generated/env_cached.sh /usr/bin/python3 /opt/ros/noetic/share/genpy/cmake/../../../lib/genpy/genmsg_py.py /home/cn/catkin_rm/src/rm_robot/rm_msgs/msg/Cabinet.msg -Irm_msgs:/home/cn/catkin_rm/src/rm_robot/rm_msgs/msg -Igeometry_msgs:/opt/ros/noetic/share/geometry_msgs/cmake/../msg -Istd_msgs:/opt/ros/noetic/share/std_msgs/cmake/../msg -p rm_msgs -o /home/cn/catkin_rm/devel/lib/python3/dist-packages/rm_msgs/msg
@@ -319,8 +319,8 @@ rm_robot/rm_msgs/CMakeFiles/rm_msgs_generate_messages_py: /home/cn/catkin_rm/dev
 
 /home/cn/catkin_rm/devel/lib/python3/dist-packages/rm_msgs/msg/_Force_Position_Move_Pose.py: /opt/ros/noetic/lib/genpy/genmsg_py.py
 /home/cn/catkin_rm/devel/lib/python3/dist-packages/rm_msgs/msg/_Force_Position_Move_Pose.py: /home/cn/catkin_rm/src/rm_robot/rm_msgs/msg/Force_Position_Move_Pose.msg
-/home/cn/catkin_rm/devel/lib/python3/dist-packages/rm_msgs/msg/_Force_Position_Move_Pose.py: /opt/ros/noetic/share/geometry_msgs/msg/Point.msg
 /home/cn/catkin_rm/devel/lib/python3/dist-packages/rm_msgs/msg/_Force_Position_Move_Pose.py: /opt/ros/noetic/share/geometry_msgs/msg/Pose.msg
+/home/cn/catkin_rm/devel/lib/python3/dist-packages/rm_msgs/msg/_Force_Position_Move_Pose.py: /opt/ros/noetic/share/geometry_msgs/msg/Point.msg
 /home/cn/catkin_rm/devel/lib/python3/dist-packages/rm_msgs/msg/_Force_Position_Move_Pose.py: /opt/ros/noetic/share/geometry_msgs/msg/Quaternion.msg
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold --progress-dir=/home/cn/catkin_rm/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_39) "Generating Python from MSG rm_msgs/Force_Position_Move_Pose"
 	cd /home/cn/catkin_rm/build/rm_robot/rm_msgs && ../../catkin_generated/env_cached.sh /usr/bin/python3 /opt/ros/noetic/share/genpy/cmake/../../../lib/genpy/genmsg_py.py /home/cn/catkin_rm/src/rm_robot/rm_msgs/msg/Force_Position_Move_Pose.msg -Irm_msgs:/home/cn/catkin_rm/src/rm_robot/rm_msgs/msg -Igeometry_msgs:/opt/ros/noetic/share/geometry_msgs/cmake/../msg -Istd_msgs:/opt/ros/noetic/share/std_msgs/cmake/../msg -p rm_msgs -o /home/cn/catkin_rm/devel/lib/python3/dist-packages/rm_msgs/msg
@@ -342,8 +342,8 @@ rm_robot/rm_msgs/CMakeFiles/rm_msgs_generate_messages_py: /home/cn/catkin_rm/dev
 
 /home/cn/catkin_rm/devel/lib/python3/dist-packages/rm_msgs/msg/_CartePos.py: /opt/ros/noetic/lib/genpy/genmsg_py.py
 /home/cn/catkin_rm/devel/lib/python3/dist-packages/rm_msgs/msg/_CartePos.py: /home/cn/catkin_rm/src/rm_robot/rm_msgs/msg/CartePos.msg
-/home/cn/catkin_rm/devel/lib/python3/dist-packages/rm_msgs/msg/_CartePos.py: /opt/ros/noetic/share/geometry_msgs/msg/Point.msg
 /home/cn/catkin_rm/devel/lib/python3/dist-packages/rm_msgs/msg/_CartePos.py: /opt/ros/noetic/share/geometry_msgs/msg/Pose.msg
+/home/cn/catkin_rm/devel/lib/python3/dist-packages/rm_msgs/msg/_CartePos.py: /opt/ros/noetic/share/geometry_msgs/msg/Point.msg
 /home/cn/catkin_rm/devel/lib/python3/dist-packages/rm_msgs/msg/_CartePos.py: /opt/ros/noetic/share/geometry_msgs/msg/Quaternion.msg
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold --progress-dir=/home/cn/catkin_rm/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_43) "Generating Python from MSG rm_msgs/CartePos"
 	cd /home/cn/catkin_rm/build/rm_robot/rm_msgs && ../../catkin_generated/env_cached.sh /usr/bin/python3 /opt/ros/noetic/share/genpy/cmake/../../../lib/genpy/genmsg_py.py /home/cn/catkin_rm/src/rm_robot/rm_msgs/msg/CartePos.msg -Irm_msgs:/home/cn/catkin_rm/src/rm_robot/rm_msgs/msg -Igeometry_msgs:/opt/ros/noetic/share/geometry_msgs/cmake/../msg -Istd_msgs:/opt/ros/noetic/share/std_msgs/cmake/../msg -p rm_msgs -o /home/cn/catkin_rm/devel/lib/python3/dist-packages/rm_msgs/msg
@@ -370,8 +370,8 @@ rm_robot/rm_msgs/CMakeFiles/rm_msgs_generate_messages_py: /home/cn/catkin_rm/dev
 
 /home/cn/catkin_rm/devel/lib/python3/dist-packages/rm_msgs/msg/_ArmState.py: /opt/ros/noetic/lib/genpy/genmsg_py.py
 /home/cn/catkin_rm/devel/lib/python3/dist-packages/rm_msgs/msg/_ArmState.py: /home/cn/catkin_rm/src/rm_robot/rm_msgs/msg/ArmState.msg
-/home/cn/catkin_rm/devel/lib/python3/dist-packages/rm_msgs/msg/_ArmState.py: /opt/ros/noetic/share/geometry_msgs/msg/Point.msg
 /home/cn/catkin_rm/devel/lib/python3/dist-packages/rm_msgs/msg/_ArmState.py: /opt/ros/noetic/share/geometry_msgs/msg/Pose.msg
+/home/cn/catkin_rm/devel/lib/python3/dist-packages/rm_msgs/msg/_ArmState.py: /opt/ros/noetic/share/geometry_msgs/msg/Point.msg
 /home/cn/catkin_rm/devel/lib/python3/dist-packages/rm_msgs/msg/_ArmState.py: /opt/ros/noetic/share/geometry_msgs/msg/Quaternion.msg
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold --progress-dir=/home/cn/catkin_rm/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_48) "Generating Python from MSG rm_msgs/ArmState"
 	cd /home/cn/catkin_rm/build/rm_robot/rm_msgs && ../../catkin_generated/env_cached.sh /usr/bin/python3 /opt/ros/noetic/share/genpy/cmake/../../../lib/genpy/genmsg_py.py /home/cn/catkin_rm/src/rm_robot/rm_msgs/msg/ArmState.msg -Irm_msgs:/home/cn/catkin_rm/src/rm_robot/rm_msgs/msg -Igeometry_msgs:/opt/ros/noetic/share/geometry_msgs/cmake/../msg -Istd_msgs:/opt/ros/noetic/share/std_msgs/cmake/../msg -p rm_msgs -o /home/cn/catkin_rm/devel/lib/python3/dist-packages/rm_msgs/msg

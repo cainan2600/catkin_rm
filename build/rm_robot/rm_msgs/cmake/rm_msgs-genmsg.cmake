@@ -59,7 +59,7 @@ add_custom_target(_rm_msgs_generate_messages_check_deps_${_filename}
 
 get_filename_component(_filename "/home/cn/catkin_rm/src/rm_robot/rm_msgs/msg/MoveC.msg" NAME_WE)
 add_custom_target(_rm_msgs_generate_messages_check_deps_${_filename}
-  COMMAND ${CATKIN_ENV} ${PYTHON_EXECUTABLE} ${GENMSG_CHECK_DEPS_SCRIPT} "rm_msgs" "/home/cn/catkin_rm/src/rm_robot/rm_msgs/msg/MoveC.msg" "geometry_msgs/Point:geometry_msgs/Pose:geometry_msgs/Quaternion"
+  COMMAND ${CATKIN_ENV} ${PYTHON_EXECUTABLE} ${GENMSG_CHECK_DEPS_SCRIPT} "rm_msgs" "/home/cn/catkin_rm/src/rm_robot/rm_msgs/msg/MoveC.msg" "geometry_msgs/Pose:geometry_msgs/Point:geometry_msgs/Quaternion"
 )
 
 get_filename_component(_filename "/home/cn/catkin_rm/src/rm_robot/rm_msgs/msg/MoveJ.msg" NAME_WE)
@@ -69,12 +69,12 @@ add_custom_target(_rm_msgs_generate_messages_check_deps_${_filename}
 
 get_filename_component(_filename "/home/cn/catkin_rm/src/rm_robot/rm_msgs/msg/MoveJ_P.msg" NAME_WE)
 add_custom_target(_rm_msgs_generate_messages_check_deps_${_filename}
-  COMMAND ${CATKIN_ENV} ${PYTHON_EXECUTABLE} ${GENMSG_CHECK_DEPS_SCRIPT} "rm_msgs" "/home/cn/catkin_rm/src/rm_robot/rm_msgs/msg/MoveJ_P.msg" "geometry_msgs/Point:geometry_msgs/Pose:geometry_msgs/Quaternion"
+  COMMAND ${CATKIN_ENV} ${PYTHON_EXECUTABLE} ${GENMSG_CHECK_DEPS_SCRIPT} "rm_msgs" "/home/cn/catkin_rm/src/rm_robot/rm_msgs/msg/MoveJ_P.msg" "geometry_msgs/Pose:geometry_msgs/Point:geometry_msgs/Quaternion"
 )
 
 get_filename_component(_filename "/home/cn/catkin_rm/src/rm_robot/rm_msgs/msg/MoveL.msg" NAME_WE)
 add_custom_target(_rm_msgs_generate_messages_check_deps_${_filename}
-  COMMAND ${CATKIN_ENV} ${PYTHON_EXECUTABLE} ${GENMSG_CHECK_DEPS_SCRIPT} "rm_msgs" "/home/cn/catkin_rm/src/rm_robot/rm_msgs/msg/MoveL.msg" "geometry_msgs/Point:geometry_msgs/Pose:geometry_msgs/Quaternion"
+  COMMAND ${CATKIN_ENV} ${PYTHON_EXECUTABLE} ${GENMSG_CHECK_DEPS_SCRIPT} "rm_msgs" "/home/cn/catkin_rm/src/rm_robot/rm_msgs/msg/MoveL.msg" "geometry_msgs/Pose:geometry_msgs/Point:geometry_msgs/Quaternion"
 )
 
 get_filename_component(_filename "/home/cn/catkin_rm/src/rm_robot/rm_msgs/msg/Tool_Analog_Output.msg" NAME_WE)
@@ -99,7 +99,7 @@ add_custom_target(_rm_msgs_generate_messages_check_deps_${_filename}
 
 get_filename_component(_filename "/home/cn/catkin_rm/src/rm_robot/rm_msgs/msg/Cabinet.msg" NAME_WE)
 add_custom_target(_rm_msgs_generate_messages_check_deps_${_filename}
-  COMMAND ${CATKIN_ENV} ${PYTHON_EXECUTABLE} ${GENMSG_CHECK_DEPS_SCRIPT} "rm_msgs" "/home/cn/catkin_rm/src/rm_robot/rm_msgs/msg/Cabinet.msg" "geometry_msgs/Point:geometry_msgs/Pose:std_msgs/Header:geometry_msgs/Quaternion"
+  COMMAND ${CATKIN_ENV} ${PYTHON_EXECUTABLE} ${GENMSG_CHECK_DEPS_SCRIPT} "rm_msgs" "/home/cn/catkin_rm/src/rm_robot/rm_msgs/msg/Cabinet.msg" "geometry_msgs/Pose:std_msgs/Header:geometry_msgs/Point:geometry_msgs/Quaternion"
 )
 
 get_filename_component(_filename "/home/cn/catkin_rm/src/rm_robot/rm_msgs/msg/ChangeTool_State.msg" NAME_WE)
@@ -209,7 +209,7 @@ add_custom_target(_rm_msgs_generate_messages_check_deps_${_filename}
 
 get_filename_component(_filename "/home/cn/catkin_rm/src/rm_robot/rm_msgs/msg/Force_Position_Move_Pose.msg" NAME_WE)
 add_custom_target(_rm_msgs_generate_messages_check_deps_${_filename}
-  COMMAND ${CATKIN_ENV} ${PYTHON_EXECUTABLE} ${GENMSG_CHECK_DEPS_SCRIPT} "rm_msgs" "/home/cn/catkin_rm/src/rm_robot/rm_msgs/msg/Force_Position_Move_Pose.msg" "geometry_msgs/Point:geometry_msgs/Pose:geometry_msgs/Quaternion"
+  COMMAND ${CATKIN_ENV} ${PYTHON_EXECUTABLE} ${GENMSG_CHECK_DEPS_SCRIPT} "rm_msgs" "/home/cn/catkin_rm/src/rm_robot/rm_msgs/msg/Force_Position_Move_Pose.msg" "geometry_msgs/Pose:geometry_msgs/Point:geometry_msgs/Quaternion"
 )
 
 get_filename_component(_filename "/home/cn/catkin_rm/src/rm_robot/rm_msgs/msg/Force_Position_State.msg" NAME_WE)
@@ -229,7 +229,7 @@ add_custom_target(_rm_msgs_generate_messages_check_deps_${_filename}
 
 get_filename_component(_filename "/home/cn/catkin_rm/src/rm_robot/rm_msgs/msg/CartePos.msg" NAME_WE)
 add_custom_target(_rm_msgs_generate_messages_check_deps_${_filename}
-  COMMAND ${CATKIN_ENV} ${PYTHON_EXECUTABLE} ${GENMSG_CHECK_DEPS_SCRIPT} "rm_msgs" "/home/cn/catkin_rm/src/rm_robot/rm_msgs/msg/CartePos.msg" "geometry_msgs/Point:geometry_msgs/Pose:geometry_msgs/Quaternion"
+  COMMAND ${CATKIN_ENV} ${PYTHON_EXECUTABLE} ${GENMSG_CHECK_DEPS_SCRIPT} "rm_msgs" "/home/cn/catkin_rm/src/rm_robot/rm_msgs/msg/CartePos.msg" "geometry_msgs/Pose:geometry_msgs/Point:geometry_msgs/Quaternion"
 )
 
 get_filename_component(_filename "/home/cn/catkin_rm/src/rm_robot/rm_msgs/msg/Lift_Height.msg" NAME_WE)
@@ -254,7 +254,7 @@ add_custom_target(_rm_msgs_generate_messages_check_deps_${_filename}
 
 get_filename_component(_filename "/home/cn/catkin_rm/src/rm_robot/rm_msgs/msg/ArmState.msg" NAME_WE)
 add_custom_target(_rm_msgs_generate_messages_check_deps_${_filename}
-  COMMAND ${CATKIN_ENV} ${PYTHON_EXECUTABLE} ${GENMSG_CHECK_DEPS_SCRIPT} "rm_msgs" "/home/cn/catkin_rm/src/rm_robot/rm_msgs/msg/ArmState.msg" "geometry_msgs/Point:geometry_msgs/Pose:geometry_msgs/Quaternion"
+  COMMAND ${CATKIN_ENV} ${PYTHON_EXECUTABLE} ${GENMSG_CHECK_DEPS_SCRIPT} "rm_msgs" "/home/cn/catkin_rm/src/rm_robot/rm_msgs/msg/ArmState.msg" "geometry_msgs/Pose:geometry_msgs/Point:geometry_msgs/Quaternion"
 )
 
 get_filename_component(_filename "/home/cn/catkin_rm/src/rm_robot/rm_msgs/msg/Hand_Posture.msg" NAME_WE)
@@ -359,7 +359,7 @@ _generate_msg_cpp(rm_msgs
 _generate_msg_cpp(rm_msgs
   "/home/cn/catkin_rm/src/rm_robot/rm_msgs/msg/MoveC.msg"
   "${MSG_I_FLAGS}"
-  "/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg"
+  "/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg"
   ${CATKIN_DEVEL_PREFIX}/${gencpp_INSTALL_DIR}/rm_msgs
 )
 _generate_msg_cpp(rm_msgs
@@ -371,13 +371,13 @@ _generate_msg_cpp(rm_msgs
 _generate_msg_cpp(rm_msgs
   "/home/cn/catkin_rm/src/rm_robot/rm_msgs/msg/MoveJ_P.msg"
   "${MSG_I_FLAGS}"
-  "/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg"
+  "/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg"
   ${CATKIN_DEVEL_PREFIX}/${gencpp_INSTALL_DIR}/rm_msgs
 )
 _generate_msg_cpp(rm_msgs
   "/home/cn/catkin_rm/src/rm_robot/rm_msgs/msg/MoveL.msg"
   "${MSG_I_FLAGS}"
-  "/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg"
+  "/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg"
   ${CATKIN_DEVEL_PREFIX}/${gencpp_INSTALL_DIR}/rm_msgs
 )
 _generate_msg_cpp(rm_msgs
@@ -407,7 +407,7 @@ _generate_msg_cpp(rm_msgs
 _generate_msg_cpp(rm_msgs
   "/home/cn/catkin_rm/src/rm_robot/rm_msgs/msg/Cabinet.msg"
   "${MSG_I_FLAGS}"
-  "/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Header.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg"
+  "/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Header.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg"
   ${CATKIN_DEVEL_PREFIX}/${gencpp_INSTALL_DIR}/rm_msgs
 )
 _generate_msg_cpp(rm_msgs
@@ -539,7 +539,7 @@ _generate_msg_cpp(rm_msgs
 _generate_msg_cpp(rm_msgs
   "/home/cn/catkin_rm/src/rm_robot/rm_msgs/msg/Force_Position_Move_Pose.msg"
   "${MSG_I_FLAGS}"
-  "/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg"
+  "/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg"
   ${CATKIN_DEVEL_PREFIX}/${gencpp_INSTALL_DIR}/rm_msgs
 )
 _generate_msg_cpp(rm_msgs
@@ -563,7 +563,7 @@ _generate_msg_cpp(rm_msgs
 _generate_msg_cpp(rm_msgs
   "/home/cn/catkin_rm/src/rm_robot/rm_msgs/msg/CartePos.msg"
   "${MSG_I_FLAGS}"
-  "/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg"
+  "/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg"
   ${CATKIN_DEVEL_PREFIX}/${gencpp_INSTALL_DIR}/rm_msgs
 )
 _generate_msg_cpp(rm_msgs
@@ -593,7 +593,7 @@ _generate_msg_cpp(rm_msgs
 _generate_msg_cpp(rm_msgs
   "/home/cn/catkin_rm/src/rm_robot/rm_msgs/msg/ArmState.msg"
   "${MSG_I_FLAGS}"
-  "/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg"
+  "/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg"
   ${CATKIN_DEVEL_PREFIX}/${gencpp_INSTALL_DIR}/rm_msgs
 )
 _generate_msg_cpp(rm_msgs
@@ -840,7 +840,7 @@ _generate_msg_eus(rm_msgs
 _generate_msg_eus(rm_msgs
   "/home/cn/catkin_rm/src/rm_robot/rm_msgs/msg/MoveC.msg"
   "${MSG_I_FLAGS}"
-  "/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg"
+  "/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg"
   ${CATKIN_DEVEL_PREFIX}/${geneus_INSTALL_DIR}/rm_msgs
 )
 _generate_msg_eus(rm_msgs
@@ -852,13 +852,13 @@ _generate_msg_eus(rm_msgs
 _generate_msg_eus(rm_msgs
   "/home/cn/catkin_rm/src/rm_robot/rm_msgs/msg/MoveJ_P.msg"
   "${MSG_I_FLAGS}"
-  "/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg"
+  "/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg"
   ${CATKIN_DEVEL_PREFIX}/${geneus_INSTALL_DIR}/rm_msgs
 )
 _generate_msg_eus(rm_msgs
   "/home/cn/catkin_rm/src/rm_robot/rm_msgs/msg/MoveL.msg"
   "${MSG_I_FLAGS}"
-  "/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg"
+  "/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg"
   ${CATKIN_DEVEL_PREFIX}/${geneus_INSTALL_DIR}/rm_msgs
 )
 _generate_msg_eus(rm_msgs
@@ -888,7 +888,7 @@ _generate_msg_eus(rm_msgs
 _generate_msg_eus(rm_msgs
   "/home/cn/catkin_rm/src/rm_robot/rm_msgs/msg/Cabinet.msg"
   "${MSG_I_FLAGS}"
-  "/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Header.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg"
+  "/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Header.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg"
   ${CATKIN_DEVEL_PREFIX}/${geneus_INSTALL_DIR}/rm_msgs
 )
 _generate_msg_eus(rm_msgs
@@ -1020,7 +1020,7 @@ _generate_msg_eus(rm_msgs
 _generate_msg_eus(rm_msgs
   "/home/cn/catkin_rm/src/rm_robot/rm_msgs/msg/Force_Position_Move_Pose.msg"
   "${MSG_I_FLAGS}"
-  "/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg"
+  "/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg"
   ${CATKIN_DEVEL_PREFIX}/${geneus_INSTALL_DIR}/rm_msgs
 )
 _generate_msg_eus(rm_msgs
@@ -1044,7 +1044,7 @@ _generate_msg_eus(rm_msgs
 _generate_msg_eus(rm_msgs
   "/home/cn/catkin_rm/src/rm_robot/rm_msgs/msg/CartePos.msg"
   "${MSG_I_FLAGS}"
-  "/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg"
+  "/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg"
   ${CATKIN_DEVEL_PREFIX}/${geneus_INSTALL_DIR}/rm_msgs
 )
 _generate_msg_eus(rm_msgs
@@ -1074,7 +1074,7 @@ _generate_msg_eus(rm_msgs
 _generate_msg_eus(rm_msgs
   "/home/cn/catkin_rm/src/rm_robot/rm_msgs/msg/ArmState.msg"
   "${MSG_I_FLAGS}"
-  "/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg"
+  "/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg"
   ${CATKIN_DEVEL_PREFIX}/${geneus_INSTALL_DIR}/rm_msgs
 )
 _generate_msg_eus(rm_msgs
@@ -1321,7 +1321,7 @@ _generate_msg_lisp(rm_msgs
 _generate_msg_lisp(rm_msgs
   "/home/cn/catkin_rm/src/rm_robot/rm_msgs/msg/MoveC.msg"
   "${MSG_I_FLAGS}"
-  "/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg"
+  "/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg"
   ${CATKIN_DEVEL_PREFIX}/${genlisp_INSTALL_DIR}/rm_msgs
 )
 _generate_msg_lisp(rm_msgs
@@ -1333,13 +1333,13 @@ _generate_msg_lisp(rm_msgs
 _generate_msg_lisp(rm_msgs
   "/home/cn/catkin_rm/src/rm_robot/rm_msgs/msg/MoveJ_P.msg"
   "${MSG_I_FLAGS}"
-  "/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg"
+  "/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg"
   ${CATKIN_DEVEL_PREFIX}/${genlisp_INSTALL_DIR}/rm_msgs
 )
 _generate_msg_lisp(rm_msgs
   "/home/cn/catkin_rm/src/rm_robot/rm_msgs/msg/MoveL.msg"
   "${MSG_I_FLAGS}"
-  "/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg"
+  "/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg"
   ${CATKIN_DEVEL_PREFIX}/${genlisp_INSTALL_DIR}/rm_msgs
 )
 _generate_msg_lisp(rm_msgs
@@ -1369,7 +1369,7 @@ _generate_msg_lisp(rm_msgs
 _generate_msg_lisp(rm_msgs
   "/home/cn/catkin_rm/src/rm_robot/rm_msgs/msg/Cabinet.msg"
   "${MSG_I_FLAGS}"
-  "/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Header.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg"
+  "/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Header.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg"
   ${CATKIN_DEVEL_PREFIX}/${genlisp_INSTALL_DIR}/rm_msgs
 )
 _generate_msg_lisp(rm_msgs
@@ -1501,7 +1501,7 @@ _generate_msg_lisp(rm_msgs
 _generate_msg_lisp(rm_msgs
   "/home/cn/catkin_rm/src/rm_robot/rm_msgs/msg/Force_Position_Move_Pose.msg"
   "${MSG_I_FLAGS}"
-  "/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg"
+  "/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg"
   ${CATKIN_DEVEL_PREFIX}/${genlisp_INSTALL_DIR}/rm_msgs
 )
 _generate_msg_lisp(rm_msgs
@@ -1525,7 +1525,7 @@ _generate_msg_lisp(rm_msgs
 _generate_msg_lisp(rm_msgs
   "/home/cn/catkin_rm/src/rm_robot/rm_msgs/msg/CartePos.msg"
   "${MSG_I_FLAGS}"
-  "/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg"
+  "/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg"
   ${CATKIN_DEVEL_PREFIX}/${genlisp_INSTALL_DIR}/rm_msgs
 )
 _generate_msg_lisp(rm_msgs
@@ -1555,7 +1555,7 @@ _generate_msg_lisp(rm_msgs
 _generate_msg_lisp(rm_msgs
   "/home/cn/catkin_rm/src/rm_robot/rm_msgs/msg/ArmState.msg"
   "${MSG_I_FLAGS}"
-  "/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg"
+  "/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg"
   ${CATKIN_DEVEL_PREFIX}/${genlisp_INSTALL_DIR}/rm_msgs
 )
 _generate_msg_lisp(rm_msgs
@@ -1802,7 +1802,7 @@ _generate_msg_nodejs(rm_msgs
 _generate_msg_nodejs(rm_msgs
   "/home/cn/catkin_rm/src/rm_robot/rm_msgs/msg/MoveC.msg"
   "${MSG_I_FLAGS}"
-  "/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg"
+  "/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg"
   ${CATKIN_DEVEL_PREFIX}/${gennodejs_INSTALL_DIR}/rm_msgs
 )
 _generate_msg_nodejs(rm_msgs
@@ -1814,13 +1814,13 @@ _generate_msg_nodejs(rm_msgs
 _generate_msg_nodejs(rm_msgs
   "/home/cn/catkin_rm/src/rm_robot/rm_msgs/msg/MoveJ_P.msg"
   "${MSG_I_FLAGS}"
-  "/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg"
+  "/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg"
   ${CATKIN_DEVEL_PREFIX}/${gennodejs_INSTALL_DIR}/rm_msgs
 )
 _generate_msg_nodejs(rm_msgs
   "/home/cn/catkin_rm/src/rm_robot/rm_msgs/msg/MoveL.msg"
   "${MSG_I_FLAGS}"
-  "/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg"
+  "/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg"
   ${CATKIN_DEVEL_PREFIX}/${gennodejs_INSTALL_DIR}/rm_msgs
 )
 _generate_msg_nodejs(rm_msgs
@@ -1850,7 +1850,7 @@ _generate_msg_nodejs(rm_msgs
 _generate_msg_nodejs(rm_msgs
   "/home/cn/catkin_rm/src/rm_robot/rm_msgs/msg/Cabinet.msg"
   "${MSG_I_FLAGS}"
-  "/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Header.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg"
+  "/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Header.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg"
   ${CATKIN_DEVEL_PREFIX}/${gennodejs_INSTALL_DIR}/rm_msgs
 )
 _generate_msg_nodejs(rm_msgs
@@ -1982,7 +1982,7 @@ _generate_msg_nodejs(rm_msgs
 _generate_msg_nodejs(rm_msgs
   "/home/cn/catkin_rm/src/rm_robot/rm_msgs/msg/Force_Position_Move_Pose.msg"
   "${MSG_I_FLAGS}"
-  "/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg"
+  "/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg"
   ${CATKIN_DEVEL_PREFIX}/${gennodejs_INSTALL_DIR}/rm_msgs
 )
 _generate_msg_nodejs(rm_msgs
@@ -2006,7 +2006,7 @@ _generate_msg_nodejs(rm_msgs
 _generate_msg_nodejs(rm_msgs
   "/home/cn/catkin_rm/src/rm_robot/rm_msgs/msg/CartePos.msg"
   "${MSG_I_FLAGS}"
-  "/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg"
+  "/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg"
   ${CATKIN_DEVEL_PREFIX}/${gennodejs_INSTALL_DIR}/rm_msgs
 )
 _generate_msg_nodejs(rm_msgs
@@ -2036,7 +2036,7 @@ _generate_msg_nodejs(rm_msgs
 _generate_msg_nodejs(rm_msgs
   "/home/cn/catkin_rm/src/rm_robot/rm_msgs/msg/ArmState.msg"
   "${MSG_I_FLAGS}"
-  "/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg"
+  "/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg"
   ${CATKIN_DEVEL_PREFIX}/${gennodejs_INSTALL_DIR}/rm_msgs
 )
 _generate_msg_nodejs(rm_msgs
@@ -2283,7 +2283,7 @@ _generate_msg_py(rm_msgs
 _generate_msg_py(rm_msgs
   "/home/cn/catkin_rm/src/rm_robot/rm_msgs/msg/MoveC.msg"
   "${MSG_I_FLAGS}"
-  "/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg"
+  "/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg"
   ${CATKIN_DEVEL_PREFIX}/${genpy_INSTALL_DIR}/rm_msgs
 )
 _generate_msg_py(rm_msgs
@@ -2295,13 +2295,13 @@ _generate_msg_py(rm_msgs
 _generate_msg_py(rm_msgs
   "/home/cn/catkin_rm/src/rm_robot/rm_msgs/msg/MoveJ_P.msg"
   "${MSG_I_FLAGS}"
-  "/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg"
+  "/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg"
   ${CATKIN_DEVEL_PREFIX}/${genpy_INSTALL_DIR}/rm_msgs
 )
 _generate_msg_py(rm_msgs
   "/home/cn/catkin_rm/src/rm_robot/rm_msgs/msg/MoveL.msg"
   "${MSG_I_FLAGS}"
-  "/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg"
+  "/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg"
   ${CATKIN_DEVEL_PREFIX}/${genpy_INSTALL_DIR}/rm_msgs
 )
 _generate_msg_py(rm_msgs
@@ -2331,7 +2331,7 @@ _generate_msg_py(rm_msgs
 _generate_msg_py(rm_msgs
   "/home/cn/catkin_rm/src/rm_robot/rm_msgs/msg/Cabinet.msg"
   "${MSG_I_FLAGS}"
-  "/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Header.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg"
+  "/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/std_msgs/cmake/../msg/Header.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg"
   ${CATKIN_DEVEL_PREFIX}/${genpy_INSTALL_DIR}/rm_msgs
 )
 _generate_msg_py(rm_msgs
@@ -2463,7 +2463,7 @@ _generate_msg_py(rm_msgs
 _generate_msg_py(rm_msgs
   "/home/cn/catkin_rm/src/rm_robot/rm_msgs/msg/Force_Position_Move_Pose.msg"
   "${MSG_I_FLAGS}"
-  "/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg"
+  "/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg"
   ${CATKIN_DEVEL_PREFIX}/${genpy_INSTALL_DIR}/rm_msgs
 )
 _generate_msg_py(rm_msgs
@@ -2487,7 +2487,7 @@ _generate_msg_py(rm_msgs
 _generate_msg_py(rm_msgs
   "/home/cn/catkin_rm/src/rm_robot/rm_msgs/msg/CartePos.msg"
   "${MSG_I_FLAGS}"
-  "/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg"
+  "/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg"
   ${CATKIN_DEVEL_PREFIX}/${genpy_INSTALL_DIR}/rm_msgs
 )
 _generate_msg_py(rm_msgs
@@ -2517,7 +2517,7 @@ _generate_msg_py(rm_msgs
 _generate_msg_py(rm_msgs
   "/home/cn/catkin_rm/src/rm_robot/rm_msgs/msg/ArmState.msg"
   "${MSG_I_FLAGS}"
-  "/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg"
+  "/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Pose.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Point.msg;/opt/ros/noetic/share/geometry_msgs/cmake/../msg/Quaternion.msg"
   ${CATKIN_DEVEL_PREFIX}/${genpy_INSTALL_DIR}/rm_msgs
 )
 _generate_msg_py(rm_msgs

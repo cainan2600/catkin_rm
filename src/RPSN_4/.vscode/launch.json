@@ -8,7 +8,7 @@
             "name": "Python: Current File",
             "type": "python",
             "request": "launch",
-            "program": "/home/cn/RPSN_4/run.py",
+            "program": "/home/cn/catkin_rm/src/RPSN_4/run.py",
             // "program": "/home/cn/RPSN_4/data/data_generate_fk_ik_rm.py",
             "console": "integratedTerminal"
         }
