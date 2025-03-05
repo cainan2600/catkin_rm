@@ -3,10 +3,13 @@ import os
 import numpy as np
 import torch
 
-# 将 RPSN_4 的路径添加到 sys.path
-sys.path.append(os.path.abspath('/home/cn/catkin_rm/src/RPSN_4'))
+# 获取src目录的正确路径
+src_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '../..'))  # 关键改动：'../..' 而不是 '../../..'
+if src_dir not in sys.path:
+    sys.path.insert(0, src_dir)
 
-from RPSN_4.run_start import start
+# 导入main函数
+from RPSN_4.run_start import main
     
     
 def all_object_position_to_7(all_object_position):
@@ -58,7 +61,7 @@ def main_RPSN(all_object_position):
 
     all_tar_chasis_position = start(all_object_position_to7_totensor)
 
-    return all_tar_chasis_pos
+    return all_tar_chasis_position
     
     
 

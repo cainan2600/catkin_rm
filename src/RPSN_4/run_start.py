@@ -24,14 +24,6 @@ from torch.optim.lr_scheduler import ReduceLROnPlateau
 
 
 def start(all_object_position):
-    # 用有效数字填充满7个！！！！！！！！！！！！！！！！！！！并且转换为tensor类型
-
-
-    # for object_position in all_object_position:
-    #     if len(object_position) < 7:
-    #         a = 7 - len(object_position)
-    #         for i 
-    #         return
 
     data = TensorDataset(all_object_position)
     data_loader_test = DataLoader(data, batch_size=1, shuffle=False)
