@@ -1,0 +1,16 @@
+{
+    // 使用 IntelliSense 了解相关属性。 
+    // 悬停以查看现有属性的描述。
+    // 欲了解更多信息，请访问: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: Current File",
+            "type": "python",
+            "request": "launch",
+            "program": "/home/cn/catkin_rm/src/RPSN_4/run.py",
+            // "program": "/home/cn/RPSN_4/data/data_generate_fk_ik_rm.py",
+            "console": "integratedTerminal"
+        }
+    ]
+}

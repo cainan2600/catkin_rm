@@ -1,0 +1,7 @@
+{
+    "python.autoComplete.extraPaths": [
+        "/home/cn/catkin_rm/devel/lib/python3/dist-packages",
+        "/opt/ros/noetic/lib/python3/dist-packages"
+    ],
+    "cmake.sourceDirectory": "/home/cn/catkin_rm/src/rm_robot/rm_moveit_config/rml_63_moveit_config"
+}

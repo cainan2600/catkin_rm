@@ -1,0 +1,5 @@
+vi_grab
+/home/rm/catkin_rm/devel/.private/vi_grab/cmake.lock /home/rm/catkin_rm/devel/./cmake.lock
+/home/rm/catkin_rm/devel/.private/vi_grab/lib/pkgconfig/vi_grab.pc /home/rm/catkin_rm/devel/lib/pkgconfig/vi_grab.pc
+/home/rm/catkin_rm/devel/.private/vi_grab/share/vi_grab/cmake/vi_grabConfig.cmake /home/rm/catkin_rm/devel/share/vi_grab/cmake/vi_grabConfig.cmake
+/home/rm/catkin_rm/devel/.private/vi_grab/share/vi_grab/cmake/vi_grabConfig-version.cmake /home/rm/catkin_rm/devel/share/vi_grab/cmake/vi_grabConfig-version.cmake
