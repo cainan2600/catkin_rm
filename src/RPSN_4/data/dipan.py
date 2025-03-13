@@ -68,7 +68,7 @@ def generrate_yuanxin(x):
     table_width = 0.85
 
     # 外延范围（距离桌子边缘不超过的距离）
-    outer_range = 0.4
+    outer_range = 0.3
 
     num_left_right = int(0.2 * x)
     num_top_bottom = int(0.3 * x)

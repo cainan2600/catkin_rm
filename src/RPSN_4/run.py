@@ -36,17 +36,17 @@ class main():
         # self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
         
         # 训练集数据导入
-        self.load_train_data = torch.load('./data/data_cainan/test/train-{}/train_dataset_{}.pt'.format(self.args.num_train, self.args.num_train))
-        self.data_loader_train_dipan = torch.load('./data/data_cainan/test/train-{}/train_dataset_dipan_{}.pt'.format(self.args.num_train, self.args.num_train))
+        self.load_train_data = torch.load('/home/cn/catkin_rm/src/RPSN_4/data/data_cainan/rm-fk-ik-all-random-with-dipan-norm/train-{}/train_dataset_{}.pt'.format(self.args.num_train, self.args.num_train))
+        self.data_loader_train_dipan = torch.load('/home/cn/catkin_rm/src/RPSN_4/data/data_cainan/rm-fk-ik-all-random-with-dipan-norm/train-{}/train_dataset_dipan_{}.pt'.format(self.args.num_train, self.args.num_train))
         # self.load_train_data = torch.load('/home/cn/RPSN_4/data/data_cainan/5000-fk-ik-all-random-with-dipan/train/train_dataset_5000.pt')
         # self.data_loader_train_dipan = torch.load('/home/cn/RPSN_4/data/data_cainan/5000-fk-ik-all-random-with-dipan/train/train_dataset_dipan_5000.pt')
 
 
         self.data_train = TensorDataset(self.load_train_data[:self.args.num_train], self.data_loader_train_dipan[:self.args.num_train])
-        self.data_loader_train = DataLoader(self.data_train, batch_size=self.args.batch_size, shuffle=True)
+        self.data_loader_train = DataLoader(self.data_train, batch_size=self.args.batch_size, shuffle=False)
 
         # 测试集数据导入
-        self.load_test_data = torch.load('./data/data_cainan/test/test-400/test_dataset_400.pt')
+        self.load_test_data = torch.load('/home/cn/catkin_rm/src/RPSN_4/data/data_cainan/rm-fk-ik-all-random-with-dipan-norm/test-400/test_dataset_400.pt')
         self.data_test = TensorDataset(self.load_test_data[:self.args.num_test])
         self.data_loader_test = DataLoader(self.data_test, batch_size=self.args.batch_size, shuffle=False)
 
@@ -57,7 +57,7 @@ class main():
 
         # 选择模型及参数
         self.num_i = 6
-        self.num_h = 32
+        self.num_h = 128
         self.num_o = 3
         self.model = MLP_9
         
@@ -76,7 +76,7 @@ class main():
         num_i = self.num_i
         num_h = self.num_h
         num_o = self.num_o
-        num_heads = 1
+        num_heads = 4
 
         NUMError1 = []
         NUMError2 = []
@@ -158,6 +158,7 @@ class main():
 
                     intermediate_outputs = model(inputs)
                     intermediate_outputs_list = intermediate_outputs.detach().numpy()
+                    # print(intermediate_outputs, intermediate_outputs_list)
                     if epoch == (start_epoch + epochs - 1):
                         NET_output.append(intermediate_outputs_list)
                     # print(intermediate_outputs_list)
@@ -247,14 +248,14 @@ class main():
                     else:
                         if epoch == (start_epoch + epochs - 1):
                             erro_inputs.append(inputs_xx6_no_random.detach().numpy())
-                        IK_loss2 = IK_loss2 + loss_fn(outputs_tensor, lables[num_zu_in_epoch - 1]) * 1000
+                        IK_loss2 = IK_loss2 + loss_fn(outputs_tensor, lables[num_zu_in_epoch - 1]) * 100
                         # IK_loss2 = IK_loss2 + 1
                     # IK_loss_batch = IK_loss_batch + IK_loss2
                     # print(IK_loss2)
 
                     if -1<intermediate_outputs_list[1]<1:
                         if -0.425<intermediate_outputs_list[2]<0.425:
-                            IK_loss3 = IK_loss3 + loss_fn(outputs_tensor, lables[num_zu_in_epoch - 1]) * 1000
+                            IK_loss3 = IK_loss3 + loss_fn(outputs_tensor, lables[num_zu_in_epoch - 1]) * 100
                             num_dipan_in_tabel += 1
                         else:
                             IK_loss3 = IK_loss3 + torch.tensor([0.0], requires_grad=True)

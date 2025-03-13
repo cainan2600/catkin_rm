@@ -73,17 +73,18 @@ class Masklayer(nn.Module):
 
 
     def forward(self, input_tensor):
-        # 初始化全1的掩码（保留所有数据）
-        mask = torch.ones_like(input_tensor)
-        # 遍历每一行（从第二行开始检查）
-        for i in range(1, input_tensor.size(0)):
-            # 将当前行与之前所有行比较
-            current_row = input_tensor[i]
-            previous_rows = input_tensor[:i]
-            # 计算重复性（精确匹配）
-            is_duplicate = (previous_rows == current_row).all(dim=1).any()
-            # 如果是重复行则将掩码置零
-            if is_duplicate:
-                mask[i] = 0
-        # print(mask)
+        # # 初始化全1的掩码（保留所有数据）
+        # mask = torch.ones_like(input_tensor)
+        # # 遍历每一行（从第二行开始检查）
+        # for i in range(1, input_tensor.size(0)):
+        #     # 将当前行与之前所有行比较
+        #     current_row = input_tensor[i]
+        #     previous_rows = input_tensor[:i]
+        #     # 计算重复性（精确匹配）
+        #     is_duplicate = (previous_rows == current_row).all(dim=1).any()
+        #     # 如果是重复行则将掩码置零
+        #     if is_duplicate:
+        #         mask[i] = 0
+        mask = [0,0,0,1,1,1]
+
         return input_tensor * mask

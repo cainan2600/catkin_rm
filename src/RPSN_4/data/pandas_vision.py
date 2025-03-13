@@ -3,7 +3,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 # 文件名，可替换为实际使用的文件名
-filename = "/home/cn/RPSN_4/data/data_cainan/rm-fk-ik-all-random-with-dipan-norm/train-1000/train_dataset_dipan_1000.txt"
+filename = "/home/cn/catkin_rm/src/RPSN_4/work_dir/7_obj_last_for_copy/save_erro_data.txt"
 
 # 用于存储解析后的数据
 data = []
@@ -36,12 +36,12 @@ ax = df.plot.scatter(x='x', y='y', c='blue', label='Data Points')
 ax.set_xlabel('X')
 ax.set_ylabel('Y')
 ax.set_title('Scatter Plot from 1400 data')
-plt.plot([-1, 1, 1, -1, -1], [-0.425, -0.425, 0.425, 0.425, -0.425], 'r')
+plt.plot([-0.25, 1.75, 1.75, -0.25, -0.25], [0.803, 0.803, 1.653, 1.653, 0.803], 'r')
 # plt.plot([-1.4, 1.4, 1.4, -1.4, -1.4], [-0.825 -0.825, 0.825, 0.825, -0.825], 'r')
 
 
 fig = ax.get_figure()
-fig.savefig('/home/cn/RPSN_4/data/data_cainan/rm-fk-ik-all-random-with-dipan-norm/train-1000/train_dataset_dipan_1000.png')
+fig.savefig('/home/cn/catkin_rm/src/RPSN_4/work_dir/7_obj_last_for_copy/save_erro_data.png')
 
 plt.show()
 

@@ -54,7 +54,7 @@ def object_pose_callback(data):
     输入参数：无
     返回值：无
     """
-    global object_msg, grasp_state
+    global object_msg, grasp_state, grasp_plate, x_chasis, y_chasis
     # 判断当前帧的识别结果是否有要抓取的物体
     if data.object_class == object_msg:
 
@@ -74,9 +74,54 @@ def object_pose_callback(data):
         else:
             # 放置物体
             if object_msg == "target_zone":
-                return
+                if grasp_plate:
+                    # 得到当前底盘位置，取目标区域中心点与底盘位置，得到两者间位置关系，判断放在哪一边合适
+                    x_diff = result[0] - x_chasis
+                    y_diff = result[1] - y_chasis
+                    if x_diff > 0:
+                        if y_diff > 0:
+                            result[0] = result[0] - 0.3
+                        else:
+                            result[1] = result[1] + 0.3
+                    else:
+                        if  y_diff > 0:
+                            result[0] = result[0] + 0.3
+                        else:
+                            result[1] = result[1] + 0.3
+                else:
+                    x_diff = result[0] - x_chasis
+                    y_diff = result[1] - y_chasis
+                    if x_diff > 0:
+                        if y_diff > 0:
+                            result[0] = result[0] - 0.1
+                        else:
+                            result[1] = result[1] + 0.1
+                    else:
+                        if  y_diff > 0:
+                            result[0] = result[0] + 0.1
+                        else:
+                            result[1] = result[1] + 0.1
+
             elif object_msg == "plate":
-                return
+                x_diff = result[0] - x_chasis
+                y_diff = result[1] - y_chasis
+                if x_diff > 0:
+                    if y_diff > 0:
+                        result[0] = result[0] - 0.05
+                    else:
+                        result[1] = result[1] + 0.05
+                else:
+                    if  y_diff > 0:
+                        result[0] = result[0] + 0.05
+                    else:
+                        result[1] = result[1] + 0.05
+
+            else: # 将盘子放到目标物体中央
+                if grasp_plate:
+
+
+
+                    return
             place(result,arm_orientation_msg)
         # # 清除object_msg的信息，之后二次发布抓取物体信息可以再执行
         # object_msg = ''
@@ -216,7 +261,7 @@ def arm_ready_pose():
     moveJ_pub = rospy.Publisher("/rm_driver/MoveJ_Cmd", MoveJ, queue_size=1)
     rospy.sleep(1)
     pic_joint = MoveJ()
-    pic_joint.joint = [0, -0.8726646, 1.91986218, 0, 1.04719755, 0]
+    pic_joint.joint = [0, -0.8726646, 1.91986218, 0, 1.2217304764, 0]
     pic_joint.speed = 0.3
     moveJ_pub.publish(pic_joint)
 
@@ -489,7 +534,12 @@ if __name__ == '__main__':
             else:
                 # 拿起来
                 grasp_state = True
+
                 object_msg = str(all_object_name[i_chasis_positon][i_sub_position][0])
+                if object_msg == "plate":
+                    grasp_plate = True
+                else:
+                    grasp_plate = False
                 # rospy.init_node('object_catch')
                 get_see_pose()
                 sub_object_pose = rospy.Subscriber("/object_pose", ObjectInfo, object_pose_callback, queue_size=1)

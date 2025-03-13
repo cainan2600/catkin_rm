@@ -56,13 +56,15 @@ def calculate_IK(input_tar, MLP_output_base, a, d, alpha):
         theta61 = atan2(-BB + torch.sqrt(BB**2 - 4*AA*CC), 2*AA)
         theta62 = atan2(-BB - torch.sqrt(BB**2 - 4*AA*CC), 2*AA)
         t6 = torch.stack([theta61, theta62, theta61, theta62, theta61, theta62, theta61, theta62], 0)
+        # print(t6)
             # print(t6, -BB + torch.sqrt(BB**2 - 4*AA*CC), 2*AA)
 
     else:
-        angle_solution = (abs(4*AA*CC - BB**2) - torch.tensor([0.0], requires_grad=True)) * 100
+        angle_solution = (abs(4*AA*CC - BB**2) - torch.tensor([0.0], requires_grad=True)) * 1000
         # angle_solution = torch.tensor([0.0], requires_grad=True)
         num_Error1 += 1
         # print("角62推出来了", angle_solution)
+        # assert torch.isnan(angle_solution).sum() == 0
 
         return angle_solution, num_Error1, num_Error2, the_NANLOSS_of_illegal_solution_with_num_and_Nan
 
@@ -169,11 +171,11 @@ def calculate_IK(input_tar, MLP_output_base, a, d, alpha):
     # print(nan_index)
     for i in nan_index:
 
-        # if abs(save_what_caused_Error2_as_Nan[i]) < 2:
+        if abs(save_what_caused_Error2_as_Nan[i]) < 2:
             the_NANLOSS_of_illegal_solution_with_num_and_Nan = the_NANLOSS_of_illegal_solution_with_num_and_Nan + \
                                                                                 abs(abs(save_what_caused_Error2_as_Nan[i]) - torch.tensor([1])) * 1000
-        # else:
-        #     the_NANLOSS_of_illegal_solution_with_num_and_Nan = the_NANLOSS_of_illegal_solution_with_num_and_Nan + abs((abs(save_what_caused_Error2_as_Nan[i]) * 0.005 + torch.tensor([1.99])) - torch.tensor([1])) * 1000
+        else:
+            the_NANLOSS_of_illegal_solution_with_num_and_Nan = the_NANLOSS_of_illegal_solution_with_num_and_Nan + abs((abs(save_what_caused_Error2_as_Nan[i]) * 0.005 + torch.tensor([1.99])) - torch.tensor([1])) * 1000
             # the_NANLOSS_of_illegal_solution_with_num_and_Nan = the_NANLOSS_of_illegal_solution_with_num_and_Nan + torch.tensor([0.0], requires_grad=True)
     # for theta2 in t2:
     #     if torch.isnan(theta2):
@@ -321,6 +323,8 @@ def calculate_IK_test(input_tar, MLP_output_base, a, d, alpha):
 
     EE1 = (ax*sin(theta11) - ay*cos(theta11)) / (sin(t4[0]) + EPSILON)
     EE2 = (ax*sin(theta11) - ay*cos(theta11)) / (sin(t4[2]) + EPSILON)
+    EE1 = torch.clamp(EE1, -1.0 + EPSILON, 1.0 - EPSILON)
+    EE2 = torch.clamp(EE2, -1.0 + EPSILON, 1.0 - EPSILON)
     theta51 = torch.asin(EE1)
     theta52 = torch.asin(EE2)
     t5 = torch.stack([theta51, theta52, theta51, theta52, theta51, theta52, theta51, theta52], 0)
@@ -386,12 +390,12 @@ def calculate_IK_test(input_tar, MLP_output_base, a, d, alpha):
     nan_index = torch.isnan(t2).nonzero()
     for i in nan_index:
 
-        # if abs(save_what_caused_Error2_as_Nan[i]) < 2:
+        if abs(save_what_caused_Error2_as_Nan[i]) < 2:
             the_NANLOSS_of_illegal_solution_with_num_and_Nan = the_NANLOSS_of_illegal_solution_with_num_and_Nan + \
                                                         abs(abs(save_what_caused_Error2_as_Nan[i]) - torch.tensor([1])) * 1000     
-        # else:
-        #     the_NANLOSS_of_illegal_solution_with_num_and_Nan = the_NANLOSS_of_illegal_solution_with_num_and_Nan + \
-        #                     abs((abs(save_what_caused_Error2_as_Nan[i]) * 0.005 + torch.tensor([1.99])) - torch.tensor([1])) * 1000
+        else:
+            the_NANLOSS_of_illegal_solution_with_num_and_Nan = the_NANLOSS_of_illegal_solution_with_num_and_Nan + \
+                            abs((abs(save_what_caused_Error2_as_Nan[i]) * 0.005 + torch.tensor([1.99])) - torch.tensor([1])) * 1000
     # if the_NANLOSS_of_illegal_solution_with_num_and_Nan > 10000:
     #     print("太大了")
     if len(nan_index) == 8:

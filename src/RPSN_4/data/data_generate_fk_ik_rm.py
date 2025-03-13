@@ -28,12 +28,13 @@ def data_generate(i):
             yuanxin_y = dipan_points[a][1]
             yaw_yuanxin = np.random.uniform(-np.pi, np.pi)
             yuanxin = [0, 0, yaw_yuanxin, yuanxin_x, yuanxin_y, 0]
+            yuanxin_save = [0, 0, yaw_yuanxin, yuanxin_x + 0.75, yuanxin_y + 1.228, 0]
             # yuanxin = [round(val_yuanxin, 3) for val_yuanxin in yuanxin]
             yuanxin_tensor = torch.FloatTensor([yuanxin])
             MLP_output_base = shaping(yuanxin_tensor)
 
             for num_data in range(np.random.randint(1, 8)):
-            # for num_data in range(6):
+            # for num_data in range(2):
 
                 # tensor = generrate_dian_fk(a_IK, d_IK, alpha_IK, yuanxin_x, yuanxin_y)
                 # data_echo.append(tensor)
@@ -62,18 +63,29 @@ def data_generate(i):
                         )
                     num_gegeg += 1
                     # print("不是吧哥们", num_gegeg)
+                tensor[3] = tensor[3] + 0.75
+                tensor[4] = tensor[4] + 1.228
                 data_echo.append(tensor)
 
             list_0 = [0, 0, 0, 0, 0, 0]
             iiiii = 0
             while  num_data < 6:
-                element = data_echo[iiiii]
+                # # 按顺序用前面的填充
+                # element = data_echo[iiiii]
+                # data_echo.append(element)
+                # iiiii += 1
+                # num_data += 1
+                # # 用最后一个填充
+                # element = data_echo[-1]
+                # data_echo.append(element)
+                # num_data += 1
+                # 用0填充
+                element = list_0
                 data_echo.append(element)
-                iiiii += 1
                 num_data += 1
 
         data.append(data_echo)
-        data_dipan.append(yuanxin)
+        data_dipan.append(yuanxin_save)
 
         print("完成一组", a)
     data_tensor = torch.FloatTensor(data)
@@ -117,7 +129,7 @@ def generrate_dian_fk(a_IK, d_IK, alpha_IK, yuanxin_x, yuanxin_y):
     py = TT[1, 3] + yuanxin_y
     pz = TT[2, 3] 
 
-    while not (-1<px<1 and -0.425<py<0.425 and 0.11<pz<0.15):
+    while not (-1<px<1 and -0.425<py<0.425 and 0.13<pz<0.15): # 0.11-0.15
         theta[0] = np.random.uniform(-np.pi * 178/180, np.pi * 178/180)
         theta[1] = np.random.uniform(-np.pi * 130/180, np.pi * 130/180) + math.pi / 2
         theta[2] = np.random.uniform(-np.pi * 135/180, np.pi * 135/180) + math.pi / 2
@@ -200,31 +212,31 @@ def save_data_tensor(data_tensor, save_dir, file_name_tensor):
 
 if __name__ == "__main__":
 
-    # save_dir_train = '/home/cn/catkin_rm/src/RPSN_4/data/data_cainan/rm-fk-ik-all-random-with-dipan-norm/train-1000'
-    # file_name_txt = 'train_dataset_1000.txt'
-    # file_name_tensor = 'train_dataset_1000.pt'
-    # file_name_dipan_txt = 'train_dataset_dipan_1000.txt'
-    # file_name_dipan_tensor = "train_dataset_dipan_1000.pt"
+    save_dir_train = '/home/cn/catkin_rm/src/RPSN_4/data/data_cainan/rm-fk-ik-all-random-with-dipan-norm/train-2000'
+    file_name_txt = 'train_dataset_2000.txt'
+    file_name_tensor = 'train_dataset_2000.pt'
+    file_name_dipan_txt = 'train_dataset_dipan_2000.txt'
+    file_name_dipan_tensor = "train_dataset_dipan_2000.pt"
 
-    save_dir_train = '/home/cn/catkin_rm/src/RPSN_4/data/data_cainan/rm-fk-ik-all-random-with-dipan-norm/test-400'
-    file_name_txt = 'test_dataset_400.txt'
-    file_name_tensor = 'test_dataset_400.pt'
-    file_name_dipan_txt = 'test_dataset_dipan_400.txt'
-    file_name_dipan_tensor = "test_dataset_dipan_400.pt"
-
-    # save_dir_train = '/home/cn/catkin_rm/src/RPSN_4/data/data_cainan/test_7/train-1000'
-    # file_name_txt = 'train_dataset_1000.txt'
-    # file_name_tensor = 'train_dataset_1000.pt'
-    # file_name_dipan_txt = 'train_dataset_dipan_1000.txt'
-    # file_name_dipan_tensor = "train_dataset_dipan_1000.pt"
-
-    # save_dir_train = '/home/cn/catkin_rm/src/RPSN_4/data/data_cainan/test_7/test-400'
+    # save_dir_train = '/home/cn/catkin_rm/src/RPSN_4/data/data_cainan/rm-fk-ik-all-random-with-dipan-norm/test-400'
     # file_name_txt = 'test_dataset_400.txt'
     # file_name_tensor = 'test_dataset_400.pt'
     # file_name_dipan_txt = 'test_dataset_dipan_400.txt'
     # file_name_dipan_tensor = "test_dataset_dipan_400.pt"
 
-    data, data_tensor, data_dipan, data_dipan_tensor = data_generate(400)
+    # save_dir_train = '/home/cn/catkin_rm/src/RPSN_4/data/data_cainan/test_2/train-1000'
+    # file_name_txt = 'train_dataset_1000.txt'
+    # file_name_tensor = 'train_dataset_1000.pt'
+    # file_name_dipan_txt = 'train_dataset_dipan_1000.txt'
+    # file_name_dipan_tensor = "train_dataset_dipan_1000.pt"
+
+    # save_dir_train = '/home/cn/catkin_rm/src/RPSN_4/data/data_cainan/test_2/test-400'
+    # file_name_txt = 'test_dataset_400.txt'
+    # file_name_tensor = 'test_dataset_400.pt'
+    # file_name_dipan_txt = 'test_dataset_dipan_400.txt'
+    # file_name_dipan_tensor = "test_dataset_dipan_400.pt"
+
+    data, data_tensor, data_dipan, data_dipan_tensor = data_generate(2000)
 
     save_data(data, save_dir_train, file_name_txt)
     save_MLP_output(data_dipan, save_dir_train, file_name_dipan_txt)
