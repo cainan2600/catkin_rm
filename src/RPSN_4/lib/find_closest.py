@@ -34,7 +34,7 @@ def find_closest(angle_solution, where_is_the_illegal, the_NANLOSS_of_illegal_so
     
     
 
-    single_ik_loss = torch.tensor(0.0, requires_grad=True)
+    single_ik_loss = torch.tensor([0.0], requires_grad=True)
 
     fanwei1 = [math.pi * 178/180, math.pi * 130/180, math.pi * 135/180, math.pi * 178/180, math.pi * 128/180, math.pi]
 
@@ -43,23 +43,29 @@ def find_closest(angle_solution, where_is_the_illegal, the_NANLOSS_of_illegal_so
     for index in where_is_the_illegal:
         there_exist_nan = 0
         i, j = index
-        if math.isnan(angle_solution[i][j]):
+        if torch.isnan(angle_solution[i][j]).detach().item():
             pass
 
         else:
             for angle in range(6):
-                if math.isnan(angle_solution[i][angle]):
+                if torch.isnan(angle_solution[i][angle]).detach().item():
                     there_exist_nan +=1
             if there_exist_nan == 0:
 
                 for angle_1 in range(6):
                     num = angle_solution[i][angle_1]
+                    # print(num)
                     tar_num = fanwei1[angle_1]
                     if abs(num) > abs(tar_num):
                         single_ik_loss = single_ik_loss + ((abs(num) - abs(tar_num)) * 100)
+                        # print(single_ik_loss, the_NANLOSS_of_illegal_solution_with_num_and_Nan)
             else:
                 pass
+            # num_diff = (abs(angle_solution[i][j]) - abs(fanwei1[j])) * 100
+            # print(num_diff)
+            # single_ik_loss = single_ik_loss + num_diff
 
-        # the_NANLOSS_of_illegal_solution_with_num_and_Nan = the_NANLOSS_of_illegal_solution_with_num_and_Nan + single_ik_loss
+    the_NANLOSS = the_NANLOSS_of_illegal_solution_with_num_and_Nan + single_ik_loss
     # print(the_NANLOSS_of_illegal_solution_with_num_and_Nan)
+    # return the_NANLOSS
     return the_NANLOSS_of_illegal_solution_with_num_and_Nan

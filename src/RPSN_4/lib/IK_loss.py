@@ -15,6 +15,7 @@ def calculate_IK_loss(angle_solution, the_NANLOSS_of_illegal_solution_with_num_a
     num_correct = 0
     num_illegal = 0
     IK_loss = torch.tensor([0.0], requires_grad=True)
+    IK_loss_sub = torch.tensor([0.0], requires_grad=True)
     legal_solution = []
     where_is_the_illegal = []
     fanwei = [math.pi * 178/180, math.pi * 130/180, math.pi * 135/180, math.pi * 178/180, math.pi * 128/180, math.pi]
@@ -34,6 +35,7 @@ def calculate_IK_loss(angle_solution, the_NANLOSS_of_illegal_solution_with_num_a
                 else:
                     num_illegal += 1
                     where_is_the_illegal.append([solution_index, angle_index])
+                    # IK_loss_sub = IK_loss_sub + (abs(angle_solution[solution_index][angle_index]) - abs(fanwei[angle_index])) * 100
                     # print(angle_solution[solution_index][angle_index])                  
                     break
 
@@ -41,12 +43,13 @@ def calculate_IK_loss(angle_solution, the_NANLOSS_of_illegal_solution_with_num_a
                 # print("对对对对对对对对", ls)
                 num_correct += 1
                 legal_solution.append(ls)
-                IK_loss = IK_loss + torch.tensor([0])
+                # IK_loss = IK_loss + torch.tensor([0])
                 break
 
         if num_illegal == 8:
             # print("错错错错错", angle_solution)
             IK_loss = IK_loss + find_closest(angle_solution, where_is_the_illegal, the_NANLOSS_of_illegal_solution_with_num_and_Nan) #!!!!!优先惩罚nan产生项，loss定义在计算过程中
+            # IK_loss = IK_loss + (the_NANLOSS_of_illegal_solution_with_num_and_Nan + IK_loss_sub)
             # print(IK_loss)
 
             num_incorrect += 1

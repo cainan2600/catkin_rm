@@ -60,7 +60,7 @@ def calculate_IK(input_tar, MLP_output_base, a, d, alpha):
             # print(t6, -BB + torch.sqrt(BB**2 - 4*AA*CC), 2*AA)
 
     else:
-        angle_solution = (abs(4*AA*CC - BB**2) - torch.tensor([0.0], requires_grad=True)) * 1000
+        angle_solution = (abs(BB**2 - 4*AA*CC) - torch.tensor([0.0], requires_grad=True)) * 1000
         # angle_solution = torch.tensor([0.0], requires_grad=True)
         num_Error1 += 1
         # print("角62推出来了", angle_solution)
@@ -173,9 +173,9 @@ def calculate_IK(input_tar, MLP_output_base, a, d, alpha):
 
         if abs(save_what_caused_Error2_as_Nan[i]) < 2:
             the_NANLOSS_of_illegal_solution_with_num_and_Nan = the_NANLOSS_of_illegal_solution_with_num_and_Nan + \
-                                                                                abs(abs(save_what_caused_Error2_as_Nan[i]) - torch.tensor([1])) * 1000
+                                                                                abs(abs(save_what_caused_Error2_as_Nan[i]) - torch.tensor([1])) * 100
         else:
-            the_NANLOSS_of_illegal_solution_with_num_and_Nan = the_NANLOSS_of_illegal_solution_with_num_and_Nan + abs((abs(save_what_caused_Error2_as_Nan[i]) * 0.005 + torch.tensor([1.99])) - torch.tensor([1])) * 1000
+            the_NANLOSS_of_illegal_solution_with_num_and_Nan = the_NANLOSS_of_illegal_solution_with_num_and_Nan + abs((abs(save_what_caused_Error2_as_Nan[i]) * 0.005 + torch.tensor([1.99])) - torch.tensor([1])) * 100
             # the_NANLOSS_of_illegal_solution_with_num_and_Nan = the_NANLOSS_of_illegal_solution_with_num_and_Nan + torch.tensor([0.0], requires_grad=True)
     # for theta2 in t2:
     #     if torch.isnan(theta2):
@@ -190,7 +190,7 @@ def calculate_IK(input_tar, MLP_output_base, a, d, alpha):
             if abs(echo_loss) < mini_nan:
                 mini_nan = abs(echo_loss)
         GG = abs(mini_nan - torch.tensor([1]))
-        angle_solution = GG * 1000
+        angle_solution = GG * 100
         # angle_solution = torch.tensor([0.0], requires_grad=True)
         num_Error2 += 1
         # print("从角2出去的angle_solution: ", angle_solution)

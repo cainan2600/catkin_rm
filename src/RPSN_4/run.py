@@ -36,14 +36,14 @@ class main():
         # self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
         
         # 训练集数据导入
-        self.load_train_data = torch.load('/home/cn/catkin_rm/src/RPSN_4/data/data_cainan/rm-fk-ik-all-random-with-dipan-norm/train-{}/train_dataset_{}.pt'.format(self.args.num_train, self.args.num_train))
-        self.data_loader_train_dipan = torch.load('/home/cn/catkin_rm/src/RPSN_4/data/data_cainan/rm-fk-ik-all-random-with-dipan-norm/train-{}/train_dataset_dipan_{}.pt'.format(self.args.num_train, self.args.num_train))
+        self.load_train_data = torch.load('/home/cn/catkin_rm/src/RPSN_4/data/data_cainan/rm-fk-ik-all-random-with-dipan-norm/train-{}-4/train_dataset_{}.pt'.format(self.args.num_train, self.args.num_train))
+        self.data_loader_train_dipan = torch.load('/home/cn/catkin_rm/src/RPSN_4/data/data_cainan/rm-fk-ik-all-random-with-dipan-norm/train-{}-4/train_dataset_dipan_{}.pt'.format(self.args.num_train, self.args.num_train))
         # self.load_train_data = torch.load('/home/cn/RPSN_4/data/data_cainan/5000-fk-ik-all-random-with-dipan/train/train_dataset_5000.pt')
         # self.data_loader_train_dipan = torch.load('/home/cn/RPSN_4/data/data_cainan/5000-fk-ik-all-random-with-dipan/train/train_dataset_dipan_5000.pt')
 
 
         self.data_train = TensorDataset(self.load_train_data[:self.args.num_train], self.data_loader_train_dipan[:self.args.num_train])
-        self.data_loader_train = DataLoader(self.data_train, batch_size=self.args.batch_size, shuffle=False)
+        self.data_loader_train = DataLoader(self.data_train, batch_size=self.args.batch_size, shuffle=True)
 
         # 测试集数据导入
         self.load_test_data = torch.load('/home/cn/catkin_rm/src/RPSN_4/data/data_cainan/rm-fk-ik-all-random-with-dipan-norm/test-400/test_dataset_400.pt')
@@ -51,7 +51,7 @@ class main():
         self.data_loader_test = DataLoader(self.data_test, batch_size=self.args.batch_size, shuffle=False)
 
         # 定义训练权重保存文件路径
-        self.checkpoint_dir = r'./work_dir/test1_MLP3_400epco_128hiden_1000train_400test_fk_ik_0.009ate_bz5_patience6_lossMSE45_shuffle_T_2relu_norm_atten'
+        self.checkpoint_dir = r'/home/cn/catkin_rm/src/RPSN_4/work_dir/1-2-4-obj-0-copy-0.85'
         # 多少伦保存一次
         self.num_epoch_save = 100
 
@@ -62,7 +62,7 @@ class main():
         self.model = MLP_9
         
         # 如果是接着训练则输入前面的权重路径
-        self.model_path = r''
+        self.model_path = r'/home/cn/catkin_rm/src/RPSN_4/work_dir/1-2-obj-0-copy-0.85/checkpoint-epoch300.pt'
 
         # 定义DH参数
         # self.link_length = torch.tensor([0, -0.6127, -0.57155, 0, 0, 0])
@@ -105,7 +105,7 @@ class main():
         model = self.model.MLP_self(num_i , num_h, num_o, num_heads) 
         optimizer = torch.optim.Adagrad(model.parameters(), lr=learning_rate, weight_decay=0.000)  # 定义优化器
         # optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate, weight_decay=0.000)
-        scheduler = ReduceLROnPlateau(optimizer, mode='max', factor=0.75, patience=6, min_lr=0.002)
+        scheduler = ReduceLROnPlateau(optimizer, mode='max', factor=0.75, patience=6, min_lr=0.003)
         model_path = self.model_path
 
         if os.path.exists(model_path):          
@@ -262,7 +262,7 @@ class main():
 
                     # IK_loss_batch = IK_loss_batch + IK_loss3
 
-                    IK_loss_batch.retain_grad()
+                    IK_loss_batch.retain_grad() 
 
                     optimizer.zero_grad()  # 梯度初始化为零，把loss关于weight的导数变成0
 

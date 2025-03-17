@@ -33,8 +33,8 @@ def data_generate(i):
             yuanxin_tensor = torch.FloatTensor([yuanxin])
             MLP_output_base = shaping(yuanxin_tensor)
 
-            for num_data in range(np.random.randint(1, 8)):
-            # for num_data in range(2):
+            # for num_data in range(np.random.randint(1, 8)):
+            for num_data in range(6):
 
                 # tensor = generrate_dian_fk(a_IK, d_IK, alpha_IK, yuanxin_x, yuanxin_y)
                 # data_echo.append(tensor)
@@ -108,12 +108,18 @@ def generrate_dian_fk(a_IK, d_IK, alpha_IK, yuanxin_x, yuanxin_y):
 
     theta = [0, 0, 0, 0, 0, 0]
     
-    theta[0] = np.random.uniform(-np.pi * 178/180, np.pi * 178/180)
-    theta[1] = np.random.uniform(-np.pi * 130/180, np.pi * 130/180) + math.pi / 2
-    theta[2] = np.random.uniform(-np.pi * 135/180, np.pi * 135/180) + math.pi / 2
-    theta[3] = np.random.uniform(-np.pi * 178/180, np.pi * 178/180)
-    theta[4] = np.random.uniform(-np.pi * 128/180, np.pi * 128/180)
-    theta[5] = np.random.uniform(-np.pi, np.pi)
+    theta[0] = np.random.random(1) * np.pi * 356/180 + np.pi * 178/180
+    theta[1] = np.random.random(1) * np.pi * 260/180 + np.pi * 130/180 + math.pi / 2
+    theta[2] = np.random.random(1) * np.pi * 270/180 + np.pi * 135/180 + math.pi / 2
+    theta[3] = np.random.random(1) * np.pi * 356/180 + np.pi * 178/180
+    theta[4] = np.random.random(1) * np.pi * 256/180 + np.pi * 128/180
+    theta[5] = np.random.random(1) * np.pi * 360/180 + np.pi * 180/180
+    # theta[0] = np.random.uniform(-np.pi * 178/180, np.pi * 178/180)
+    # theta[1] = np.random.uniform(-np.pi * 130/180, np.pi * 130/180) + math.pi / 2
+    # theta[2] = np.random.uniform(-np.pi * 135/180, np.pi * 135/180) + math.pi / 2
+    # theta[3] = np.random.uniform(-np.pi * 178/180, np.pi * 178/180)
+    # theta[4] = np.random.uniform(-np.pi * 128/180, np.pi * 128/180)
+    # theta[5] = np.random.uniform(-np.pi, np.pi)
 
     TT = get_zong_t(a_IK, d_IK, alpha_IK, theta)
 
@@ -130,12 +136,20 @@ def generrate_dian_fk(a_IK, d_IK, alpha_IK, yuanxin_x, yuanxin_y):
     pz = TT[2, 3] 
 
     while not (-1<px<1 and -0.425<py<0.425 and 0.13<pz<0.15): # 0.11-0.15
-        theta[0] = np.random.uniform(-np.pi * 178/180, np.pi * 178/180)
-        theta[1] = np.random.uniform(-np.pi * 130/180, np.pi * 130/180) + math.pi / 2
-        theta[2] = np.random.uniform(-np.pi * 135/180, np.pi * 135/180) + math.pi / 2
-        theta[3] = np.random.uniform(-np.pi * 178/180, np.pi * 178/180)
-        theta[4] = np.random.uniform(-np.pi * 128/180, np.pi * 128/180)
-        theta[5] = np.random.uniform(-np.pi, np.pi)
+
+        theta[0] = np.random.random(1) * np.pi * 356/180 + np.pi * 178/180
+        theta[1] = np.random.random(1) * np.pi * 260/180 + np.pi * 130/180 + math.pi / 2
+        theta[2] = np.random.random(1) * np.pi * 270/180 + np.pi * 135/180 + math.pi / 2
+        theta[3] = np.random.random(1) * np.pi * 356/180 + np.pi * 178/180
+        theta[4] = np.random.random(1) * np.pi * 256/180 + np.pi * 128/180
+        theta[5] = np.random.random(1) * np.pi * 360/180 + np.pi * 180/180
+
+        # theta[0] = np.random.uniform(-np.pi * 178/180, np.pi * 178/180)
+        # theta[1] = np.random.uniform(-np.pi * 130/180, np.pi * 130/180) + math.pi / 2
+        # theta[2] = np.random.uniform(-np.pi * 135/180, np.pi * 135/180) + math.pi / 2
+        # theta[3] = np.random.uniform(-np.pi * 178/180, np.pi * 178/180)
+        # theta[4] = np.random.uniform(-np.pi * 128/180, np.pi * 128/180)
+        # theta[5] = np.random.uniform(-np.pi, np.pi)
 
         TT = get_zong_t(a_IK, d_IK, alpha_IK, theta)
         # last_tran = [
@@ -212,11 +226,11 @@ def save_data_tensor(data_tensor, save_dir, file_name_tensor):
 
 if __name__ == "__main__":
 
-    save_dir_train = '/home/cn/catkin_rm/src/RPSN_4/data/data_cainan/rm-fk-ik-all-random-with-dipan-norm/train-2000'
-    file_name_txt = 'train_dataset_2000.txt'
-    file_name_tensor = 'train_dataset_2000.pt'
-    file_name_dipan_txt = 'train_dataset_dipan_2000.txt'
-    file_name_dipan_tensor = "train_dataset_dipan_2000.pt"
+    save_dir_train = '/home/cn/catkin_rm/src/RPSN_4/data/data_cainan/rm-fk-ik-all-random-with-dipan-norm/train-1000-6'
+    file_name_txt = 'train_dataset_1000.txt'
+    file_name_tensor = 'train_dataset_1000.pt'
+    file_name_dipan_txt = 'train_dataset_dipan_1000.txt'
+    file_name_dipan_tensor = "train_dataset_dipan_1000.pt"
 
     # save_dir_train = '/home/cn/catkin_rm/src/RPSN_4/data/data_cainan/rm-fk-ik-all-random-with-dipan-norm/test-400'
     # file_name_txt = 'test_dataset_400.txt'
@@ -230,13 +244,13 @@ if __name__ == "__main__":
     # file_name_dipan_txt = 'train_dataset_dipan_1000.txt'
     # file_name_dipan_tensor = "train_dataset_dipan_1000.pt"
 
-    # save_dir_train = '/home/cn/catkin_rm/src/RPSN_4/data/data_cainan/test_2/test-400'
+    # save_dir_train = '/home/cn/catkin_rm/src/RPSN_4/data/data_cainan/test_2/test-400000000'
     # file_name_txt = 'test_dataset_400.txt'
     # file_name_tensor = 'test_dataset_400.pt'
     # file_name_dipan_txt = 'test_dataset_dipan_400.txt'
     # file_name_dipan_tensor = "test_dataset_dipan_400.pt"
 
-    data, data_tensor, data_dipan, data_dipan_tensor = data_generate(2000)
+    data, data_tensor, data_dipan, data_dipan_tensor = data_generate(1000)
 
     save_data(data, save_dir_train, file_name_txt)
     save_MLP_output(data_dipan, save_dir_train, file_name_dipan_txt)

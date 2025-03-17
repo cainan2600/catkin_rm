@@ -54,7 +54,7 @@ def main_RPSN(all_object_position):
     '''
 
     all_object_position_to7 = all_object_position_to_7(all_object_position)
-    print(all_object_position_to7)
+    # print(all_object_position_to7)
 
     all_object_position_to7_totensor = torch.FloatTensor(all_object_position_to7)
 

@@ -19,24 +19,28 @@ class MLP_self(nn.Module):
 
         self.pos_encoder = nn.Embedding(7, num_h)
 
+        self.combined_f = DiffProjectionAttention(num_h)
         self.attention = nn.MultiheadAttention(embed_dim=num_h, num_heads=num_heads, batch_first=False)
         self.norm1 = nn.LayerNorm(num_h)
 
         self.global_mlp = nn.Sequential(
             nn.Linear(num_h, 2*num_h),
             nn.ReLU(),
-            nn.LayerNorm(2*num_h)
+            nn.LayerNorm(2*num_h),
+            nn.Linear(2*num_h, 4*num_h),
+            nn.ReLU(),
+            nn.LayerNorm(4*num_h)
         )
         # self.norm2 = nn.LayerNorm(2*num_h)
 
         self.regressor = nn.Sequential(
-            nn.Linear(2*num_h, 4*num_h),
-            nn.ReLU(),
-            nn.LayerNorm(4*num_h),
             nn.Linear(4*num_h, 2*num_h),
             nn.ReLU(),
             nn.LayerNorm(2*num_h),
-            nn.Linear(2*num_h, num_o)
+            nn.Linear(2*num_h, num_h),
+            nn.ReLU(),
+            nn.LayerNorm(num_h),
+            nn.Linear(num_h, num_o)
         )
 
 
@@ -56,10 +60,15 @@ class MLP_self(nn.Module):
         combined = obj_features + mask_feat
 
         # 生成注意力掩码（阻止填充位置间的相互关注）
-        # attn_mask = mask.unsqueeze(1) & mask.unsqueeze(0)  # (7,7)
-        # attn_mask = ~attn_mask  # True表示需要屏蔽的位置
+        # attn_mask = mask.unsqueeze(0)
+        # key_padding_mask = (attn_mask == 0)
+        # print(attn_mask, key_padding_mask)
+        attn_mask = mask.unsqueeze(0).repeat(7, 1) 
         attn_input = combined.unsqueeze(1) # 7,1,128
-        attn_output, _ = self.attention(attn_input, attn_input, attn_input) # 7,1,128
+
+        # attn_input_Q, attn_input_K, attn_input_V = self.combined_f(combined)
+        # attn_output, _ = self.attention(attn_input_Q, attn_input_K, attn_input_V, attn_mask=attn_mask) # 7,1,128
+        attn_output, _ = self.attention(attn_input, attn_input, attn_input, attn_mask=attn_mask) # 7,1,128
         # print(attn_output.size())
         attn_output = attn_output.squeeze(1) # 7,128
         global_feature = combined + attn_output
@@ -75,7 +84,7 @@ class MLP_self(nn.Module):
 
         x = self.regressor(pooled)
         # x = x.mean(dim=0)
-
+        # print(x.size())
         return x
 
 
@@ -114,6 +123,19 @@ class DynamicPositionEncoding(nn.Module):
         
     def forward(self, valid_mask):
         return self.pe * valid_mask.unsqueeze(-1)  # 屏蔽无效位置
+
+class DiffProjectionAttention(nn.Module):
+    def __init__(self, embed_dim):
+        super().__init__()
+        self.query_proj = nn.Linear(embed_dim, embed_dim)
+        self.key_proj = nn.Linear(embed_dim, embed_dim)
+        self.value_proj = nn.Linear(embed_dim, embed_dim)
+        
+    def forward(self, feats):
+        Q = self.query_proj(feats)  # 学习如何查询
+        K = self.key_proj(feats)    # 学习如何被查询
+        V = self.value_proj(feats)  # 学习如何贡献信息
+        return Q.unsqueeze(1), K.unsqueeze(1), V.unsqueeze(1)
 
 # class HybridAttention(nn.Module):
 #     def __init__(self, num_i, num_h, num_o, num_heads):
