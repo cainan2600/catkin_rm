@@ -13,12 +13,16 @@ def save_grad(name):
 # 输入两个4×4tensor（世界坐标系下目标位置、世界坐标系下底盘位置）
 def calculate_IK(input_tar, MLP_output_base, a, d, alpha):
 
+    fanwei1 = torch.FloatTensor([math.pi * 178/180, math.pi * 130/180, math.pi * 135/180, math.pi * 178/180, math.pi * 128/180, math.pi])
+
     num_Error1 = 0
     num_Error2 = 0
+    num_Error3 = 0
     EPSILON = 1e-7
 
     save_what_caused_Error2_as_Nan = []
     the_NANLOSS_of_illegal_solution_with_num_and_Nan = torch.tensor([0.0], requires_grad=True)
+    the_loss_of_over = torch.tensor([0.0], requires_grad=True)
 
     TT = torch.mm(transpose(MLP_output_base), input_tar)
     nx = TT[0, 0]
@@ -41,6 +45,12 @@ def calculate_IK(input_tar, MLP_output_base, a, d, alpha):
     theta11 = atan2(m, n)
     t1 = torch.stack([theta11, theta11, theta11, theta11, theta11, theta11, theta11, theta11], 0)
 
+    if abs(t1[0]) > fanwei1[0]:
+        angle_solution = torch.tensor([(abs(t1[0]) - fanwei1[0]) * 10000], requires_grad=True)
+        num_Error3 += 1
+        # print("糟糕theta1", angle_solution)
+        return angle_solution, num_Error1, num_Error2, num_Error3, the_NANLOSS_of_illegal_solution_with_num_and_Nan
+
     # 求角6
     A = - oz**2 + (ny**2 +ox**2)*cos(theta11)**2 + (nx**2+oy**2)*sin(theta11)**2 - (2*nx*ny-2*ox*oy)*cos(theta11)*sin(theta11)
     B = nz**2+ (nx**2+oy**2)*cos(theta11)**2+ (ny**2+ox**2)*sin(theta11)**2 + (2*nx*ny-2*ox*oy)*cos(theta11)*sin(theta11)
@@ -57,7 +67,16 @@ def calculate_IK(input_tar, MLP_output_base, a, d, alpha):
         theta62 = atan2(-BB - torch.sqrt(BB**2 - 4*AA*CC), 2*AA)
         t6 = torch.stack([theta61, theta62, theta61, theta62, theta61, theta62, theta61, theta62], 0)
         # print(t6)
-            # print(t6, -BB + torch.sqrt(BB**2 - 4*AA*CC), 2*AA)
+        # num_over_ang6 = 0
+        # for i in range(2):
+        #     if abs(t6[i]) > fanwei1[5]:
+        #         num_over_ang6 += 1
+        #         the_loss_of_over = the_loss_of_over + torch.tensor([(abs(t6[i]) - fanwei1[5]) * 1000], requires_grad=True)
+        # if not num_over_ang6 == 0:
+        #     num_Error3 += 1
+        #     angle_solution = the_loss_of_over
+        #     print("糟糕theta6", angle_solution)
+        #     return angle_solution, num_Error1, num_Error2, num_Error3, the_NANLOSS_of_illegal_solution_with_num_and_Nan
 
     else:
         angle_solution = (abs(BB**2 - 4*AA*CC) - torch.tensor([0.0], requires_grad=True)) * 1000
@@ -66,7 +85,7 @@ def calculate_IK(input_tar, MLP_output_base, a, d, alpha):
         # print("角62推出来了", angle_solution)
         # assert torch.isnan(angle_solution).sum() == 0
 
-        return angle_solution, num_Error1, num_Error2, the_NANLOSS_of_illegal_solution_with_num_and_Nan
+        return angle_solution, num_Error1, num_Error2, num_Error3, the_NANLOSS_of_illegal_solution_with_num_and_Nan
 
     # print(theta61)
 
@@ -87,6 +106,17 @@ def calculate_IK(input_tar, MLP_output_base, a, d, alpha):
     theta41 = torch.acos(DD1)
     theta42 = torch.acos(DD2)
     t4 = torch.stack([theta41, theta41, theta42, theta42, theta41, theta41, theta42, theta42], 0)
+    num_over_ang4 = 0
+    for i in [0, 2]:
+        # print(i)
+        if abs(t4[i]) > fanwei1[3]:
+            num_over_ang4 += 1
+            the_loss_of_over = the_loss_of_over + torch.tensor([(abs(t4[i]) - fanwei1[3]) * 10000], requires_grad=True)
+        if not num_over_ang4 == 0:
+            num_Error3 += 1
+            angle_solution = the_loss_of_over
+            # print("糟糕theta4", angle_solution)
+            return angle_solution, num_Error1, num_Error2, num_Error3, the_NANLOSS_of_illegal_solution_with_num_and_Nan
 
     # t4.register_hook(save_grad('t4'))
     # print("[grads]t4:", grads)
@@ -110,6 +140,17 @@ def calculate_IK(input_tar, MLP_output_base, a, d, alpha):
     theta51 = torch.asin(EE1)
     theta52 = torch.asin(EE2)
     t5 = torch.stack([theta51, theta52, theta51, theta52, theta51, theta52, theta51, theta52], 0)
+    # num_over_ang5 = 0
+    # for i in [0, 1]:
+    #     # print(i)
+    #     if abs(t5[i]) > fanwei1[4]:
+    #         num_over_ang5 += 1
+    #         the_loss_of_over = the_loss_of_over + torch.tensor([(abs(t5[i]) - fanwei1[4]) * 1000], requires_grad=True)
+    #     if not num_over_ang5 == 0:
+    #         num_Error3 += 1
+    #         angle_solution = the_loss_of_over
+    #         print("糟糕theta5", angle_solution)
+    #         return angle_solution, num_Error1, num_Error2, num_Error3, the_NANLOSS_of_illegal_solution_with_num_and_Nan
 
     # t5.register_hook(save_grad('t5'))
     # print("[grads]t5:", grads)
@@ -170,7 +211,7 @@ def calculate_IK(input_tar, MLP_output_base, a, d, alpha):
     nan_index = torch.isnan(t2).nonzero()
     # print(nan_index)
     for i in nan_index:
-
+        # print(i)
         if abs(save_what_caused_Error2_as_Nan[i]) < 2:
             the_NANLOSS_of_illegal_solution_with_num_and_Nan = the_NANLOSS_of_illegal_solution_with_num_and_Nan + \
                                                                                 abs(abs(save_what_caused_Error2_as_Nan[i]) - torch.tensor([1])) * 100
@@ -182,6 +223,16 @@ def calculate_IK(input_tar, MLP_output_base, a, d, alpha):
     #         print(save_what_caused_Error2_as_Nan)
     # print(the_NANLOSS_of_illegal_solution_with_num_and_Nan)
 
+    # over_index = torch.where(torch.abs(t2) > fanwei1[1])
+    # for ii in over_index:
+    #     for iii in ii:
+    #         # print(iii) 
+    #         the_NANLOSS_of_illegal_solution_with_num_and_Nan = the_NANLOSS_of_illegal_solution_with_num_and_Nan + \
+    #                                                                             (abs(t2[iii]) - fanwei1[1]) * 1000
+    # print(t2, t2[over_index])
+    # if len(nan_index) + len(over_index) == 8:
+    #     print(nan_index, over_index)
+
     if len(nan_index) == 8:
         GG = 0
         # random_num = random.randint(0, 7)
@@ -190,16 +241,37 @@ def calculate_IK(input_tar, MLP_output_base, a, d, alpha):
             if abs(echo_loss) < mini_nan:
                 mini_nan = abs(echo_loss)
         GG = abs(mini_nan - torch.tensor([1]))
-        angle_solution = GG * 100
+        # angle_solution = GG * 100
+        angle_solution = the_NANLOSS_of_illegal_solution_with_num_and_Nan
         # angle_solution = torch.tensor([0.0], requires_grad=True)
         num_Error2 += 1
         # print("从角2出去的angle_solution: ", angle_solution)
         # assert torch.isnan(angle_solution).sum() == 0
 
-        return angle_solution, num_Error1, num_Error2, the_NANLOSS_of_illegal_solution_with_num_and_Nan
+        return angle_solution, num_Error1, num_Error2, num_Error3, the_NANLOSS_of_illegal_solution_with_num_and_Nan
 
     else:
         pass
+
+
+    over_index = torch.where(torch.abs(t2) > fanwei1[1])
+    # print(len(over_index))
+    # num_oer = len(over_index[0])
+    # num_cout_over = 0
+    for i in over_index[0]:
+        if abs(t2[i]) > fanwei1[1]:
+            # print(i, t2[i])
+            # num_cout_over += 1
+            the_loss_of_over = the_loss_of_over + torch.tensor([(abs(t2[i]) - fanwei1[1]) * 1000], requires_grad=True)
+            # break
+    
+    if not len(nan_index) + len(over_index[0]) < 8:
+        # print(len(nan_index), len(over_index[0]), over_index[0])
+        angle_solution = the_loss_of_over
+        num_Error3 += 1
+        # print("糟糕theta2", angle_solution)
+
+        return angle_solution, num_Error1, num_Error2, num_Error3, the_NANLOSS_of_illegal_solution_with_num_and_Nan
 
     # t2.register_hook(save_grad('t2'))
     # print("[grads]t2:", grads)
@@ -228,11 +300,26 @@ def calculate_IK(input_tar, MLP_output_base, a, d, alpha):
 
     t3 = torch.stack([theta31, theta32, theta33, theta34, theta35, theta36, theta37, theta38], 0)
 
+    cout_not_ok = 0
+    index_ok_t2 = torch.where(torch.abs(t2) <= fanwei1[1])
+    # print(index_ok_t2[0], t2)
+    for index_ok_t2_ii in index_ok_t2[0]:
+        if not torch.abs(t3[index_ok_t2_ii]) <= fanwei1[2]:
+            the_loss_of_over = the_loss_of_over + torch.tensor([(abs(t3[index_ok_t2_ii]) - fanwei1[2]) * 1000], requires_grad=True)
+            cout_not_ok += 1
+    if cout_not_ok == len(index_ok_t2[0]):
+        angle_solution = the_loss_of_over
+        num_Error3 += 1
+        # print("糟糕theta3", angle_solution)
+
+        return angle_solution, num_Error1, num_Error2, num_Error3, the_NANLOSS_of_illegal_solution_with_num_and_Nan
+
     angle_solution = torch.stack([t1, t2, t3, t4, t5, t6], 0)
     angle_solution = torch.t(angle_solution)
     # print("角3推出来了", angle_solution)
 
-    return angle_solution, num_Error1, num_Error2, the_NANLOSS_of_illegal_solution_with_num_and_Nan
+
+    return angle_solution, num_Error1, num_Error2, num_Error3, the_NANLOSS_of_illegal_solution_with_num_and_Nan
 
 
 def calculate_IK_test(input_tar, MLP_output_base, a, d, alpha):

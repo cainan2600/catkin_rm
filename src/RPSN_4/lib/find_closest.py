@@ -30,34 +30,38 @@ import numpy as np
 #         single_ik_loss = single_ik_loss + min_distance
 #     return the_NANLOSS_of_illegal_solution_with_num_and_Nan
 
-def find_closest(angle_solution, where_is_the_illegal, the_NANLOSS_of_illegal_solution_with_num_and_Nan):
+def find_closest(angle_solution, where_is_the_illegal):
     
     
 
     single_ik_loss = torch.tensor([0.0], requires_grad=True)
 
-    fanwei1 = [math.pi * 178/180, math.pi * 130/180, math.pi * 135/180, math.pi * 178/180, math.pi * 128/180, math.pi]
+    fanwei1 = torch.FloatTensor([math.pi * 178/180, math.pi * 130/180, math.pi * 135/180, math.pi * 178/180, math.pi * 128/180, math.pi])
+    
 
 
 
     for index in where_is_the_illegal:
         there_exist_nan = 0
         i, j = index
-        if torch.isnan(angle_solution[i][j]).detach().item():
+        if torch.isnan(angle_solution[i][j]):
             pass
 
         else:
             for angle in range(6):
-                if torch.isnan(angle_solution[i][angle]).detach().item():
+                if torch.isnan(angle_solution[i][angle]):
                     there_exist_nan +=1
             if there_exist_nan == 0:
-
+                diff_mini = 1000
                 for angle_1 in range(6):
                     num = angle_solution[i][angle_1]
-                    # print(num)
                     tar_num = fanwei1[angle_1]
                     if abs(num) > abs(tar_num):
-                        single_ik_loss = single_ik_loss + ((abs(num) - abs(tar_num)) * 100)
+                        diff = torch.abs(num) - torch.abs(tar_num)
+                        if diff < diff_mini:
+                            diff_mini = diff
+                single_ik_loss = single_ik_loss + diff_mini * 1000
+                # print(single_ik_loss)
                         # print(single_ik_loss, the_NANLOSS_of_illegal_solution_with_num_and_Nan)
             else:
                 pass
@@ -65,7 +69,7 @@ def find_closest(angle_solution, where_is_the_illegal, the_NANLOSS_of_illegal_so
             # print(num_diff)
             # single_ik_loss = single_ik_loss + num_diff
 
-    the_NANLOSS = the_NANLOSS_of_illegal_solution_with_num_and_Nan + single_ik_loss
+
     # print(the_NANLOSS_of_illegal_solution_with_num_and_Nan)
-    # return the_NANLOSS
-    return the_NANLOSS_of_illegal_solution_with_num_and_Nan
+    return single_ik_loss
+    # return the_NANLOSS_of_illegal_solution_with_num_and_Nan

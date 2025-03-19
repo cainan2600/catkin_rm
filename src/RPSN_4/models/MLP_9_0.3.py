@@ -11,35 +11,35 @@ class MLP_self(nn.Module):
 
         self.obj_encoder = nn.Sequential(
             nn.Linear(num_i, num_h),
-            nn.ReLU(),
-            nn.LayerNorm(num_h)
+            nn.LayerNorm(num_h),
+            nn.ReLU()
         )
 
         self.mask_encoder = nn.Embedding(2, num_h)
 
         self.pos_encoder = nn.Embedding(7, num_h)
 
-        self.combined_f = DiffProjectionAttention(num_h)
+        # self.combined_f = DiffProjectionAttention(num_h)
         self.attention = nn.MultiheadAttention(embed_dim=num_h, num_heads=num_heads, batch_first=False)
         self.norm1 = nn.LayerNorm(num_h)
 
         self.global_mlp = nn.Sequential(
             nn.Linear(num_h, 2*num_h),
-            nn.ReLU(),
             nn.LayerNorm(2*num_h),
-            nn.Linear(2*num_h, 4*num_h),
             nn.ReLU(),
-            nn.LayerNorm(4*num_h)
+            nn.Linear(2*num_h, 4*num_h),
+            nn.LayerNorm(4*num_h),
+            nn.ReLU()
         )
         # self.norm2 = nn.LayerNorm(2*num_h)
 
         self.regressor = nn.Sequential(
             nn.Linear(4*num_h, 2*num_h),
-            nn.ReLU(),
             nn.LayerNorm(2*num_h),
-            nn.Linear(2*num_h, num_h),
             nn.ReLU(),
+            nn.Linear(2*num_h, num_h),
             nn.LayerNorm(num_h),
+            nn.ReLU(),
             nn.Linear(num_h, num_o)
         )
 

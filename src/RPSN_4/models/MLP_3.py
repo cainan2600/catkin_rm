@@ -35,14 +35,14 @@ class MLP_self(nn.Module):
     def forward(self, input):
 
         # input = self.batch_norm(input)
-        # attn_output, _ = self.attention1(input, input, input)
-        # input = input + attn_output
+        attn_output, _ = self.attention1(input, input, input)
+        input = input + attn_output
 
 
-        x = self.mask(input)
+        # x = self.mask(input)
 
-        # x = self.linear1(input)
-        x = self.linear1(x)
+        x = self.linear1(input)
+        # x = self.linear1(x)
         x = self.relu1(x)
         x = self.linear2(x)
         x = self.relu2(x)

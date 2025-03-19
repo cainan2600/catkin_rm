@@ -31,12 +31,13 @@ def plot_IK_solution(checkpoint_dir, start_epoch, epochs, num_train, num_incorre
 
     # plt.show()
 
-def plot_train(checkpoint_dir, start_epoch, epochs, num_train, numError1, numError2, num_incorrect, num_correct):
+def plot_train(checkpoint_dir, start_epoch, epochs, num_train, numError1, numError2, numError3, num_incorrect, num_correct):
     draw_epochs = list(range(start_epoch, start_epoch + epochs))
     plt.figure()
 
-    plt.plot(draw_epochs, numError1, 'r-', label='illroot')
+    plt.plot(draw_epochs, numError1, 'r-', label='illroot1')
     plt.plot(draw_epochs, numError2, 'g-', label='outdom')
+    plt.plot(draw_epochs, numError3, 'r-', label='illroot2')
     plt.plot(draw_epochs, num_incorrect, 'b-', label='illsolu')
     plt.plot(draw_epochs, num_correct, 'b-', linewidth=3, label='idesolu')
 

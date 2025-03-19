@@ -9,38 +9,38 @@ class MLP_self(nn.Module):
 
         self.mask = Masklayer()
 
-        self.obj_encoder = nn.Sequential(
-            nn.Linear(num_i, num_h),
-            nn.ReLU(),
-            nn.LayerNorm(num_h)
-        )
+        self.mask_encoder = nn.Embedding(2, num_i)
 
-        self.mask_encoder = nn.Embedding(2, num_h)
-
-        self.pos_encoder = nn.Embedding(7, num_h)
-
-        self.combined_f = DiffProjectionAttention(num_h)
-        self.attention = nn.MultiheadAttention(embed_dim=num_h, num_heads=num_heads, batch_first=False)
-        self.norm1 = nn.LayerNorm(num_h)
+        # self.combined_f = DiffProjectionAttention(num_h)
+        # self.attention = nn.MultiheadAttention(embed_dim=num_h, num_heads=num_heads, batch_first=False)
+        # self.norm1 = nn.LayerNorm(num_h)
 
         self.global_mlp = nn.Sequential(
-            nn.Linear(num_h, 2*num_h),
-            nn.ReLU(),
-            nn.LayerNorm(2*num_h),
-            nn.Linear(2*num_h, 4*num_h),
-            nn.ReLU(),
-            nn.LayerNorm(4*num_h)
+            nn.Linear(num_i, num_h),
+            nn.LayerNorm(num_h),
+            nn.Tanh()
         )
-        # self.norm2 = nn.LayerNorm(2*num_h)
+        # self.flatten = nn.Flatten()
 
         self.regressor = nn.Sequential(
-            nn.Linear(4*num_h, 2*num_h),
-            nn.ReLU(),
-            nn.LayerNorm(2*num_h),
-            nn.Linear(2*num_h, num_h),
-            nn.ReLU(),
-            nn.LayerNorm(num_h),
-            nn.Linear(num_h, num_o)
+
+            nn.Linear(7*num_h, 112),
+            nn.LayerNorm(112),
+            nn.Tanh(),
+
+            # nn.Linear(112, 56),
+            # # nn.BatchNorm1d(56),
+            # nn.Tanh(),
+
+            # nn.Linear(56, 28),
+            # # nn.BatchNorm1d(28),
+            # nn.Tanh(),
+
+            # nn.Linear(28, 14),
+            # # nn.BatchNorm1d(14),
+            # nn.Tanh(),
+
+            nn.Linear(112, num_o)
         )
 
 
@@ -51,40 +51,32 @@ class MLP_self(nn.Module):
         mask_indices = mask.long()
         mask_feat = self.mask_encoder(mask_indices)
 
-        obj_features = self.obj_encoder(input)
+        combined = input + mask_feat
 
-        # positions = torch.arange(7).to(input.device)
-        # pos_feat = self.pos_encoder(positions)
+        # # 生成注意力掩码（阻止填充位置间的相互关注）
+        # # attn_mask = mask.unsqueeze(0)
+        # # key_padding_mask = (attn_mask == 0)
+        # # print(attn_mask, key_padding_mask)
+        # attn_mask = mask.unsqueeze(0).repeat(7, 1) 
+        # attn_input = combined.unsqueeze(1) # 7,1,128
 
-        # combined = obj_features + mask_feat + pos_feat
-        combined = obj_features + mask_feat
+        # # attn_input_Q, attn_input_K, attn_input_V = self.combined_f(combined)
+        # # attn_output, _ = self.attention(attn_input_Q, attn_input_K, attn_input_V, attn_mask=attn_mask) # 7,1,128
+        # attn_output, _ = self.attention(attn_input, attn_input, attn_input, attn_mask=attn_mask) # 7,1,128
+        # # print(attn_output.size())
+        # attn_output = attn_output.squeeze(1) # 7,128
+        # global_feature = combined + attn_output
+        # global_feature = self.norm1(global_feature)
 
-        # 生成注意力掩码（阻止填充位置间的相互关注）
-        # attn_mask = mask.unsqueeze(0)
-        # key_padding_mask = (attn_mask == 0)
-        # print(attn_mask, key_padding_mask)
-        attn_mask = mask.unsqueeze(0).repeat(7, 1) 
-        attn_input = combined.unsqueeze(1) # 7,1,128
-
-        # attn_input_Q, attn_input_K, attn_input_V = self.combined_f(combined)
-        # attn_output, _ = self.attention(attn_input_Q, attn_input_K, attn_input_V, attn_mask=attn_mask) # 7,1,128
-        attn_output, _ = self.attention(attn_input, attn_input, attn_input, attn_mask=attn_mask) # 7,1,128
-        # print(attn_output.size())
-        attn_output = attn_output.squeeze(1) # 7,128
-        global_feature = combined + attn_output
-        global_feature = self.norm1(global_feature)
-
-        fused_feature = self.global_mlp(global_feature) # 7,256
+        fused_feature = self.global_mlp(combined) # 7,256
         # fused_feature = self.norm2(global_feature + fused_feature)
 
-        valid_mask = mask.unsqueeze(-1) # 7,1
-        weighted = fused_feature * valid_mask
-        pooled = weighted.sum(dim=0) / (valid_mask.sum() + 1e-6) # 256
-        # print(weighted)
+        # print(fused_feature.size())
+        # fused_feature = self.flatten(fused_feature)
+        fused_feature = fused_feature.view(-1)
+        # print(fused_feature.size())
 
-        x = self.regressor(pooled)
-        # x = x.mean(dim=0)
-        # print(x.size())
+        x = self.regressor(fused_feature)
         return x
 
 
