@@ -35,11 +35,11 @@ def plot_train(checkpoint_dir, start_epoch, epochs, num_train, numError1, numErr
     draw_epochs = list(range(start_epoch, start_epoch + epochs))
     plt.figure()
 
-    plt.plot(draw_epochs, numError1, 'r-', label='illroot1')
-    plt.plot(draw_epochs, numError2, 'g-', label='outdom')
-    plt.plot(draw_epochs, numError3, 'r-', label='illroot2')
-    plt.plot(draw_epochs, num_incorrect, 'b-', label='illsolu')
-    plt.plot(draw_epochs, num_correct, 'b-', linewidth=3, label='idesolu')
+    plt.plot(draw_epochs, numError1, 'y-', label='illroot1')
+    plt.plot(draw_epochs, numError2, 'k-', label='illroot2')
+    plt.plot(draw_epochs, numError3, 'b-', label='illroot3')
+    plt.plot(draw_epochs, num_incorrect, 'r-', linewidth=3, label='illsolu')
+    plt.plot(draw_epochs, num_correct, 'g-', linewidth=3, label='idesolu')
 
     plt.annotate('{} data sets'.format(num_train), xy=(0.4, 0.5), xycoords='axes fraction', fontsize=12,
                  color='gray', horizontalalignment='center', verticalalignment='center')

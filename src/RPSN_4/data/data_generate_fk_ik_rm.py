@@ -33,8 +33,8 @@ def data_generate(i):
             yuanxin_tensor = torch.FloatTensor([yuanxin])
             MLP_output_base = shaping(yuanxin_tensor)
 
-            for num_data in range(np.random.randint(1, 8)):
-            # for num_data in range(6):
+            # for num_data in range(np.random.randint(1, 8)):
+            for num_data in range(1):
 
                 # tensor = generrate_dian_fk(a_IK, d_IK, alpha_IK, yuanxin_x, yuanxin_y)
                 # data_echo.append(tensor)
@@ -75,14 +75,19 @@ def data_generate(i):
                 # data_echo.append(element)
                 # iiiii += 1
                 # num_data += 1
-                # # 用最后一个填充
-                # element = data_echo[-1]
-                # data_echo.append(element)
-                # num_data += 1
-                # 用0填充
-                element = list_0
+                # 用最后一个填充
+                element = data_echo[-1]
                 data_echo.append(element)
                 num_data += 1
+                # 用0填充
+                # element = list_0
+                # data_echo.append(element)
+                # num_data += 1
+            # while num_data < 6:
+            #     # 用0填充
+            #     element = list_0
+            #     data_echo.append(element)
+            #     num_data += 1
 
         data.append(data_echo)
         data_dipan.append(yuanxin_save)
@@ -227,7 +232,7 @@ def save_data_tensor(data_tensor, save_dir, file_name_tensor):
 
 if __name__ == "__main__":
 
-    save_dir_train = '/home/cn/catkin_rm/src/RPSN_4/data/data_cainan/rm-fk-ik-all-random-with-dipan-norm/train-1000-uni'
+    save_dir_train = '/home/cn/catkin_rm/src/RPSN_4/data/data_cainan/rm-fk-ik-all-random-with-dipan-norm/train-1000-7-same'
     file_name_txt = 'train_dataset_1000.txt'
     file_name_tensor = 'train_dataset_1000.pt'
     file_name_dipan_txt = 'train_dataset_dipan_1000.txt'

@@ -7,7 +7,7 @@ import numpy as np
 import argparse
 from torch.utils.data import Dataset, DataLoader, TensorDataset
 
-from models import MLP_3, MLP_6, MLP_9
+from models import MLP_3, MLP_6, MLP_9, MLP_9_2, MLP_9_3, MLP_9_4
 from lib.trans_all import *
 from lib import IK, IK_loss, planner_loss
 import torch
@@ -36,8 +36,8 @@ class main():
         # self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
         
         # 训练集数据导入
-        self.load_train_data = torch.load('/home/cn/catkin_rm/src/RPSN_4/data/data_cainan/rm-fk-ik-all-random-with-dipan-norm/train-{}/train_dataset_{}.pt'.format(self.args.num_train, self.args.num_train))
-        self.data_loader_train_dipan = torch.load('/home/cn/catkin_rm/src/RPSN_4/data/data_cainan/rm-fk-ik-all-random-with-dipan-norm/train-{}/train_dataset_dipan_{}.pt'.format(self.args.num_train, self.args.num_train))
+        self.load_train_data = torch.load('/home/cn/catkin_rm/src/RPSN_4/data/data_cainan/rm-fk-ik-all-random-with-dipan-norm/train-{}-1/train_dataset_{}.pt'.format(self.args.num_train, self.args.num_train))
+        self.data_loader_train_dipan = torch.load('/home/cn/catkin_rm/src/RPSN_4/data/data_cainan/rm-fk-ik-all-random-with-dipan-norm/train-{}-1/train_dataset_dipan_{}.pt'.format(self.args.num_train, self.args.num_train))
         # self.load_train_data = torch.load('/home/cn/RPSN_4/data/data_cainan/5000-fk-ik-all-random-with-dipan/train/train_dataset_5000.pt')
         # self.data_loader_train_dipan = torch.load('/home/cn/RPSN_4/data/data_cainan/5000-fk-ik-all-random-with-dipan/train/train_dataset_dipan_5000.pt')
 
@@ -51,7 +51,7 @@ class main():
         self.data_loader_test = DataLoader(self.data_test, batch_size=self.args.batch_size, shuffle=False)
 
         # 定义训练权重保存文件路径
-        self.checkpoint_dir = r'/home/cn/catkin_rm/src/RPSN_4/work_dir/test03'
+        self.checkpoint_dir = r'/home/cn/catkin_rm/src/RPSN_4/work_dir/test02-2'       
         # 多少伦保存一次
         self.num_epoch_save = 100
 
@@ -59,7 +59,7 @@ class main():
         self.num_i = 6
         self.num_h = 128
         self.num_o = 3
-        self.model = MLP_9
+        self.model = MLP_3
         
         # 如果是接着训练则输入前面的权重路径
         self.model_path = r''
@@ -104,9 +104,9 @@ class main():
         data_loader_train = self.data_loader_train
         learning_rate = self.args.learning_rate
         model = self.model.MLP_self(num_i , num_h, num_o, num_heads) 
-        optimizer = torch.optim.Adagrad(model.parameters(), lr=learning_rate, weight_decay=0.000)  # 定义优化器
-        # optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate, weight_decay=0.000)
-        scheduler = ReduceLROnPlateau(optimizer, mode='max', factor=0.75, patience=6, min_lr=0.0003)
+        # optimizer = torch.optim.Adagrad(model.parameters(), lr=learning_rate, weight_decay=0.000)  # 定义优化器
+        optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate, weight_decay=0.000)
+        scheduler = ReduceLROnPlateau(optimizer, mode='max', factor=0.75, patience=6, min_lr=0.003)
         model_path = self.model_path
 
         if os.path.exists(model_path):          
@@ -153,7 +153,7 @@ class main():
                     # inputs = inputs_xx6
                     # 将7x6打乱并转换为1x42
                     inputs_xx6_no_random = inputs_xx6
-                    inputs_xx6 = inputs_xx6[torch.randperm(inputs_xx6.size(0))]
+                    # inputs_xx6 = inputs_xx6[torch.randperm(inputs_xx6.size(0))]
                     # print(inputs_xx6_no_random, inputs_xx6_no_random.size())
                     # inputs = shaping_inputs_xx6_to_1xx(inputs_xx6)
                     inputs = inputs_xx6
@@ -209,7 +209,7 @@ class main():
                             num_not_all_0 += 1
                             num_all_have_solution += 1
                             
-                            angle_solution, num_Error1, num_Error2, num_Error3, the_NANLOSS_of_illegal_solution_with_num_and_Nan = IK.calculate_IK(
+                            angle_solution, num_Error1, num_Error1_loss, num_Error2_loss, num_Error3_loss, num_Error2, num_Error3, the_NANLOSS_of_illegal_solution_with_num_and_Nan = IK.calculate_IK(
                                 input_tar[i], 
                                 MLP_output_base, 
                                 self.link_length, 
@@ -223,7 +223,7 @@ class main():
                             numError3 = numError3 + num_Error3
 
                             # 计算单IK_loss
-                            IK_loss1, num_NOError1, num_NOError2 = IK_loss.calculate_IK_loss(angle_solution, the_NANLOSS_of_illegal_solution_with_num_and_Nan)
+                            IK_loss1, num_NOError1, num_NOError2 = IK_loss.calculate_IK_loss(angle_solution, num_Error1_loss, num_Error2_loss, num_Error3_loss, the_NANLOSS_of_illegal_solution_with_num_and_Nan)
                             num_all_have_solution = num_all_have_solution - num_NOError1
                             # make_dot(IK_loss1).view()
 
@@ -260,13 +260,15 @@ class main():
 
                     # IK_loss_batch = IK_loss_batch + IK_loss3
 
-                IK_loss_batch.retain_grad() 
+                IK_loss_batch.retain_grad()
+                # make_dot(IK_loss_batch).view()
 
                 optimizer.zero_grad()  # 梯度初始化为零，把loss关于weight的导数变成0
 
                 # 定义总loss函数
-                loss = IK_loss_batch / len(input_tar)
-                # loss = IK_loss_batch
+                # print(len(inputs_bxxx6))
+                # loss = IK_loss_batch / len(inputs_bxxx6)
+                loss = IK_loss_batch
                 loss.retain_grad()
 
                 # assert torch.isnan(loss).sum() == 0
@@ -276,6 +278,7 @@ class main():
 
                 loss.backward()  # 反向传播求梯度
                 # loss.backward(torch.ones_like(loss))  # 反向传播求梯度
+                # torch.autograd.detect_anomaly()
                 nn.utils.clip_grad_norm_(model.parameters(), max_norm=self.args.clip)  # 进行梯度裁剪
                 optimizer.step()  # 更新所有梯度
                 sum_loss = sum_loss + loss.data
@@ -300,7 +303,7 @@ class main():
             NUM_correct.append(num_correct)
             NUM_ALL_HAVE_SOLUTION.append(NUM_all_have_solution / self.args.num_train)
             NUM_dipan_in_tabel.append(num_dipan_in_tabel)
-            NUM_correct_but_dipan_in_tabel.append((NUM_all_have_solution - num_correct_but_dipan_in_tabel) / NUM_all_have_solution)
+            # NUM_correct_but_dipan_in_tabel.append((NUM_all_have_solution - num_correct_but_dipan_in_tabel) / NUM_all_have_solution)
 
             print("numError1", numError1)
             print("numError2", numError2)
@@ -309,7 +312,7 @@ class main():
             print("num_incorrect", num_incorrect)
             print('NUM_all_have_solution', NUM_all_have_solution)
             print("NUM_dipan_in_tabel", num_dipan_in_tabel)
-            print("NUM_correct_but_dipan_in_tabel", num_correct_but_dipan_in_tabel)
+            # print("NUM_correct_but_dipan_in_tabel", num_correct_but_dipan_in_tabel)
 
             current_lr = optimizer.param_groups[0]['lr']
             print(f"Current Learning Rate: {current_lr}")
@@ -327,7 +330,7 @@ class main():
                     inputs_bxxx6_test = data_test[0]
                     # print("data_test", data_test, "data_test[0]", inputs_bxxx6_test)
                     for inputs_xx6_test in inputs_bxxx6_test:
-                        inputs_xx6_test = inputs_xx6_test[torch.randperm(inputs_xx6_test.size(0))]
+                        # inputs_xx6_test = inputs_xx6_test[torch.randperm(inputs_xx6_test.size(0))]
                         inputs_test = inputs_xx6_test
                         intermediate_outputs_test = model(inputs_test)
                         input_tar_test = shaping(inputs_xx6_test)
@@ -388,7 +391,7 @@ class main():
         plot_no_not_have_solution(self.checkpoint_dir, start_epoch, epochs, NUM_ALL_HAVE_SOLUTION)
         plot_no_not_have_solution_test(self.checkpoint_dir, start_epoch, epochs, NUM_ALL_HAVE_SOLUTION_test)
         plot_dipan_in_tabel(self.checkpoint_dir, start_epoch, epochs, NUM_dipan_in_tabel)
-        plot_correct_but_dipan_in_tabel(self.checkpoint_dir, start_epoch, epochs, NUM_correct_but_dipan_in_tabel)
+        # plot_correct_but_dipan_in_tabel(self.checkpoint_dir, start_epoch, epochs, NUM_correct_but_dipan_in_tabel)
 
 if __name__ == "__main__":
     a = main()
