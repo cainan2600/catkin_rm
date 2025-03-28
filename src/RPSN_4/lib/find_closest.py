@@ -35,10 +35,10 @@ def find_closest(angle_solution, where_is_the_illegal):
     
     
 
-    single_ik_loss = torch.tensor([0.0])
+    single_ik_loss = torch.tensor([0.0], requires_grad=True)
 
-    fanwei1 = torch.FloatTensor([math.pi * 178/180, math.pi * 130/180, math.pi * 135/180, math.pi * 178/180, math.pi * 128/180, math.pi])
-    jiaodu3_limited = torch.FloatTensor([math.pi * 130/180])
+    fanwei1 = [math.pi * 178/180, math.pi * 130/180, math.pi * 135/180, math.pi * 178/180, math.pi * 128/180, math.pi]
+    # jiaodu3_limited = torch.FloatTensor([math.pi * 130/180])
     
 
 
@@ -54,19 +54,19 @@ def find_closest(angle_solution, where_is_the_illegal):
                 if torch.isnan(angle_solution[i][angle]):
                     there_exist_nan +=1
             if there_exist_nan == 0:
-                diff_mini = torch.tensor([1000.0], requires_grad=True)
+                diff_mini = 1000
                 for angle_1 in range(6):
                     num = angle_solution[i][angle_1]
                     tar_num = fanwei1[angle_1]
                     if abs(num) > abs(tar_num):
-                        diff = torch.abs(num) - torch.abs(tar_num)
+                        diff = abs(num) - abs(tar_num)
                         if diff < diff_mini:
                             diff_mini = diff
                 single_ik_loss = single_ik_loss + diff_mini * 1000
                 # single_ik_loss = single_ik_loss + 100
                 # diff_mini.register_hook(save_grad('diff_mini'))
                 # print("[grads]diff_mini:", grads)
-                # print(single_ik_loss)
+                print(single_ik_loss)
                         # print(single_ik_loss, the_NANLOSS_of_illegal_solution_with_num_and_Nan)
             else:
                 pass

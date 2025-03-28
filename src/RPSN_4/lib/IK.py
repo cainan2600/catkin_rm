@@ -39,27 +39,27 @@ def calculate_IK(input_tar, MLP_output_base, a, d, alpha):
     pz = TT[2, 3]
 
     # nx.register_hook(save_grad('nx'))
-    # print("[grads]nx:", grads)
+    # # print("[grads]nx:", grads)
     # ny.register_hook(save_grad('ny'))
-    # print("[grads]ny:", grads)
-    # nz.register_hook(save_grad('nz'))
-    # print("[grads]nz:", grads)
+    # # print("[grads]ny:", grads)
+    nz.register_hook(save_grad('nz'))
+    # # print("[grads]nz:", grads)
     # ox.register_hook(save_grad('ox'))
-    # print("[grads]ox:", grads)
+    # # print("[grads]ox:", grads)
     # oy.register_hook(save_grad('oy'))
-    # print("[grads]oy:", grads)
-    # oz.register_hook(save_grad('oz'))
-    # print("[grads]oz:", grads)
+    # # print("[grads]oy:", grads)
+    oz.register_hook(save_grad('oz'))
+    # # print("[grads]oz:", grads)
     # ax.register_hook(save_grad('ax'))
-    # print("[grads]ax:", grads)
+    # # print("[grads]ax:", grads)
     # ay.register_hook(save_grad('ay'))
-    # print("[grads]ay:", grads)
-    # az.register_hook(save_grad('az'))
-    # print("[grads]az:", grads)
+    # # print("[grads]ay:", grads)
+    az.register_hook(save_grad('az'))
+    # # print("[grads]az:", grads)
     # px.register_hook(save_grad('px'))
-    # print("[grads]px:", grads)
+    # # print("[grads]px:", grads)
     # py.register_hook(save_grad('py'))
-    # print("[grads]py:", grads)
+    # # print("[grads]py:", grads)
     # pz.register_hook(save_grad('pz'))
     # print("[grads]pz:", grads)
 
@@ -98,7 +98,7 @@ def calculate_IK(input_tar, MLP_output_base, a, d, alpha):
         t6 = torch.stack([theta61, theta62, theta61, theta62, theta61, theta62, theta61, theta62], 0)
 
     else:
-        num_Error1_loss = torch.tensor([0.0], requires_grad=True)
+        num_Error1_loss = (abs(BB**2 - 4*AA*CC) - torch.tensor([0.0])) * 1000
         # angle_solution = (abs(BB**2 - 4*AA*CC) - torch.tensor([0.0])) * 1000
         angle_solution = torch.tensor([0.0], requires_grad=True)
         num_Error2_loss = torch.tensor([0.0], requires_grad=True)
@@ -173,14 +173,14 @@ def calculate_IK(input_tar, MLP_output_base, a, d, alpha):
     # GG1.register_hook(save_grad('GG1'))
     # print("[grads]GG1:", grads)
 
-    theta21 = torch.acos((pz - d[0] - az*d[5] - d[3]*GG1) / a[2])
-    theta22 = torch.acos((pz - d[0] - az*d[5] - d[3]*GG2) / a[2])
-    theta23 = torch.acos((pz - d[0] - az*d[5] - d[3]*GG3) / a[2])
-    theta24 = torch.acos((pz - d[0] - az*d[5] - d[3]*GG4) / a[2])
-    theta25 = torch.acos((pz - d[0] - az*d[5] - d[3]*GG5) / a[2])
-    theta26 = torch.acos((pz - d[0] - az*d[5] - d[3]*GG6) / a[2])
-    theta27 = torch.acos((pz - d[0] - az*d[5] - d[3]*GG7) / a[2])
-    theta28 = torch.acos((pz - d[0] - az*d[5] - d[3]*GG8) / a[2])
+    theta21 = torch.acos((pz - d[0] - az*d[5] - d[3]*GG1) / a[2]) - math.pi / 2
+    theta22 = torch.acos((pz - d[0] - az*d[5] - d[3]*GG2) / a[2]) - math.pi / 2
+    theta23 = torch.acos((pz - d[0] - az*d[5] - d[3]*GG3) / a[2]) - math.pi / 2
+    theta24 = torch.acos((pz - d[0] - az*d[5] - d[3]*GG4) / a[2]) - math.pi / 2
+    theta25 = torch.acos((pz - d[0] - az*d[5] - d[3]*GG5) / a[2]) - math.pi / 2
+    theta26 = torch.acos((pz - d[0] - az*d[5] - d[3]*GG6) / a[2]) - math.pi / 2
+    theta27 = torch.acos((pz - d[0] - az*d[5] - d[3]*GG7) / a[2]) - math.pi / 2
+    theta28 = torch.acos((pz - d[0] - az*d[5] - d[3]*GG8) / a[2]) - math.pi / 2
 
     # rad_t2 = [0,0,0,0,0,0,0,0]
     # for iiii, rad_t2_single in enumerate(rad_t2):
@@ -224,7 +224,7 @@ def calculate_IK(input_tar, MLP_output_base, a, d, alpha):
     if len(nan_index) == 8:
         # aaabbb = nan_index[0].item()
         # cccddd = (pz - d[0] - az*d[5] - d[3]*GG[aaabbb]) / a[2]
-        num_Error2_loss = torch.tensor([0.0], requires_grad=True)
+        num_Error2_loss = the_NANLOSS_of_illegal_solution_with_num_and_Nan
         num_Error1_loss = torch.tensor([0.0], requires_grad=True)
         num_Error3_loss = torch.tensor([0.0], requires_grad=True)
         angle_solution = torch.tensor([0.0], requires_grad=True)
@@ -255,19 +255,39 @@ def calculate_IK(input_tar, MLP_output_base, a, d, alpha):
     FFF = [FFF1, FFF1, FFF2, FFF2, FFF3, FFF3, FFF4, FFF4]
     GGG = [GGG1, GGG2, GGG3, GGG4, GGG5, GGG6, GGG7, GGG8]
 
-    # FFF1.register_hook(save_grad('FFF1'))
+    FFF1.register_hook(save_grad('FFF1'))
     # print("[grads]FFF1:", grads)
-    # GGG1.register_hook(save_grad('GGG1'))
+    GGG1.register_hook(save_grad('GGG1'))
     # print("[grads]GGG1:", grads)
+    GGG2.register_hook(save_grad('GGG2'))
+    # print("[grads]GGG1:", grads)
+    FFF2.register_hook(save_grad('FFF2'))
+    # print("[grads]FFF2:", grads)
+    GGG3.register_hook(save_grad('GGG3'))
+    # print("[grads]GGG3:", grads)
+    GGG4.register_hook(save_grad('GGG4'))
+    # print("[grads]GGG4:", grads)
+    FFF3.register_hook(save_grad('FFF3'))
+    # print("[grads]FFF3:", grads)
+    GGG5.register_hook(save_grad('GGG5'))
+    # print("[grads]GGG5:", grads)
+    GGG6.register_hook(save_grad('GGG6'))
+    # print("[grads]GGG6:", grads)
+    FFF4.register_hook(save_grad('FFF4'))
+    # print("[grads]FFF4:", grads)
+    GGG7.register_hook(save_grad('GGG7'))
+    # print("[grads]GGG7:", grads)
+    GGG8.register_hook(save_grad('GGG8'))
+    print("[grads]GGG8:", grads)
 
-    theta210 = torch.acos((pz - d[0] - az*d[5] - d[3]*GGG1) / a[2])
-    theta220 = torch.acos((pz - d[0] - az*d[5] - d[3]*GGG2) / a[2])
-    theta230 = torch.acos((pz - d[0] - az*d[5] - d[3]*GGG3) / a[2])
-    theta240 = torch.acos((pz - d[0] - az*d[5] - d[3]*GGG4) / a[2])
-    theta250 = torch.acos((pz - d[0] - az*d[5] - d[3]*GGG5) / a[2])
-    theta260 = torch.acos((pz - d[0] - az*d[5] - d[3]*GGG6) / a[2])
-    theta270 = torch.acos((pz - d[0] - az*d[5] - d[3]*GGG7) / a[2])
-    theta280 = torch.acos((pz - d[0] - az*d[5] - d[3]*GGG8) / a[2])
+    theta210 = torch.acos((pz - d[0] - az*d[5] - d[3]*GGG1) / a[2]) - math.pi / 2
+    theta220 = torch.acos((pz - d[0] - az*d[5] - d[3]*GGG2) / a[2]) - math.pi / 2
+    theta230 = torch.acos((pz - d[0] - az*d[5] - d[3]*GGG3) / a[2]) - math.pi / 2
+    theta240 = torch.acos((pz - d[0] - az*d[5] - d[3]*GGG4) / a[2]) - math.pi / 2
+    theta250 = torch.acos((pz - d[0] - az*d[5] - d[3]*GGG5) / a[2]) - math.pi / 2
+    theta260 = torch.acos((pz - d[0] - az*d[5] - d[3]*GGG6) / a[2]) - math.pi / 2
+    theta270 = torch.acos((pz - d[0] - az*d[5] - d[3]*GGG7) / a[2]) - math.pi / 2
+    theta280 = torch.acos((pz - d[0] - az*d[5] - d[3]*GGG8) / a[2]) - math.pi / 2
 
     # pz.register_hook(save_grad('pz'))
     # print("[grads]pz:", grads)
@@ -286,17 +306,18 @@ def calculate_IK(input_tar, MLP_output_base, a, d, alpha):
     theta2_3_8 = atan2(FFF4, GGG8)
     # theta238 = [theta2_3_1, theta2_3_2, theta2_3_3, theta2_3_4, theta2_3_5, theta2_3_6, theta2_3_7, theta2_3_8]
  
-    theta31 = theta2_3_1 - theta210
-    theta32 = theta2_3_2 - theta220
-    theta33 = theta2_3_3 - theta230
-    theta34 = theta2_3_4 - theta240
-    theta35 = theta2_3_5 - theta250
-    theta36 = theta2_3_6 - theta260
-    theta37 = theta2_3_7 - theta270
-    theta38 = theta2_3_8 - theta280
+    theta31 = theta2_3_1 - theta210 - math.pi / 2
+    theta32 = theta2_3_2 - theta220 - math.pi / 2
+    theta33 = theta2_3_3 - theta230 - math.pi / 2
+    theta34 = theta2_3_4 - theta240 - math.pi / 2
+    theta35 = theta2_3_5 - theta250 - math.pi / 2
+    theta36 = theta2_3_6 - theta260 - math.pi / 2
+    theta37 = theta2_3_7 - theta270 - math.pi / 2
+    theta38 = theta2_3_8 - theta280 - math.pi / 2
 
     tt3 = [theta31, theta32, theta33, theta34, theta35, theta36, theta37, theta38]
     t3 = torch.stack([theta31, theta32, theta33, theta34, theta35, theta36, theta37, theta38], 0)
+    # print(tt3)
     # theta2_3_1.register_hook(save_grad('theta2_3_1'))
     # print("[grads]theta2_3_1:", grads)
     # FFF1.register_hook(save_grad('FFF1'))
@@ -314,11 +335,13 @@ def calculate_IK(input_tar, MLP_output_base, a, d, alpha):
             # diff = torch.FloatTensor(diff)
             the_loss_of_over = the_loss_of_over + (diff - 0) * 1000
             # the_loss_of_over = the_loss_of_over + (abs(t3[index_ok_t2_ii]) - fanwei1[2]) * 1000
+            # the_loss_of_over = the_loss_of_over + torch.tensor([(abs(t3[index_ok_t2_ii]) - fanwei1[2]) * 1000], requires_grad=True)
             # the_loss_of_over = loss_fn_t3(torch.abs(t3[index_ok_t2_ii]), fanwei1[2]) * 1000 + torch.tensor([0.0], requires_grad=True)
             cout_not_ok += 1
     if not len(index_ok_t2[0]) == 0:
         if cout_not_ok == len(index_ok_t2[0]):
             num_Error3_loss = the_loss_of_over + the_NANLOSS_of_illegal_solution_with_num_and_Nan
+            # num_Error3_loss = the_loss_of_over
             # make_dot(num_Error3_loss).view()
             # the_NANLOSS_of_illegal_solution_with_num_and_Nan = the_NANLOSS_of_illegal_solution_with_num_and_Nan + the_loss_of_over
             # angle_solution = the_NANLOSS_of_illegal_solution_with_num_and_Nan

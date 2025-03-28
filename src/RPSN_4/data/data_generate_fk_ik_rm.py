@@ -26,7 +26,7 @@ def data_generate(i):
         while not len(data_echo)==7:
             yuanxin_x = dipan_points[a][0]
             yuanxin_y = dipan_points[a][1]
-            yaw_yuanxin = np.random.uniform(-np.pi, np.pi)
+            yaw_yuanxin = np.random.uniform(-np.pi / 2, np.pi / 2)
             yuanxin = [0, 0, yaw_yuanxin, yuanxin_x, yuanxin_y, 0]
             yuanxin_save = [0, 0, yaw_yuanxin, yuanxin_x + 0.75, yuanxin_y + 1.228, 0]
             # yuanxin = [round(val_yuanxin, 3) for val_yuanxin in yuanxin]
@@ -34,7 +34,7 @@ def data_generate(i):
             MLP_output_base = shaping(yuanxin_tensor)
 
             # for num_data in range(np.random.randint(1, 8)):
-            for num_data in range(1):
+            for num_data in range(2):
 
                 # tensor = generrate_dian_fk(a_IK, d_IK, alpha_IK, yuanxin_x, yuanxin_y)
                 # data_echo.append(tensor)
@@ -54,12 +54,12 @@ def data_generate(i):
                     # ])
                     # input_tar = torch.mm(input_tar, last_reverse)
 
-                    angle_solution, num_Error1, num_Error2, num_Error3, the_NANLOSS_of_illegal_solution_with_num_and_Nan = calculate_IK(
+                    angle_solution, num_Error1, num_Error1_loss, num_Error2_loss, num_Error3_loss, num_Error2, num_Error3, the_NANLOSS_of_illegal_solution_with_num_and_Nan = calculate_IK(
                                             input_tar, MLP_output_base, a_IK, d_IK, alpha_IK
                         )
                     # print(num_Error1, num_Error2)
                     IK_loss, num_incorrect, num_correct = calculate_IK_loss(
-                        angle_solution, the_NANLOSS_of_illegal_solution_with_num_and_Nan
+                        angle_solution, num_Error1_loss, num_Error2_loss, num_Error3_loss, the_NANLOSS_of_illegal_solution_with_num_and_Nan
                         )
                     num_gegeg += 1
                     # print("不是吧哥们", num_gegeg)
@@ -232,7 +232,7 @@ def save_data_tensor(data_tensor, save_dir, file_name_tensor):
 
 if __name__ == "__main__":
 
-    save_dir_train = '/home/cn/catkin_rm/src/RPSN_4/data/data_cainan/rm-fk-ik-all-random-with-dipan-norm/train-1000-7-same'
+    save_dir_train = '/home/cn/catkin_rm/src/RPSN_4/data/data_cainan/rm-fk-ik-all-random-with-dipan-norm/train-1000-222222222-2'
     file_name_txt = 'train_dataset_1000.txt'
     file_name_tensor = 'train_dataset_1000.pt'
     file_name_dipan_txt = 'train_dataset_dipan_1000.txt'

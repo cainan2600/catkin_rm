@@ -24,7 +24,7 @@ from torch.optim.lr_scheduler import ReduceLROnPlateau
 class main():
     def __init__(self):
         self.parser = argparse.ArgumentParser(description="Training MLP")
-        self.parser.add_argument('--batch_size', type=int, default=10, help='input batch size for training (default: 1)')
+        self.parser.add_argument('--batch_size', type=int, default=5, help='input batch size for training (default: 1)')
         self.parser.add_argument('--learning_rate', type=float, default=0.003, help='learning rate (default: 0.003)')
         self.parser.add_argument('--epochs', type=int, default=200, help='gradient clip value (default: 300)')
         self.parser.add_argument('--clip', type=float, default=1, help='gradient clip value (default: 1)')
@@ -51,7 +51,7 @@ class main():
         self.data_loader_test = DataLoader(self.data_test, batch_size=self.args.batch_size, shuffle=False)
 
         # 定义训练权重保存文件路径
-        self.checkpoint_dir = r'/home/cn/catkin_rm/src/RPSN_4/work_dir/test02-2'       
+        self.checkpoint_dir = r'/home/cn/catkin_rm/src/RPSN_4/work_dir/test05-1'       
         # 多少伦保存一次
         self.num_epoch_save = 100
 
@@ -277,6 +277,15 @@ class main():
                 # make_dot(loss).view()
 
                 loss.backward()  # 反向传播求梯度
+
+                # for name, weight in model.named_parameters():
+                #     # print("weight:", weight) # 打印权重，看是否在变化
+                #     if weight.requires_grad:
+                #         # print("weight:", weight.grad) # 打印梯度，看是否丢失
+                #         # 直接打印梯度会出现太多输出，可以选择打印梯度的均值、极值，但如果梯度为None会报错
+                #         print("weight.grad:", weight.grad.mean(), weight.grad.min(), weight.grad.max())
+
+
                 # loss.backward(torch.ones_like(loss))  # 反向传播求梯度
                 # torch.autograd.detect_anomaly()
                 nn.utils.clip_grad_norm_(model.parameters(), max_norm=self.args.clip)  # 进行梯度裁剪
