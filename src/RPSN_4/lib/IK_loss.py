@@ -60,7 +60,9 @@ def calculate_IK_loss(angle_solution, num_Error1_loss, num_Error2_loss, num_Erro
             # IK_loss = IK_loss + the_NANLOSS_of_illegal_solution_with_num_and_Nan + find_closest(angle_solution, where_is_the_illegal) #!!!!!优先惩罚nan产生项，loss定义在计算过程中
             # make_dot(IK_loss).view()
             # print(IK_loss)
-            IK_loss = IK_loss + the_NANLOSS_of_illegal_solution_with_num_and_Nan
+            IK_loss = IK_loss + num_Error3_loss
+            # print(IK_loss)
+            # make_dot(IK_loss).view()
             # IK_loss = IK_loss + find_closest(angle_solution, where_is_the_illegal)
             # print(angle_solution, where_is_the_illegal)
 

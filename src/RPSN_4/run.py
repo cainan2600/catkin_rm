@@ -51,7 +51,7 @@ class main():
         self.data_loader_test = DataLoader(self.data_test, batch_size=self.args.batch_size, shuffle=False)
 
         # 定义训练权重保存文件路径
-        self.checkpoint_dir = r'/home/cn/catkin_rm/src/RPSN_4/work_dir/test05-1'       
+        self.checkpoint_dir = r'/home/cn/catkin_rm/src/RPSN_4/work_dir/test06-10xloss3-only'       
         # 多少伦保存一次
         self.num_epoch_save = 100
 
@@ -81,6 +81,9 @@ class main():
         NUMError1 = []
         NUMError2 = []
         NUMError3 = []
+        all_NUMError1_loss = []
+        all_NUMError2_loss = []
+        all_NUMError3_loss = []
         NUM_incorrect = []
         NUM_correct = []
         NUM_correct_test = []
@@ -122,6 +125,10 @@ class main():
 
         # 开始训练
         for epoch in range(start_epoch , start_epoch + epochs):
+
+            all_loss1 = 0
+            all_loss2 = 0
+            all_loss3 = 0
   
             sum_loss = 0.0
             sum_loss_test = 0.0
@@ -222,6 +229,10 @@ class main():
                             numError2 = numError2 + num_Error2
                             numError3 = numError3 + num_Error3
 
+                            all_loss1 = all_loss1 + num_Error1_loss.detach().numpy()
+                            all_loss2 = all_loss2 + num_Error2_loss.detach().numpy()
+                            all_loss3 = all_loss3 + num_Error3_loss.detach().numpy()
+
                             # 计算单IK_loss
                             IK_loss1, num_NOError1, num_NOError2 = IK_loss.calculate_IK_loss(angle_solution, num_Error1_loss, num_Error2_loss, num_Error3_loss, the_NANLOSS_of_illegal_solution_with_num_and_Nan)
                             num_all_have_solution = num_all_have_solution - num_NOError1
@@ -308,6 +319,9 @@ class main():
             NUMError1.append(numError1)
             NUMError2.append(numError2)
             NUMError3.append(numError3)
+            all_NUMError1_loss.append(all_loss1)
+            all_NUMError2_loss.append(all_loss2)
+            all_NUMError3_loss.append(all_loss3)
             NUM_incorrect.append(num_incorrect)
             NUM_correct.append(num_correct)
             NUM_ALL_HAVE_SOLUTION.append(NUM_all_have_solution / self.args.num_train)
@@ -317,6 +331,9 @@ class main():
             print("numError1", numError1)
             print("numError2", numError2)
             print("numError3", numError3)
+            print("all_loss1", all_loss1)
+            print("all_loss2", all_loss2)
+            print("all_loss3", all_loss3)
             print("num_correct", num_correct)
             print("num_incorrect", num_incorrect)
             print('NUM_all_have_solution', NUM_all_have_solution)
@@ -401,6 +418,7 @@ class main():
         plot_no_not_have_solution_test(self.checkpoint_dir, start_epoch, epochs, NUM_ALL_HAVE_SOLUTION_test)
         plot_dipan_in_tabel(self.checkpoint_dir, start_epoch, epochs, NUM_dipan_in_tabel)
         # plot_correct_but_dipan_in_tabel(self.checkpoint_dir, start_epoch, epochs, NUM_correct_but_dipan_in_tabel)
+        plot_loss(self.checkpoint_dir, start_epoch, epochs, self.args.num_train, all_NUMError1_loss, all_NUMError2_loss, all_NUMError3_loss)
 
 if __name__ == "__main__":
     a = main()
