@@ -17,6 +17,7 @@ def calculate_FK_loss(angles, FK_results, input_target,intermediate_output):
     # 计算损失
     MSELoss = nn.MSELoss()
 
+    # 网络输出的底盘位置和真实物品位置距离
     if MSELoss(intermediate_output , input_target[3:5]) > 2.5:
         global num_Error2
         num_Error2 = num_Error2 + 1
@@ -31,6 +32,7 @@ def calculate_FK_loss(angles, FK_results, input_target,intermediate_output):
     #     global num_NOError2
     #     num_NOError2 = num_NOError2 + 1
 
+    # FK输出和真实的差距
     if MSELoss(FK_results[:3, 3] , input_target[3:6]) > 0.001:
         global num_NOError1
         num_NOError1 = num_NOError1 + 1

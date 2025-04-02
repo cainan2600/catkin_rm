@@ -7,7 +7,7 @@ import numpy as np
 import argparse
 from torch.utils.data import Dataset, DataLoader, TensorDataset
 
-from models import MLP_3, MLP_6, MLP_9, MLP_9_2, MLP_9_3, MLP_9_4
+from models import MLP_for_fk
 from lib.trans_all import *
 from lib import IK, IK_loss, planner_loss
 import torch
@@ -59,7 +59,7 @@ class main():
         self.num_i = 6
         self.num_h = 128
         self.num_o = 3
-        self.model = MLP_3
+        self.model = MLP_for_fk
         
         # 如果是接着训练则输入前面的权重路径
         self.model_path = r''
@@ -165,8 +165,8 @@ class main():
                     # inputs = shaping_inputs_xx6_to_1xx(inputs_xx6)
                     inputs = inputs_xx6
 
-                    intermediate_outputs = model(inputs)
-                    intermediate_outputs_list = intermediate_outputs.detach().numpy()
+                    intermediate_outputs_chasis, intermediate_outputs_angel = model(inputs)
+                    intermediate_outputs_list = intermediate_outputs_chasis.detach().numpy()
                     # print(intermediate_outputs, intermediate_outputs_list)
                     if epoch == (start_epoch + epochs - 1):
                         NET_output.append(intermediate_outputs_list)
@@ -187,14 +187,14 @@ class main():
 
                     outputs = torch.empty((0, 6)) # 创建空张量
                     # for each_result in intermediate_outputs: # 取出每个batch_size中的每个数据经过网络后的结果1x3
-                    pinjie1 = torch.cat([intermediate_outputs, torch.zeros(1).detach()])
+                    pinjie1 = torch.cat([intermediate_outputs_chasis, torch.zeros(1).detach()])
                     pinjie2 = torch.cat([torch.zeros(2).detach(), pinjie1])
                     outputs = torch.cat([outputs, pinjie2.unsqueeze(0)], dim=0)
 
                     outputs_tensor = outputs[0]
                     # print("1", outputs_tensor)
 
-                    intermediate_outputs.retain_grad()
+                    intermediate_outputs_chasis.retain_grad()
                     # print(intermediate_outputs.grad)
                     outputs.retain_grad()
                     # print(outputs.grad)

@@ -51,7 +51,7 @@ def FK(theta, base, a, d, alpha):
     T34 = THT(theta[3], a[3], d[3], alpha[3])
     T45 = THT(theta[4], a[4], d[4], alpha[4])
     T56 = THT(theta[5], a[5], d[5], alpha[5])
-    print(base, T01)
+    # print(base, T01)
     T0 = torch.mm(base, T01)
     T1 = torch.mm(T0, T12)
     T2 = torch.mm(T1, T23)

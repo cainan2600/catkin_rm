@@ -11,7 +11,7 @@ import random
 import numpy as np
 import matplotlib.pyplot as plt
 import argparse
-from NEW_FK_attempt_robkinet import FK
+import FK
 
 global final_result, inputs_of_final_result,outputs_of_MLP
 from torch.optim.lr_scheduler import StepLR
@@ -599,7 +599,7 @@ def main(args):
             # print(loss.grad)
             # if epoch ==10:
             # 下面这行用来绘制计算图！！！
-            make_dot(loss).view()
+            # make_dot(loss).view()
 
             # 记录x轮以后网络模型checkpoint，用来查看数据流，路径选自己电脑的目标文件夹
             if epoch % 100 == 0:
@@ -672,7 +672,7 @@ def main(args):
                     pinjie2 = torch.cat([torch.zeros(2).detach(), pinjie1])
                     outputs_test = torch.cat([outputs_test, pinjie2.unsqueeze(0)], dim=0)
 
-                print('outputs', outputs_test)
+                # print('outputs', outputs_test)
 
                 MLP_output_base_test = shaping(outputs_test)  # 对输出做shaping运算
 
@@ -765,9 +765,9 @@ if __name__ == '__main__':
 
     parser.add_argument('--batch_size', type=int, default=5, help='input batch size for training (default: 1)')
     parser.add_argument('--learning_rate', type=float, default=0.05, help='learning rate (default: 0.003)')
-    parser.add_argument('--epochs', type=int, default=1, help='gradient clip value (default: 300)')
+    parser.add_argument('--epochs', type=int, default=20, help='gradient clip value (default: 300)')
     parser.add_argument('--clip', type=float, default=1, help='gradient clip value (default: 1)')
-    parser.add_argument('--num_train', type=int, default=5)
+    parser.add_argument('--num_train', type=int, default=1000)
 
     args = parser.parse_args()
 
