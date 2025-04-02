@@ -98,8 +98,8 @@ def calculate_IK(input_tar, MLP_output_base, a, d, alpha):
         t6 = torch.stack([theta61, theta62, theta61, theta62, theta61, theta62, theta61, theta62], 0)
 
     else:
-        num_Error1_loss = (abs(BB**2 - 4*AA*CC) - torch.tensor([0.0])) * 1000
-        # num_Error1_loss = torch.tensor([0.0], requires_grad=True)
+        # num_Error1_loss = (abs(BB**2 - 4*AA*CC) - torch.tensor([0.0])) * 1000
+        num_Error1_loss = torch.tensor([0.0], requires_grad=True)
         # angle_solution = (abs(BB**2 - 4*AA*CC) - torch.tensor([0.0])) * 1000
         angle_solution = torch.tensor([0.0], requires_grad=True)
         num_Error2_loss = torch.tensor([0.0], requires_grad=True)
@@ -225,8 +225,8 @@ def calculate_IK(input_tar, MLP_output_base, a, d, alpha):
     if len(nan_index) == 8:
         # aaabbb = nan_index[0].item()
         # cccddd = (pz - d[0] - az*d[5] - d[3]*GG[aaabbb]) / a[2]
-        num_Error2_loss = the_NANLOSS_of_illegal_solution_with_num_and_Nan
-        # num_Error2_loss = torch.tensor([0.0], requires_grad=True)
+        # num_Error2_loss = the_NANLOSS_of_illegal_solution_with_num_and_Nan
+        num_Error2_loss = torch.tensor([0.0], requires_grad=True)
         num_Error1_loss = torch.tensor([0.0], requires_grad=True)
         num_Error3_loss = torch.tensor([0.0], requires_grad=True)
         angle_solution = torch.tensor([0.0], requires_grad=True)
