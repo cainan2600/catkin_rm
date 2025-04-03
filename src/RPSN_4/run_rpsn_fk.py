@@ -7,9 +7,9 @@ import numpy as np
 import argparse
 from torch.utils.data import Dataset, DataLoader, TensorDataset
 
-from models import MLP_for_fk
+from models import MLP_for_fk, MLP_9_for_fk
 from lib.trans_all import *
-from lib import IK, IK_loss, planner_loss
+from lib import FK_diff, FK_loss
 import torch
 import torch.nn as nn
 import math
@@ -36,8 +36,8 @@ class main():
         # self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
         
         # 训练集数据导入
-        self.load_train_data = torch.load('/home/cn/catkin_rm/src/RPSN_4/data/data_cainan/rm-fk-ik-all-random-with-dipan-norm/train-{}-1/train_dataset_{}.pt'.format(self.args.num_train, self.args.num_train))
-        self.data_loader_train_dipan = torch.load('/home/cn/catkin_rm/src/RPSN_4/data/data_cainan/rm-fk-ik-all-random-with-dipan-norm/train-{}-1/train_dataset_dipan_{}.pt'.format(self.args.num_train, self.args.num_train))
+        self.load_train_data = torch.load('/home/cn/catkin_rm/src/RPSN_4/data/data_cainan/rm-fk-ik-all-random-with-dipan-norm/train-{}-2/train_dataset_{}.pt'.format(self.args.num_train, self.args.num_train))
+        self.data_loader_train_dipan = torch.load('/home/cn/catkin_rm/src/RPSN_4/data/data_cainan/rm-fk-ik-all-random-with-dipan-norm/train-{}-2/train_dataset_dipan_{}.pt'.format(self.args.num_train, self.args.num_train))
         # self.load_train_data = torch.load('/home/cn/RPSN_4/data/data_cainan/5000-fk-ik-all-random-with-dipan/train/train_dataset_5000.pt')
         # self.data_loader_train_dipan = torch.load('/home/cn/RPSN_4/data/data_cainan/5000-fk-ik-all-random-with-dipan/train/train_dataset_dipan_5000.pt')
 
@@ -46,12 +46,12 @@ class main():
         self.data_loader_train = DataLoader(self.data_train, batch_size=self.args.batch_size, shuffle=True)
 
         # 测试集数据导入
-        self.load_test_data = torch.load('/home/cn/catkin_rm/src/RPSN_4/data/data_cainan/rm-fk-ik-all-random-with-dipan-norm/test-400/test_dataset_400.pt')
+        self.load_test_data = torch.load('/home/cn/catkin_rm/src/RPSN_4/data/data_cainan/rm-fk-ik-all-random-with-dipan-norm/test-400-2/test_dataset_400.pt')
         self.data_test = TensorDataset(self.load_test_data[:self.args.num_test])
         self.data_loader_test = DataLoader(self.data_test, batch_size=self.args.batch_size, shuffle=False)
 
         # 定义训练权重保存文件路径
-        self.checkpoint_dir = r'/home/cn/catkin_rm/src/RPSN_4/work_dir/test06-10xloss3-only'       
+        self.checkpoint_dir = r'/home/cn/catkin_rm/src/RPSN_4/work_dir/test01-2-10LOSS-loss2-expen-obj-chasis-distance-to-3'
         # 多少伦保存一次
         self.num_epoch_save = 100
 
@@ -80,35 +80,27 @@ class main():
 
         NUMError1 = []
         NUMError2 = []
-        NUMError3 = []
-        all_NUMError1_loss = []
-        all_NUMError2_loss = []
-        all_NUMError3_loss = []
         NUM_incorrect = []
         NUM_correct = []
         NUM_correct_test = []
         NUM_incorrect_test = []
         echo_loss = []
         echo_loss_test = []
-        NUM_ALL_HAVE_SOLUTION = []
-        NUM_ALL_HAVE_SOLUTION_test = []
-        # NUM_2_to_1 = []
-        # NUM_mid = []
-        # NUM_lar = []
-        # NUM_sametime_solution = []
         erro_inputs = []
         no_erro_inputs = []
         NUM_dipan_in_tabel = []
         NET_output = []
         NUM_correct_but_dipan_in_tabel = []
+        NUM_ALL_HAVE_SOLUTION = []
+        NUM_ALL_HAVE_SOLUTION_test = []
 
 
         epochs = self.args.epochs
         data_loader_train = self.data_loader_train
         learning_rate = self.args.learning_rate
         model = self.model.MLP_self(num_i , num_h, num_o, num_heads) 
-        # optimizer = torch.optim.Adagrad(model.parameters(), lr=learning_rate, weight_decay=0.000)  # 定义优化器
-        optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate, weight_decay=0.000)
+        optimizer = torch.optim.Adagrad(model.parameters(), lr=learning_rate, weight_decay=0.000)  # 定义优化器
+        # optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate, weight_decay=0.000)
         scheduler = ReduceLROnPlateau(optimizer, mode='max', factor=0.75, patience=6, min_lr=0.003)
         model_path = self.model_path
 
@@ -125,16 +117,11 @@ class main():
 
         # 开始训练
         for epoch in range(start_epoch , start_epoch + epochs):
-
-            all_loss1 = 0
-            all_loss2 = 0
-            all_loss3 = 0
   
             sum_loss = 0.0
             sum_loss_test = 0.0
             numError1 = 0
             numError2 = 0
-            numError3 = 0
             num_incorrect = 0
             num_correct = 0
             NUM_all_have_solution = 0
@@ -152,7 +139,7 @@ class main():
                 IK_loss_batch = torch.tensor(0.0, requires_grad=True)
                 # IK_loss2 = torch.tensor(0.0, requires_grad=True)
                 # IK_loss3 = torch.tensor(0.0, requires_grad=True)
-                # loss_fn = torch.nn.MSELoss()
+                loss_fn = torch.nn.MSELoss()
 
                 for inputs_xx6 in inputs_bxxx6:
                     # print(inputs_xx6)
@@ -173,6 +160,7 @@ class main():
                     # print(intermediate_outputs_list)
 
                     # 得到每个1x6的旋转矩阵(7x6)
+                    # print(inputs_xx6.size())
                     input_tar = shaping(inputs_xx6)
                     # last_reverse = [
                     #     [1,0,0,0],
@@ -192,84 +180,50 @@ class main():
                     outputs = torch.cat([outputs, pinjie2.unsqueeze(0)], dim=0)
 
                     outputs_tensor = outputs[0]
-                    # print("1", outputs_tensor)
 
                     intermediate_outputs_chasis.retain_grad()
-                    # print(intermediate_outputs.grad)
                     outputs.retain_grad()
-                    # print(outputs.grad)
 
                     MLP_output_base = shaping(outputs)  # 对输出做shaping运算-1X6变为4X4
-
                     MLP_output_base.retain_grad()
 
-                    # # 计算 IK_loss_batch
-                    # IK_loss_batch = torch.tensor(0.0, requires_grad=True)
-                    # IK_loss2 = torch.tensor(0.0, requires_grad=True)
-                    # IK_loss3 = torch.tensor(0.0, requires_grad=True)
-                    # loss_fn = torch.nn.MSELoss()
-
-                    num_all_have_solution = 0
-                    num_not_all_0 = 0
+                    NUM_obj = 0
+                    NUM_correct_obj = 0
                     for i in range(len(input_tar)):
                         if torch.all(inputs_xx6[i].ne(0)):
-                            num_not_all_0 += 1
-                            num_all_have_solution += 1
-                            
-                            angle_solution, num_Error1, num_Error1_loss, num_Error2_loss, num_Error3_loss, num_Error2, num_Error3, the_NANLOSS_of_illegal_solution_with_num_and_Nan = IK.calculate_IK(
-                                input_tar[i], 
-                                MLP_output_base, 
+
+                            NUM_obj += 1
+
+                            end_eff_calcu_by_FK = FK_diff.FK(
+                                intermediate_outputs_angel[i], 
+                                MLP_output_base[0], 
                                 self.link_length, 
                                 self.link_offset, 
                                 self.link_twist)
-                            # print("angle_solution", angle_solution)
-                            # make_dot(angle_solution).view()
-                            # 存在错误打印
-                            numError1 = numError1 + num_Error1
-                            numError2 = numError2 + num_Error2
-                            numError3 = numError3 + num_Error3
-
-                            all_loss1 = all_loss1 + num_Error1_loss.detach().numpy()
-                            all_loss2 = all_loss2 + num_Error2_loss.detach().numpy()
-                            all_loss3 = all_loss3 + num_Error3_loss.detach().numpy()
 
                             # 计算单IK_loss
-                            IK_loss1, num_NOError1, num_NOError2 = IK_loss.calculate_IK_loss(angle_solution, num_Error1_loss, num_Error2_loss, num_Error3_loss, the_NANLOSS_of_illegal_solution_with_num_and_Nan)
-                            num_all_have_solution = num_all_have_solution - num_NOError1
+                            FK_loss_batch, num_Error1, num_Error2, num_NOError1, num_NOError2= FK_loss.calculate_FK_loss(
+                                intermediate_outputs_angel[i], 
+                                end_eff_calcu_by_FK, 
+                                inputs[i], 
+                                intermediate_outputs_chasis[1:3])
                             # make_dot(IK_loss1).view()
 
                             # 总loss
-                            IK_loss_batch = IK_loss_batch + IK_loss1
+                            IK_loss_batch = IK_loss_batch + FK_loss_batch
 
-                            # 有/无错误打印
+                            numError1 = numError1 + num_Error1
+                            numError2 = numError2 + num_Error2
                             num_incorrect = num_incorrect + num_NOError1
                             num_correct = num_correct + num_NOError2
-                        # else:
-                        #     IK_loss1 = IK_loss1 + 0
-                            # IK_loss_batch = IK_loss_batch + IK_loss1
 
-                    # 不是每一有效点位都有解即为失败
-                    if num_all_have_solution == num_not_all_0:
+                            if not num_NOError2==0:
+                                NUM_correct_obj += 1
+                    if NUM_correct_obj== NUM_obj:
                         NUM_all_have_solution += 1
-                        if epoch == (start_epoch + epochs - 1):
-                            no_erro_inputs.append(inputs_xx6_no_random.detach().numpy())
-
-                        if -0.25<intermediate_outputs_list[1]<1.75:
-                            if 0.803<intermediate_outputs_list[2]<1.653:
-                                num_correct_but_dipan_in_tabel += 1
-
                     else:
-                        if epoch == (start_epoch + epochs - 1):
-                            erro_inputs.append(inputs_xx6_no_random.detach().numpy())
-                        # IK_loss2 = IK_loss2 + loss_fn(outputs_tensor, lables[num_zu_in_epoch - 1]) * 100
-                    # IK_loss_batch = IK_loss_batch + IK_loss2
+                        IK_loss_batch = IK_loss_batch + loss_fn(outputs_tensor, lables[num_zu_in_epoch - 1]) * 10
 
-                    if -0.25<intermediate_outputs_list[1]<1.75:
-                        if 0.803<intermediate_outputs_list[2]<1.653:
-                            # IK_loss3 = IK_loss3 + loss_fn(outputs_tensor, lables[num_zu_in_epoch - 1]) * 100
-                            num_dipan_in_tabel += 1
-
-                    # IK_loss_batch = IK_loss_batch + IK_loss3
 
                 IK_loss_batch.retain_grad()
                 # make_dot(IK_loss_batch).view()
@@ -277,7 +231,6 @@ class main():
                 optimizer.zero_grad()  # 梯度初始化为零，把loss关于weight的导数变成0
 
                 # 定义总loss函数
-                # print(len(inputs_bxxx6))
                 # loss = IK_loss_batch / len(inputs_bxxx6)
                 loss = IK_loss_batch
                 loss.retain_grad()
@@ -297,8 +250,6 @@ class main():
                 #         print("weight.grad:", weight.grad.mean(), weight.grad.min(), weight.grad.max())
 
 
-                # loss.backward(torch.ones_like(loss))  # 反向传播求梯度
-                # torch.autograd.detect_anomaly()
                 nn.utils.clip_grad_norm_(model.parameters(), max_norm=self.args.clip)  # 进行梯度裁剪
                 optimizer.step()  # 更新所有梯度
                 sum_loss = sum_loss + loss.data
@@ -310,35 +261,21 @@ class main():
 
             accuracy = NUM_all_have_solution / self.args.num_train
             scheduler.step(accuracy)
-            # print(sum_loss)
             sum_loss_array = np.array(sum_loss)
             # echo_loss.append(sum_loss_array / len(data_loader_train))
             echo_loss.append(sum_loss_array)
-            # print(len(data_loader_train))
             
             NUMError1.append(numError1)
             NUMError2.append(numError2)
-            NUMError3.append(numError3)
-            all_NUMError1_loss.append(all_loss1)
-            all_NUMError2_loss.append(all_loss2)
-            all_NUMError3_loss.append(all_loss3)
             NUM_incorrect.append(num_incorrect)
             NUM_correct.append(num_correct)
             NUM_ALL_HAVE_SOLUTION.append(NUM_all_have_solution / self.args.num_train)
-            NUM_dipan_in_tabel.append(num_dipan_in_tabel)
-            # NUM_correct_but_dipan_in_tabel.append((NUM_all_have_solution - num_correct_but_dipan_in_tabel) / NUM_all_have_solution)
 
             print("numError1", numError1)
             print("numError2", numError2)
-            print("numError3", numError3)
-            print("all_loss1", all_loss1)
-            print("all_loss2", all_loss2)
-            print("all_loss3", all_loss3)
             print("num_correct", num_correct)
             print("num_incorrect", num_incorrect)
-            print('NUM_all_have_solution', NUM_all_have_solution)
-            print("NUM_dipan_in_tabel", num_dipan_in_tabel)
-            # print("NUM_correct_but_dipan_in_tabel", num_correct_but_dipan_in_tabel)
+            print("NUM_all_have_solution", NUM_all_have_solution)
 
             current_lr = optimizer.param_groups[0]['lr']
             print(f"Current Learning Rate: {current_lr}")
@@ -358,10 +295,11 @@ class main():
                     for inputs_xx6_test in inputs_bxxx6_test:
                         # inputs_xx6_test = inputs_xx6_test[torch.randperm(inputs_xx6_test.size(0))]
                         inputs_test = inputs_xx6_test
-                        intermediate_outputs_test = model(inputs_test)
+                        intermediate_outputs_chasis_test, intermediate_outputs_angel_tese = model(inputs_test)
+                        # print(inputs_xx6_test.size())
                         input_tar_test = shaping(inputs_xx6_test)
                         outputs_test = torch.empty((0, 6))
-                        pinjie1 = torch.cat([intermediate_outputs_test, torch.zeros(1).detach()])
+                        pinjie1 = torch.cat([intermediate_outputs_chasis_test, torch.zeros(1).detach()])
                         pinjie2 = torch.cat([torch.zeros(2).detach(), pinjie1])
                         outputs_test = torch.cat([outputs_test, pinjie2.unsqueeze(0)], dim=0)
 
@@ -369,29 +307,33 @@ class main():
 
                         # 计算 IK_loss_batch
                         IK_loss_batch_test = torch.tensor(0.0, requires_grad=True)
-                        IK_loss3_test = torch.tensor(0.0, requires_grad=True)
-                        num_all_have_solution_test = 0
-                        num_not_all_0_test = 0                        
+                        NUM_obj_test = 0
+                        NUM_correct_obj_test = 0                      
                         for i in range(len(input_tar_test)):
-                            if torch.all(inputs_xx6_test[i].ne(0)):
-                                num_not_all_0_test += 1
-                                num_all_have_solution_test += 1                            
-                                angle_solution = IK.calculate_IK_test(
-                                    input_tar_test[i], 
-                                    MLP_output_base_test, 
+                            if torch.all(inputs_xx6_test[i].ne(0)):                          
+                                NUM_obj_test += 1
+                                end_eff_calcu_by_FK_test = FK_diff.FK(
+                                    intermediate_outputs_angel_tese[i], 
+                                    MLP_output_base_test[0], 
                                     self.link_length, 
                                     self.link_offset, 
                                     self.link_twist)
-                                # IK时存在的错误打印
-                                IK_loss_test1, IK_loss_test_incorrect, IK_loss_test_correct = IK_loss.calculate_IK_loss_test(angle_solution)
+
+                                # 计算单IK_loss
+                                FK_loss_batch, IK_loss_test_incorrect, IK_loss_test_correct= FK_loss.calculate_FK_loss_test(
+                                    intermediate_outputs_angel_tese[i], 
+                                    end_eff_calcu_by_FK_test, 
+                                    inputs_test[i], 
+                                    intermediate_outputs_chasis_test[1:3])
                                 # 计算IK_loss时存在的错误与正确的打印
-                                num_all_have_solution_test = num_all_have_solution_test - IK_loss_test_incorrect
+
                                 num_incorrect_test = num_incorrect_test + IK_loss_test_incorrect
                                 num_correct_test = num_correct_test + IK_loss_test_correct
-                                # 计算IK_loss
-                                # IK_loss_batch_test = IK_loss_batch_test + IK_loss_test1
-                        if num_all_have_solution_test == num_not_all_0_test:
-                            NUM_all_have_solution_test += 1                        
+                                if not IK_loss_test_correct==0:
+                                    NUM_correct_obj_test += 1
+                        if NUM_correct_obj_test== NUM_obj_test:
+                            NUM_all_have_solution_test += 1
+              
 
             print("num_correct_test", num_correct_test)
             print("num_incorrect_test", num_incorrect_test)
@@ -406,19 +348,16 @@ class main():
             print(time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()))
 
         # 分开保存最后一轮中错误和正确的数据
-        save_data(no_erro_inputs, self.checkpoint_dir, "save_no_erro_data.txt")
-        save_data(erro_inputs, self.checkpoint_dir, "save_erro_data.txt")
+        # save_data(no_erro_inputs, self.checkpoint_dir, "save_no_erro_data.txt")
+        # save_data(erro_inputs, self.checkpoint_dir, "save_erro_data.txt")
         save_MLP_output(NET_output, self.checkpoint_dir, "NET_output.txt")
 
         # 画图
-        plot_IK_solution(self.checkpoint_dir, start_epoch, epochs, len(self.data_test), NUM_incorrect_test, NUM_correct_test)
-        plot_train(self.checkpoint_dir, start_epoch, epochs, self.args.num_train, NUMError1, NUMError2, NUMError3, NUM_incorrect, NUM_correct)
         plot_train_loss(self.checkpoint_dir, start_epoch, epochs, echo_loss)
+        plot_train_fk(self.checkpoint_dir, start_epoch, epochs, self.args.num_train, NUMError1, NUMError2, NUM_incorrect, NUM_correct)
+        plot_test_fk(self.checkpoint_dir, start_epoch, epochs, self.args.num_train, NUM_incorrect_test, NUM_correct_test)
         plot_no_not_have_solution(self.checkpoint_dir, start_epoch, epochs, NUM_ALL_HAVE_SOLUTION)
         plot_no_not_have_solution_test(self.checkpoint_dir, start_epoch, epochs, NUM_ALL_HAVE_SOLUTION_test)
-        plot_dipan_in_tabel(self.checkpoint_dir, start_epoch, epochs, NUM_dipan_in_tabel)
-        # plot_correct_but_dipan_in_tabel(self.checkpoint_dir, start_epoch, epochs, NUM_correct_but_dipan_in_tabel)
-        plot_loss(self.checkpoint_dir, start_epoch, epochs, self.args.num_train, all_NUMError1_loss, all_NUMError2_loss, all_NUMError3_loss)
 
 if __name__ == "__main__":
     a = main()

@@ -46,8 +46,8 @@ def THT2(Theta, A, D, Alpha):
 def FK(theta, base, a, d, alpha):
 
     T01 = THT(theta[0], a[0], d[0], alpha[0])
-    T12 = THT(theta[1], a[1], d[1], alpha[1])
-    T23 = THT(theta[2], a[2], d[2], alpha[2])
+    T12 = THT(theta[1] + torch.pi/2, a[1], d[1], alpha[1])
+    T23 = THT(theta[2] + torch.pi/2, a[2], d[2], alpha[2])
     T34 = THT(theta[3], a[3], d[3], alpha[3])
     T45 = THT(theta[4], a[4], d[4], alpha[4])
     T56 = THT(theta[5], a[5], d[5], alpha[5])

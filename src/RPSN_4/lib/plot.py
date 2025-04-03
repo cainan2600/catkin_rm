@@ -215,3 +215,46 @@ def plot_correct_but_dipan_in_tabel(checkpoint_dir, start_epoch, epochs, NUM_cor
         os.makedirs(checkpoint_dir)
     file_path = os.path.join(checkpoint_dir, 'NUM_correct_and_dipan_not_in_tabel.png')
     plt.savefig(file_path)
+
+
+def plot_train_fk(checkpoint_dir, start_epoch, epochs, num_train, numError1, numError2, num_incorrect, num_correct):
+    draw_epochs = list(range(start_epoch, start_epoch + epochs))
+    plt.figure()
+
+    plt.plot(draw_epochs, numError1, 'y-', label='illroot1')
+    plt.plot(draw_epochs, numError2, 'k-', label='illroot2')
+    plt.plot(draw_epochs, num_incorrect, 'r-', linewidth=3, label='illsolu')
+    plt.plot(draw_epochs, num_correct, 'g-', linewidth=3, label='idesolu')
+
+    plt.annotate('{} data sets'.format(num_train), xy=(0.4, 0.5), xycoords='axes fraction', fontsize=12,
+                 color='gray', horizontalalignment='center', verticalalignment='center')
+
+    plt.xlabel('Epoch')
+    plt.ylabel('Value')
+    plt.title('Training Process')
+    plt.legend()
+
+    if not os.path.exists(checkpoint_dir):
+        os.makedirs(checkpoint_dir)
+    file_path = os.path.join(checkpoint_dir, 'Training Process.png')
+    plt.savefig(file_path)
+
+def plot_test_fk(checkpoint_dir, start_epoch, epochs, num_train, num_incorrect, num_correct):
+    draw_epochs = list(range(start_epoch, start_epoch + epochs))
+    plt.figure()
+
+    plt.plot(draw_epochs, num_incorrect, 'r-', linewidth=3, label='illsolu')
+    plt.plot(draw_epochs, num_correct, 'g-', linewidth=3, label='idesolu')
+
+    plt.annotate('{} data sets'.format(num_train), xy=(0.4, 0.5), xycoords='axes fraction', fontsize=12,
+                 color='gray', horizontalalignment='center', verticalalignment='center')
+
+    plt.xlabel('Epoch')
+    plt.ylabel('Value')
+    plt.title('Testing Process')
+    plt.legend()
+
+    if not os.path.exists(checkpoint_dir):
+        os.makedirs(checkpoint_dir)
+    file_path = os.path.join(checkpoint_dir, 'Testing Process.png')
+    plt.savefig(file_path)

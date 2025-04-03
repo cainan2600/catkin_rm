@@ -1,27 +1,31 @@
+import torch
+import torch.nn as nn
+
 def calculate_FK_loss(angles, FK_results, input_target,intermediate_output):
+
+    num_Error1 = 0
+    num_Error2 = 0
+    num_NOError1 = 0
+    num_NOError2 = 0
+    fanwei = [torch.pi * 178/180, torch.pi * 130/180, torch.pi * 135/180, torch.pi * 178/180, torch.pi * 128/180, torch.pi]
+
     # print(angles, FK_results, input_target)
     FK_loss = torch.tensor([0.0], requires_grad=True)
 
-    for angle in angles:
-        if -torch.pi < angle and angle < torch.pi:
-            pass
-        elif -torch.pi > angle:
-            FK_loss = FK_loss + (-torch.pi-angle)
-        else:
-            FK_loss = FK_loss + (angle - torch.pi)
+    for iii, angle in enumerate(angles):
+        FK_loss = FK_loss + 1 * (max(0, - fanwei[iii] - angle)**2 + max(0, angle - fanwei[iii])**2)
+
     if FK_loss != 0:
-        global num_Error1
         num_Error1 = num_Error1 + 1
-    # print('!',FK_results[:3, 3])
-    # print('!',input_target[3:6])
+
     # 计算损失
     MSELoss = nn.MSELoss()
 
     # 网络输出的底盘位置和真实物品位置距离
-    if MSELoss(intermediate_output , input_target[3:5]) > 2.5:
-        global num_Error2
+    # print(intermediate_output , input_target[3:5])
+    if MSELoss(intermediate_output , input_target[3:5]) > 1.5:
         num_Error2 = num_Error2 + 1
-        FK_loss = FK_loss + (MSELoss(intermediate_output , input_target[3:5])-torch.tensor([2.5]))*10
+        FK_loss = FK_loss + (MSELoss(intermediate_output , input_target[3:5])-torch.tensor([1.5])) *10
         # print('1:', MSELoss(intermediate_output , input_target[1:3])-torch.tensor([1.5]))
     # MSELoss = nn.MSELoss()
     # FK_loss = FK_loss + MSELoss(FK_results[:3, 3], input_target[3:6])
@@ -34,39 +38,35 @@ def calculate_FK_loss(angles, FK_results, input_target,intermediate_output):
 
     # FK输出和真实的差距
     if MSELoss(FK_results[:3, 3] , input_target[3:6]) > 0.001:
-        global num_NOError1
         num_NOError1 = num_NOError1 + 1
         # print('FK_results[:3, 3]', FK_results[:3, 3])
-        # print('input_target[3:6]', input_target[3:6])
         # print(MSELoss(FK_results[:3, 3] , input_target[3:6]))
 
         FK_loss = FK_loss + MSELoss(FK_results[:3, 3] , input_target[3:6])
         # print('2:', MSELoss(FK_results[:3, 3] , input_target[3:6]))
     else:
-        global num_NOError2
         num_NOError2 = num_NOError2 + 1
 
 
-    return FK_loss
+    return FK_loss, num_Error1, num_Error2, num_NOError1, num_NOError2
 
 
 def calculate_FK_loss_test(angles, FK_results, input_target,intermediate_output):
+    fanwei = [torch.pi * 178/180, torch.pi * 130/180, torch.pi * 135/180, torch.pi * 178/180, torch.pi * 128/180, torch.pi]
+    IK_loss_test_incorrect = 0
+    IK_loss_test_correct = 0
     # print(angles, FK_results, input_target)
     FK_loss = torch.tensor([0.0], requires_grad=True)
 
-    for angle in angles:
-        if -torch.pi < angle and angle < torch.pi:
-            pass
-        elif -torch.pi > angle:
-            FK_loss = FK_loss + (-torch.pi-angle)
-        else:
-            FK_loss = FK_loss + (angle - torch.pi)
+    for iii, angle in enumerate(angles):
+        FK_loss = FK_loss + 1 * (max(0, - fanwei[iii] - angle)**2 + max(0, angle - fanwei[iii])**2)
+
     MSELoss = nn.MSELoss()
-    if FK_loss != 0 or MSELoss(intermediate_output , input_target[3:5]) > 2.5 or MSELoss(FK_results[:3, 3] , input_target[3:6]) > 0.005:
-        global incorrect
-        incorrect = incorrect + 1
+    if FK_loss != 0 or MSELoss(intermediate_output , input_target[3:5]) > 1.2 or MSELoss(FK_results[:3, 3] , input_target[3:6]) > 0.001:
+        # global incorrect
+        IK_loss_test_incorrect = IK_loss_test_incorrect + 1
 
     else:
-        global correct
-        correct = correct + 1
-    return FK_loss
+        # global correct
+        IK_loss_test_correct = IK_loss_test_correct + 1
+    return FK_loss, IK_loss_test_incorrect, IK_loss_test_correct
