@@ -7,18 +7,13 @@ def sin(a):
     return torch.sin(a)
 
 def THT(Theta, A, D, Alpha):
-    # T = torch.tensor([
-    #     [cos(Theta), -sin(Theta)*cos(Alpha), sin(Alpha)*sin(Theta), A*cos(Theta)],
-    #     [sin(Theta), cos(Theta)*cos(Alpha), -cos(Theta)*sin(Alpha), A*sin(Theta)],
-    #     [0, sin(Alpha), cos(Alpha), D],
-    #     [0, 0, 0, 1]
-    # ])
+
     T = torch.stack([
-        torch.stack([torch.cos(Theta), -torch.sin(Theta) * torch.cos(Alpha), torch.sin(Alpha) * torch.sin(Theta),
-                     A * torch.cos(Theta)], dim=-1),
-        torch.stack([torch.sin(Theta), torch.cos(Theta) * torch.cos(Alpha), -torch.cos(Theta) * torch.sin(Alpha),
-                     A * torch.sin(Theta)], dim=-1),
-        torch.stack([torch.tensor(0.0), torch.sin(Alpha), torch.cos(Alpha), D], dim=-1),
+        torch.stack([torch.cos(Theta), -torch.sin(Theta), torch.tensor(0.0),
+                     A], dim=-1),
+        torch.stack([torch.sin(Theta)*torch.cos(Alpha), torch.cos(Theta) * torch.cos(Alpha), -torch.sin(Alpha),
+                     -torch.sin(Alpha)*D], dim=-1),
+        torch.stack([torch.sin(Theta)*torch.sin(Alpha), torch.cos(Theta)*torch.sin(Alpha), torch.cos(Alpha), torch.cos(Alpha)*D], dim=-1),
         torch.tensor([0.0, 0.0, 0.0, 1.0])
     ])
     return T
@@ -27,12 +22,6 @@ def THT(Theta, A, D, Alpha):
 
 
 def THT2(Theta, A, D, Alpha):
-    # T = torch.tensor([
-    #     [cos(Theta), -sin(Theta)*cos(Alpha), sin(Alpha)*sin(Theta), A*cos(Theta)],
-    #     [sin(Theta), cos(Theta)*cos(Alpha), -cos(Theta)*sin(Alpha), A*sin(Theta)],
-    #     [0, sin(Alpha), cos(Alpha), D+torch.tensor([0.5])],
-    #     [0, 0, 0, 1]
-    # ])
     T = torch.stack([
         torch.stack([torch.cos(Theta), -torch.sin(Theta) * torch.cos(Alpha), torch.sin(Alpha) * torch.sin(Theta),
                      A * torch.cos(Theta)], dim=-1),

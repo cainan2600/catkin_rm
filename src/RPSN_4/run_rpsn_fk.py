@@ -25,7 +25,7 @@ class main():
     def __init__(self):
         self.parser = argparse.ArgumentParser(description="Training MLP")
         self.parser.add_argument('--batch_size', type=int, default=5, help='input batch size for training (default: 1)')
-        self.parser.add_argument('--learning_rate', type=float, default=0.003, help='learning rate (default: 0.003)')
+        self.parser.add_argument('--learning_rate', type=float, default=0.03, help='learning rate (default: 0.003)')
         self.parser.add_argument('--epochs', type=int, default=200, help='gradient clip value (default: 300)')
         self.parser.add_argument('--clip', type=float, default=1, help='gradient clip value (default: 1)')
         self.parser.add_argument('--num_train', type=int, default=1000)
@@ -36,8 +36,8 @@ class main():
         # self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
         
         # 训练集数据导入
-        self.load_train_data = torch.load('/home/cn/catkin_rm/src/RPSN_4/data/data_cainan/rm-fk-ik-all-random-with-dipan-norm/train-{}-2/train_dataset_{}.pt'.format(self.args.num_train, self.args.num_train))
-        self.data_loader_train_dipan = torch.load('/home/cn/catkin_rm/src/RPSN_4/data/data_cainan/rm-fk-ik-all-random-with-dipan-norm/train-{}-2/train_dataset_dipan_{}.pt'.format(self.args.num_train, self.args.num_train))
+        self.load_train_data = torch.load('/home/cn/catkin_rm/src/RPSN_4/data/data_cainan/rm-fk-ik-all-random-with-dipan-norm/train-{}-1/train_dataset_{}.pt'.format(self.args.num_train, self.args.num_train))
+        self.data_loader_train_dipan = torch.load('/home/cn/catkin_rm/src/RPSN_4/data/data_cainan/rm-fk-ik-all-random-with-dipan-norm/train-{}-1/train_dataset_dipan_{}.pt'.format(self.args.num_train, self.args.num_train))
         # self.load_train_data = torch.load('/home/cn/RPSN_4/data/data_cainan/5000-fk-ik-all-random-with-dipan/train/train_dataset_5000.pt')
         # self.data_loader_train_dipan = torch.load('/home/cn/RPSN_4/data/data_cainan/5000-fk-ik-all-random-with-dipan/train/train_dataset_dipan_5000.pt')
 
@@ -46,12 +46,12 @@ class main():
         self.data_loader_train = DataLoader(self.data_train, batch_size=self.args.batch_size, shuffle=True)
 
         # 测试集数据导入
-        self.load_test_data = torch.load('/home/cn/catkin_rm/src/RPSN_4/data/data_cainan/rm-fk-ik-all-random-with-dipan-norm/test-400-2/test_dataset_400.pt')
+        self.load_test_data = torch.load('/home/cn/catkin_rm/src/RPSN_4/data/data_cainan/rm-fk-ik-all-random-with-dipan-norm/test-400-1/test_dataset_400.pt')
         self.data_test = TensorDataset(self.load_test_data[:self.args.num_test])
         self.data_loader_test = DataLoader(self.data_test, batch_size=self.args.batch_size, shuffle=False)
 
         # 定义训练权重保存文件路径
-        self.checkpoint_dir = r'/home/cn/catkin_rm/src/RPSN_4/work_dir/test01-2-10LOSS-loss2-expen-obj-chasis-distance-to-3'
+        self.checkpoint_dir = r'/home/cn/catkin_rm/src/RPSN_4/work_dir/test07-1-loss2'
         # 多少伦保存一次
         self.num_epoch_save = 100
 
@@ -59,7 +59,7 @@ class main():
         self.num_i = 6
         self.num_h = 128
         self.num_o = 3
-        self.model = MLP_for_fk
+        self.model = MLP_9_for_fk
         
         # 如果是接着训练则输入前面的权重路径
         self.model_path = r''
@@ -88,9 +88,14 @@ class main():
         echo_loss_test = []
         erro_inputs = []
         no_erro_inputs = []
-        NUM_dipan_in_tabel = []
+        # NUM_dipan_in_tabel = []
         NET_output = []
-        NUM_correct_but_dipan_in_tabel = []
+
+        NUM_all_correct_but_dipan_in_tabel = []
+        NUM_all_correct_and_not_in_tabel = []
+        NUM_not_all_correct = []
+        NUM_some_incorrect_of_correct = []
+        
         NUM_ALL_HAVE_SOLUTION = []
         NUM_ALL_HAVE_SOLUTION_test = []
 
@@ -101,7 +106,7 @@ class main():
         model = self.model.MLP_self(num_i , num_h, num_o, num_heads) 
         optimizer = torch.optim.Adagrad(model.parameters(), lr=learning_rate, weight_decay=0.000)  # 定义优化器
         # optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate, weight_decay=0.000)
-        scheduler = ReduceLROnPlateau(optimizer, mode='max', factor=0.75, patience=6, min_lr=0.003)
+        scheduler = ReduceLROnPlateau(optimizer, mode='max', factor=0.75, patience=6, min_lr=0.03)
         model_path = self.model_path
 
         if os.path.exists(model_path):          
@@ -126,7 +131,7 @@ class main():
             num_correct = 0
             NUM_all_have_solution = 0
             num_dipan_in_tabel = 0
-            num_correct_but_dipan_in_tabel = 0
+            num_all_correct_but_dipan_in_tabel = 0
 
             for data in data_loader_train:  # 读入数据开始训练
                 data, lables = data
@@ -137,7 +142,7 @@ class main():
 
                 # 计算 IK_loss_batch
                 IK_loss_batch = torch.tensor(0.0, requires_grad=True)
-                # IK_loss2 = torch.tensor(0.0, requires_grad=True)
+                IK_loss2 = torch.tensor(0.0, requires_grad=True)
                 # IK_loss3 = torch.tensor(0.0, requires_grad=True)
                 loss_fn = torch.nn.MSELoss()
 
@@ -180,6 +185,7 @@ class main():
                     outputs = torch.cat([outputs, pinjie2.unsqueeze(0)], dim=0)
 
                     outputs_tensor = outputs[0]
+                    # print(outputs.size(), outputs_tensor.size())
 
                     intermediate_outputs_chasis.retain_grad()
                     outputs.retain_grad()
@@ -219,10 +225,27 @@ class main():
 
                             if not num_NOError2==0:
                                 NUM_correct_obj += 1
-                    if NUM_correct_obj== NUM_obj:
+                    if NUM_correct_obj == NUM_obj:
                         NUM_all_have_solution += 1
-                    else:
-                        IK_loss_batch = IK_loss_batch + loss_fn(outputs_tensor, lables[num_zu_in_epoch - 1]) * 10
+                        if -0.55<intermediate_outputs_list[1]<2.05:
+                            if 0.503<intermediate_outputs_list[2]<1.953:
+                                num_all_correct_but_dipan_in_tabel += 1
+                                # NUM_all_correct_but_dipan_in_tabel.append()
+                    # else:
+                    # if -0.55<intermediate_outputs_list[1]<2.05:
+                    #     if 0.503<intermediate_outputs_list[2]<1.953:
+                    #         IK_loss_batch = IK_loss_batch + \
+                    #         min(max(0, outputs_tensor[3] - (-0.55)), max(0, 2.05 - outputs_tensor[3])) + \
+                    #         min(max(0, outputs_tensor[4] - 0.503), max(0, 1.953 - outputs_tensor[4]))
+                    
+                    # print("x",min(max(0, outputs_tensor[3] - (-0.55)), max(0, 2.05 - outputs_tensor[3])), 
+                    # "y", min(max(0, outputs_tensor[4] - 0.503), max(0, 1.953 - outputs_tensor[4])) * 10)
+                    IK_loss_batch = IK_loss_batch + min(
+                        min(max(0, outputs_tensor[3] - (-0.55)), max(0, 2.05 - outputs_tensor[3])),
+                        min(max(0, outputs_tensor[4] - 0.503), max(0, 1.953 - outputs_tensor[4]))
+                        )
+
+                    # IK_loss_batch = IK_loss_batch + loss_fn(outputs_tensor, lables[num_zu_in_epoch - 1])
 
 
                 IK_loss_batch.retain_grad()
@@ -270,12 +293,14 @@ class main():
             NUM_incorrect.append(num_incorrect)
             NUM_correct.append(num_correct)
             NUM_ALL_HAVE_SOLUTION.append(NUM_all_have_solution / self.args.num_train)
+            NUM_all_correct_but_dipan_in_tabel.append(num_all_correct_but_dipan_in_tabel)
 
             print("numError1", numError1)
             print("numError2", numError2)
             print("num_correct", num_correct)
             print("num_incorrect", num_incorrect)
             print("NUM_all_have_solution", NUM_all_have_solution)
+            print("num_all_correct_but_dipan_in_tabel", num_all_correct_but_dipan_in_tabel)
 
             current_lr = optimizer.param_groups[0]['lr']
             print(f"Current Learning Rate: {current_lr}")
@@ -358,6 +383,7 @@ class main():
         plot_test_fk(self.checkpoint_dir, start_epoch, epochs, self.args.num_train, NUM_incorrect_test, NUM_correct_test)
         plot_no_not_have_solution(self.checkpoint_dir, start_epoch, epochs, NUM_ALL_HAVE_SOLUTION)
         plot_no_not_have_solution_test(self.checkpoint_dir, start_epoch, epochs, NUM_ALL_HAVE_SOLUTION_test)
+        plot_correct_but_dipan_in_tabel(self.checkpoint_dir, start_epoch, epochs, NUM_all_correct_but_dipan_in_tabel)
 
 if __name__ == "__main__":
     a = main()
