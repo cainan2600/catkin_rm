@@ -51,7 +51,7 @@ class main():
         self.data_loader_test = DataLoader(self.data_test, batch_size=self.args.batch_size, shuffle=False)
 
         # 定义训练权重保存文件路径
-        self.checkpoint_dir = r'/home/cn/catkin_rm/src/RPSN_4/work_dir/test07-1-loss2'
+        self.checkpoint_dir = r'/home/cn/catkin_rm/src/RPSN_4/work_dir/test01-1-no-other'
         # 多少伦保存一次
         self.num_epoch_save = 100
 
@@ -59,7 +59,7 @@ class main():
         self.num_i = 6
         self.num_h = 128
         self.num_o = 3
-        self.model = MLP_9_for_fk
+        self.model = MLP_for_fk
         
         # 如果是接着训练则输入前面的权重路径
         self.model_path = r''
@@ -99,6 +99,12 @@ class main():
         NUM_ALL_HAVE_SOLUTION = []
         NUM_ALL_HAVE_SOLUTION_test = []
 
+        CORRECT_obj = []
+        CORRECT_chasis = []
+        INCORRECT_obj = []
+        INCORRECT_chasis = []
+        save_data_correct_incorrect = []
+        SAVE_DATA_CORRECT_INCORRECT = []
 
         epochs = self.args.epochs
         data_loader_train = self.data_loader_train
@@ -195,6 +201,7 @@ class main():
 
                     NUM_obj = 0
                     NUM_correct_obj = 0
+                    save_end_eff_calcu_by_FK = []
                     for i in range(len(input_tar)):
                         if torch.all(inputs_xx6[i].ne(0)):
 
@@ -206,6 +213,9 @@ class main():
                                 self.link_length, 
                                 self.link_offset, 
                                 self.link_twist)
+
+                            # print(end_eff_calcu_by_FK, end_eff_calcu_by_FK[:3, 3])
+                            save_end_eff_calcu_by_FK.append(end_eff_calcu_by_FK[:3, 3])
 
                             # 计算单IK_loss
                             FK_loss_batch, num_Error1, num_Error2, num_NOError1, num_NOError2= FK_loss.calculate_FK_loss(
@@ -225,13 +235,32 @@ class main():
 
                             if not num_NOError2==0:
                                 NUM_correct_obj += 1
+
+                    # 打印
+                    list_0 = torch.tensor([0, 0, 0])
+                    num_data = len(save_end_eff_calcu_by_FK)
+                    while num_data < 7:
+                        # 用0填充
+                        element = list_0
+                        save_end_eff_calcu_by_FK.append(element)
+                        num_data += 1
+
                     if NUM_correct_obj == NUM_obj:
                         NUM_all_have_solution += 1
                         if -0.55<intermediate_outputs_list[1]<2.05:
                             if 0.503<intermediate_outputs_list[2]<1.953:
                                 num_all_correct_but_dipan_in_tabel += 1
-                                # NUM_all_correct_but_dipan_in_tabel.append()
-                    # else:
+                    
+                    else:
+                        if epoch == start_epoch + epochs - 1:
+                            for save_dddd in inputs_xx6_no_random.detach().numpy():
+                                CORRECT_obj.append(save_dddd)
+                            CORRECT_chasis.append(lables[num_zu_in_epoch - 1].detach().numpy())
+                            
+                            INCORRECT_chasis.append(outputs_tensor.detach().numpy())
+                            for save_data_incorrect in save_end_eff_calcu_by_FK:
+                                INCORRECT_obj.append(save_data_incorrect.detach().numpy())
+
                     # if -0.55<intermediate_outputs_list[1]<2.05:
                     #     if 0.503<intermediate_outputs_list[2]<1.953:
                     #         IK_loss_batch = IK_loss_batch + \
@@ -376,6 +405,12 @@ class main():
         # save_data(no_erro_inputs, self.checkpoint_dir, "save_no_erro_data.txt")
         # save_data(erro_inputs, self.checkpoint_dir, "save_erro_data.txt")
         save_MLP_output(NET_output, self.checkpoint_dir, "NET_output.txt")
+
+        save_MLP_output(INCORRECT_obj, self.checkpoint_dir, "INCORRECT_obj.txt")
+        save_MLP_output(INCORRECT_chasis, self.checkpoint_dir, "INCORRECT_chasis.txt")
+        save_MLP_output(CORRECT_obj, self.checkpoint_dir, "CORRECT_obj.txt")
+        save_MLP_output(CORRECT_chasis, self.checkpoint_dir, "CORRECT_chasis.txt")
+        
 
         # 画图
         plot_train_loss(self.checkpoint_dir, start_epoch, epochs, echo_loss)
