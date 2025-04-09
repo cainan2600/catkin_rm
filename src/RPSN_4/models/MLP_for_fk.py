@@ -6,9 +6,9 @@ import torch.nn.functional as F
 class MLP_self(nn.Module):
     def __init__(self, num_i, num_h, num_o, num_heads):
         super(MLP_self, self).__init__()
-        # self.norm_input = input_norm()
-        # # self.norm_output1 = output1_norm()
-        # self.norm_output2 = output2_norm()
+        self.norm_input = input_norm()
+        # self.norm_output1 = output1_norm()
+        self.norm_output2 = output2_norm()
 
         self.shared_layers = nn.Sequential(
             nn.Linear(num_i, num_h),

@@ -167,7 +167,7 @@ def plot_correct_and_incorrct(filename):
 
 
 if __name__ == "__main__":
-    filename = "/home/cn/catkin_rm/src/RPSN_4/work_dir/test01-1-no-other"
+    filename = "/home/cn/catkin_rm/src/RPSN_4/work_dir/test01-2same-weight-loss-50loss3"
     plot_correct_and_incorrct(filename)
 
 

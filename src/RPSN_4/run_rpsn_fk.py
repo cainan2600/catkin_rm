@@ -51,7 +51,7 @@ class main():
         self.data_loader_test = DataLoader(self.data_test, batch_size=self.args.batch_size, shuffle=False)
 
         # 定义训练权重保存文件路径
-        self.checkpoint_dir = r'/home/cn/catkin_rm/src/RPSN_4/work_dir/test01-1-no-other'
+        self.checkpoint_dir = r'/home/cn/catkin_rm/src/RPSN_4/work_dir/test01-1-weight'
         # 多少伦保存一次
         self.num_epoch_save = 100
 
@@ -270,8 +270,8 @@ class main():
                     # print("x",min(max(0, outputs_tensor[3] - (-0.55)), max(0, 2.05 - outputs_tensor[3])), 
                     # "y", min(max(0, outputs_tensor[4] - 0.503), max(0, 1.953 - outputs_tensor[4])) * 10)
                     IK_loss_batch = IK_loss_batch + min(
-                        min(max(0, outputs_tensor[3] - (-0.55)), max(0, 2.05 - outputs_tensor[3])),
-                        min(max(0, outputs_tensor[4] - 0.503), max(0, 1.953 - outputs_tensor[4]))
+                        min(max(0, outputs_tensor[3] - (-0.55)), max(0, 2.05 - outputs_tensor[3])) / 1,
+                        min(max(0, outputs_tensor[4] - 0.503), max(0, 1.953 - outputs_tensor[4])) / 0.425
                         )
 
                     # IK_loss_batch = IK_loss_batch + loss_fn(outputs_tensor, lables[num_zu_in_epoch - 1])
