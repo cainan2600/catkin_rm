@@ -21,10 +21,10 @@ def calculate_FK_loss(angles, FK_results, input_target,intermediate_output):
     # 计算损失
     MSELoss = nn.MSELoss()
     # 网络输出的底盘位置和真实物品位置距离
-    if MSELoss(intermediate_output , input_target[3:5]) > 1.5:
+    if MSELoss(intermediate_output , input_target[3:5]) > 0.2738:
         num_Error2 = num_Error2 + 1
-        FK_loss = FK_loss + (MSELoss(intermediate_output , input_target[3:5])-torch.tensor([1.5])) *10
-        # print('1:', MSELoss(intermediate_output , input_target[1:3])-torch.tensor([1.5]))
+        FK_loss = FK_loss + (MSELoss(intermediate_output , input_target[3:5])) *10
+    # print('1:', MSELoss(intermediate_output , input_target[1:3])-torch.tensor([1.5]), intermediate_output, input_target[3:5])
     # MSELoss = nn.MSELoss()
     # FK_loss = FK_loss + MSELoss(FK_results[:3, 3], input_target[3:6])
     # if MSELoss(FK_results[:3, 3], input_target[3:6]) > 0.01:

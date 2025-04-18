@@ -51,14 +51,14 @@ class main():
         self.data_loader_test = DataLoader(self.data_test, batch_size=self.args.batch_size, shuffle=False)
 
         # 定义训练权重保存文件路径
-        self.checkpoint_dir = r'/home/cn/catkin_rm/src/RPSN_4/work_dir/test01-1-weight'
+        self.checkpoint_dir = r'/home/cn/catkin_rm/src/RPSN_4/work_dir/test01-1-output5'
         # 多少伦保存一次
         self.num_epoch_save = 100
 
         # 选择模型及参数
         self.num_i = 6
         self.num_h = 128
-        self.num_o = 3
+        self.num_o = 5
         self.model = MLP_for_fk
         
         # 如果是接着训练则输入前面的权重路径
@@ -146,9 +146,9 @@ class main():
                 # 将batch_size中的每一组数据输入网络
                 num_zu_in_epoch = 0
 
-                # 计算 IK_loss_batch
-                IK_loss_batch = torch.tensor(0.0, requires_grad=True)
-                IK_loss2 = torch.tensor(0.0, requires_grad=True)
+                # 计算 FK_loss_batch
+                FK_loss_batch = torch.tensor(0.0, requires_grad=True)
+                # IK_loss2 = torch.tensor(0.0, requires_grad=True)
                 # IK_loss3 = torch.tensor(0.0, requires_grad=True)
                 loss_fn = torch.nn.MSELoss()
 
@@ -162,8 +162,18 @@ class main():
                     # print(inputs_xx6_no_random, inputs_xx6_no_random.size())
                     # inputs = shaping_inputs_xx6_to_1xx(inputs_xx6)
                     inputs = inputs_xx6
-
                     intermediate_outputs_chasis, intermediate_outputs_angel = model(inputs)
+                    # print(intermediate_outputs_chasis.size(), intermediate_outputs_chasis)
+
+                    # # 推出归一化
+                    # intermediate_outputs_chasis = (intermediate_outputs_chasis + 1) / 2
+                    # intermediate_outputs_chasis_x = intermediate_outputs_chasis[1] * 3.48 + (-0.99)
+                    # intermediate_outputs_chasis_y = intermediate_outputs_chasis[2] * 2.33 + 0.063
+                    # intermediate_outputs_chasis_w = intermediate_outputs_chasis[0] * torch.pi
+                    # intermediate_outputs_chasis = torch.stack([intermediate_outputs_chasis_w, intermediate_outputs_chasis_x, intermediate_outputs_chasis_y], dim=-1)
+
+                    # intermediate_outputs_angel = intermediate_outputs_angel * torch.pi
+
                     intermediate_outputs_list = intermediate_outputs_chasis.detach().numpy()
                     # print(intermediate_outputs, intermediate_outputs_list)
                     if epoch == (start_epoch + epochs - 1):
@@ -226,7 +236,7 @@ class main():
                             # make_dot(IK_loss1).view()
 
                             # 总loss
-                            IK_loss_batch = IK_loss_batch + FK_loss_batch
+                            FK_loss_batch = FK_loss_batch + FK_loss_batch
 
                             numError1 = numError1 + num_Error1
                             numError2 = numError2 + num_Error2
@@ -261,30 +271,37 @@ class main():
                             for save_data_incorrect in save_end_eff_calcu_by_FK:
                                 INCORRECT_obj.append(save_data_incorrect.detach().numpy())
 
-                    # if -0.55<intermediate_outputs_list[1]<2.05:
-                    #     if 0.503<intermediate_outputs_list[2]<1.953:
-                    #         IK_loss_batch = IK_loss_batch + \
-                    #         min(max(0, outputs_tensor[3] - (-0.55)), max(0, 2.05 - outputs_tensor[3])) + \
-                    #         min(max(0, outputs_tensor[4] - 0.503), max(0, 1.953 - outputs_tensor[4]))
+                    # FK_loss_batch = FK_loss_batch + \
+                    # min(max(0, outputs_tensor[3] - (-0.55)), max(0, 2.05 - outputs_tensor[3])) + \
+                    # min(max(0, outputs_tensor[4] - 0.503), max(0, 1.953 - outputs_tensor[4]))
                     
-                    # print("x",min(max(0, outputs_tensor[3] - (-0.55)), max(0, 2.05 - outputs_tensor[3])), 
-                    # "y", min(max(0, outputs_tensor[4] - 0.503), max(0, 1.953 - outputs_tensor[4])) * 10)
-                    IK_loss_batch = IK_loss_batch + min(
-                        min(max(0, outputs_tensor[3] - (-0.55)), max(0, 2.05 - outputs_tensor[3])) / 1,
-                        min(max(0, outputs_tensor[4] - 0.503), max(0, 1.953 - outputs_tensor[4])) / 0.425
-                        )
 
-                    # IK_loss_batch = IK_loss_batch + loss_fn(outputs_tensor, lables[num_zu_in_epoch - 1])
+                    # FK_loss_batch = FK_loss_batch + min(
+                    #     min(max(0, outputs_tensor[3] - (-0.55)), max(0, 2.05 - outputs_tensor[3])),
+                    #     min(max(0, outputs_tensor[4] - 0.503), max(0, 1.953 - outputs_tensor[4]))
+                    #     )
+
+                    # FK_loss_batch = FK_loss_batch + \
+                    #     min(torch.relu(outputs_tensor[3] - (-0.55)), torch.relu(2.05 - outputs_tensor[3])) * \
+                    #     min(torch.relu(outputs_tensor[4] - 0.503), torch.relu(1.953 - outputs_tensor[4]))
+
+                    # x_low_penalty = torch.relu(outputs_tensor[3] - (-0.55))  # x < -0.55时为正
+                    # x_high_penalty = torch.relu(2.05 - outputs_tensor[3])  # x >2.05时为正
+                    # y_low_penalty = torch.relu(outputs_tensor[4] - 0.503)
+                    # y_high_penalty = torch.relu(1.953 - outputs_tensor[4])
+                    # FK_loss_batch = FK_loss_batch + (x_low_penalty + x_high_penalty + y_low_penalty + y_high_penalty).mean()
+
+                    # FK_loss_batch = FK_loss_batch + loss_fn(outputs_tensor, lables[num_zu_in_epoch - 1])
 
 
-                IK_loss_batch.retain_grad()
-                # make_dot(IK_loss_batch).view()
+                FK_loss_batch.retain_grad()
+                # make_dot(FK_loss_batch).view()
 
                 optimizer.zero_grad()  # 梯度初始化为零，把loss关于weight的导数变成0
 
                 # 定义总loss函数
-                # loss = IK_loss_batch / len(inputs_bxxx6)
-                loss = IK_loss_batch
+                # loss = FK_loss_batch / len(inputs_bxxx6)
+                loss = FK_loss_batch
                 loss.retain_grad()
 
                 # assert torch.isnan(loss).sum() == 0
@@ -359,8 +376,8 @@ class main():
 
                         MLP_output_base_test = shaping(outputs_test)
 
-                        # 计算 IK_loss_batch
-                        IK_loss_batch_test = torch.tensor(0.0, requires_grad=True)
+                        # 计算 FK_loss_batch
+                        FK_loss_batch_test = torch.tensor(0.0, requires_grad=True)
                         NUM_obj_test = 0
                         NUM_correct_obj_test = 0                      
                         for i in range(len(input_tar_test)):

@@ -1,109 +1,107 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+import math
 
 
 class MLP_self(nn.Module):
     def __init__(self, num_i, num_h, num_o, num_heads):
         super(MLP_self, self).__init__()
-        self.norm_input = input_norm()
-        # self.norm_output1 = output1_norm()
-        self.norm_output2 = output2_norm()
 
-        self.shared_layers = nn.Sequential(
-            nn.Linear(num_i, num_h),
-            # nn.LayerNorm(num_h),
-            nn.ReLU(),
-            nn.Linear(num_h, num_h),
-            # nn.LayerNorm(num_h),
-            nn.ReLU(),
-            # nn.Linear(2*num_h, 2*num_h),
-            # # nn.LayerNorm(num_h),
-            # nn.ReLU()
-        )
+        self.constrained_layer = ConstrainedOutputLayer(x_min=-0.55, x_max=2.05, y_min=0.503, y_max=1.953)
 
         # 输出1x3
         self.output1_head = nn.Sequential(
-            # nn.Linear(2*num_h, num_h),
-            # # nn.LayerNorm(num_h),
-            # nn.ReLU(),
-            nn.Linear(num_h, num_o)
+            nn.Linear(num_i, num_h),
+            # nn.LayerNorm(num_h),
+            nn.ReLU(),
+            nn.Linear(num_h, 2*num_h),
+            # nn.LayerNorm(num_h),
+            nn.ReLU(),
+            nn.Linear(2*num_h, 4*num_h),
+            # nn.LayerNorm(num_h),
+            nn.ReLU(),
+            nn.Linear(4*num_h, 2*num_h),
+            # nn.LayerNorm(num_h),
+            nn.ReLU(),
+            nn.Linear(2*num_h, num_h),
+            # nn.LayerNorm(num_h),
+            nn.ReLU(),
+            nn.Linear(num_h, num_o),
+
         )
 
         # 输出7x6
         self.output2_head = nn.Sequential(
-            # nn.Linear(2*num_h, num_h),
-            # # nn.LayerNorm(num_h),
-            # nn.ReLU(),
+            nn.Linear(num_i, num_h),
+            # nn.LayerNorm(num_h),
+            nn.ReLU(),
+            nn.Linear(num_h, 2*num_h),
+            # nn.LayerNorm(num_h),
+            nn.ReLU(),
+            nn.Linear(2*num_h, 4*num_h),
+            # nn.LayerNorm(num_h),
+            nn.ReLU(),
+            nn.Linear(4*num_h, 2*num_h),
+            # nn.LayerNorm(num_h),
+            nn.ReLU(),
+            nn.Linear(2*num_h, num_h),
+            # nn.LayerNorm(num_h),
+            nn.ReLU(),
             nn.Linear(num_h, num_i)
         )
 
-    def forward(self, input):
-        # input = self.norm_input(input)
+    def forward(self, input, input_0_1):
 
-        x = self.shared_layers(input)
-
-        out1 = self.output1_head(x)
+        out1 = self.output1_head(input)
         out1 = out1.mean(dim=0)
+        out1 = self.constrained_layer(out1, input_0_1)
 
-        out2 = self.output2_head(x)
-        # out2 = self.norm_output2(out2)
+        out2 = self.output2_head(input)
 
         return out1, out2
 
-class input_norm(nn.Module):
-    def __init__(self):
+class ConstrainedOutputLayer(torch.nn.Module):
+    def __init__(self, x_min, x_max, y_min, y_max):
         super().__init__()
+        self.x_min, self.x_max = x_min, x_max
+        self.y_min, self.y_max = y_min, y_max
+        
+    def forward(self, raw_output, input_0_1):
+        """
+        raw_output: 形状为(5)
+                    [x_offset, y_offset, x_free, y_free, yaw]
+        """
+        input_0_1 = torch.where(input_0_1 >= 0.5, 1, 0)
+        # print(input_0_1)
+        choose_x_or_y, choose_right_or_left = input_0_1[0], input_0_1[1]
 
-    def forward(self, input_tensor):
+        # 安全偏移量
+        x_offset = torch.exp(raw_output[0])
+        y_offset = torch.exp(raw_output[1])
 
-        all_zero = torch.all(input_tensor == 0, dim=1)
-        # 提取7x6的矩阵
-        matrix_1 = input_tensor[~all_zero]
-        matrix_0 = input_tensor[all_zero]
+        # 约束x轴时，x在左右外部，y自由
+        x_constrained = (
+            (self.x_min - x_offset) * (1 - choose_right_or_left) +
+            (self.x_max + x_offset) * choose_right_or_left
+        )
+        y_free = raw_output[3]
 
-        # print(input_tensor, matrix_1, matrix_0)
-        input_roll_pitch_yaw_max = torch.pi  # 角度范围 [-π, π]
-        # input_coord_min_x = -1
-        # input_coord_max_x = 1
-        # input_coord_min_y = -0.425
-        # input_coord_max_y = 0.425
-        # input_coord_min_z = 0.13
-        # input_coord_max_z = 0.15
+        # 约束y轴时，y在上下外部，x自由
+        y_constrained = (
+            (self.y_min - y_offset) * (1 - choose_right_or_left) +
+            (self.y_max + y_offset) * choose_right_or_left
+        )
+        x_free = raw_output[2]
 
-        norm_angels = matrix_1[..., :3] / input_roll_pitch_yaw_max
-        norm_x = matrix_1[..., 3] - 0.75
-        norm_y = (matrix_1[..., 4] - 1.228) / 0.425
-        norm_z = (matrix_1[..., 5] - 0.13) / 0.02
-        # print(norm_z.size(), norm_z)
-        norm_coords = torch.stack([norm_x, norm_y, norm_z], dim=1)
+        # 混合输出
+        x = choose_x_or_y * x_constrained + (1 - choose_x_or_y) * x_free
+        y = choose_x_or_y * y_free + (1 - choose_x_or_y) * y_constrained
 
-        # print(norm_coords)
-        # print(torch.cat([norm_angels, norm_coords], dim=-1))
-        norm_matrics_1 = torch.cat([norm_angels, norm_coords], dim=-1)
-        # print(torch.cat([norm_matrics_1, matrix_0], dim=0))
-
-        return torch.cat([norm_matrics_1, matrix_0], dim=0)
-
-class output1_norm(nn.Module):
-    def __init__(self):
-        super().__init__()
-
-    def forward(self, output1_tensor):
-        norm_x = output1_tensor[1] - 0.75
-
-
-
-        return torch.cat([norm_matrics_1, matrix_0], dim=0)
-
-class output2_norm(nn.Module):
-    def __init__(self):
-        super().__init__()
-
-    def forward(self, output2_tensor):
-
-        # norm_x = output2_tensor / torch.pi
-        # print(output2_tensor, norm_x)
-
-
-        return output2_tensor / torch.pi
+        # print(x_constrained, y_constrained)
+        # print(x_offset, y_offset)
+        # print(choose_right_or_left, choose_x_or_y)
+        # print(raw_output[2], raw_output[3])
+        # print(raw_output[:2])
+        
+        return torch.stack([raw_output[4], x, y], dim=-1)
