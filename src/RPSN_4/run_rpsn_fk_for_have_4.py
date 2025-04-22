@@ -7,7 +7,7 @@ import numpy as np
 import argparse
 from torch.utils.data import Dataset, DataLoader, TensorDataset
 
-from models import MLP_for_fk, MLP_9_for_fk, MLP_for_fk_no
+from models import MLP_for_fk, MLP_9_for_fk, MLP_for_0_1
 from lib.trans_all import *
 from lib import FK_diff, FK_loss
 import torch
@@ -26,7 +26,7 @@ class main():
         self.parser = argparse.ArgumentParser(description="Training MLP")
         self.parser.add_argument('--batch_size', type=int, default=5, help='input batch size for training (default: 1)')
         self.parser.add_argument('--learning_rate', type=float, default=0.03, help='learning rate (default: 0.003)')
-        self.parser.add_argument('--epochs', type=int, default=200, help='gradient clip value (default: 300)')
+        self.parser.add_argument('--epochs', type=int, default=600, help='gradient clip value (default: 300)')
         self.parser.add_argument('--clip', type=float, default=1, help='gradient clip value (default: 1)')
         self.parser.add_argument('--num_train', type=int, default=1000)
         self.parser.add_argument('--num_test', type=int, default=400)
@@ -43,7 +43,7 @@ class main():
 
 
         self.data_train = TensorDataset(self.load_train_data[:self.args.num_train], self.data_loader_train_dipan[:self.args.num_train])
-        self.data_loader_train = DataLoader(self.data_train, batch_size=self.args.batch_size, shuffle=True)
+        self.data_loader_train = DataLoader(self.data_train, batch_size=self.args.batch_size, shuffle=False)
 
         # 测试集数据导入
         self.load_test_data = torch.load('/home/cn/catkin_rm/src/RPSN_4/data/data_cainan/rm-fk-ik-all-random-with-dipan-norm/test-400-1/test_dataset_400.pt')
@@ -51,18 +51,21 @@ class main():
         self.data_loader_test = DataLoader(self.data_test, batch_size=self.args.batch_size, shuffle=False)
 
         # 定义训练权重保存文件路径
-        self.checkpoint_dir = r'/home/cn/catkin_rm/src/RPSN_4/work_dir/test03-1-new-chasis-los1'
+        self.checkpoint_dir = r'/home/cn/catkin_rm/src/RPSN_4/work_dir/test02-1-output5-1111111obj'
         # 多少伦保存一次
         self.num_epoch_save = 100
 
         # 选择模型及参数
         self.num_i = 6
         self.num_h = 128
-        self.num_o = 3
-        self.model = MLP_for_fk_no
+        self.num_o = 5
+        self.num_o_0_1 = 2
+        self.model = MLP_for_fk
+        self.model_0_1 = MLP_for_0_1
         
         # 如果是接着训练则输入前面的权重路径
         self.model_path = r''
+        self.model_0_1_path = r'/home/cn/catkin_rm/src/RPSN_4/work_dir/test000000000001-bs1-256hiden*8-0.93-0.9/checkpoint-epoch200.pt'
 
         # 定义DH参数
         # self.link_length = torch.tensor([0, -0.6127, -0.57155, 0, 0, 0])
@@ -109,11 +112,14 @@ class main():
         epochs = self.args.epochs
         data_loader_train = self.data_loader_train
         learning_rate = self.args.learning_rate
-        model = self.model.MLP_self(num_i , num_h, num_o, num_heads) 
+        model = self.model.MLP_self(num_i , num_h, num_o, num_heads)
+        model_0_1 = self.model_0_1.MLP_self(num_i, 2*num_h, self.num_o_0_1, num_heads)
         optimizer = torch.optim.Adagrad(model.parameters(), lr=learning_rate, weight_decay=0.000)  # 定义优化器
+        optimizer_0_1 = torch.optim.Adagrad(model_0_1.parameters(), lr=0.003, weight_decay=0.000)  # 定义优化器
         # optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate, weight_decay=0.000)
         scheduler = ReduceLROnPlateau(optimizer, mode='max', factor=0.75, patience=6, min_lr=0.03)
         model_path = self.model_path
+        model_0_1_path = self.model_0_1_path
 
         if os.path.exists(model_path):          
             checkpoint = torch.load(model_path)  
@@ -125,6 +131,11 @@ class main():
         else:
             print('-' * 120 + '\n' + "There is no pre-trained model under the path, and the following training starts from [epoch1] after random initialization" + '\n' + '-' * 120)
             start_epoch = 1
+
+        if os.path.exists(model_0_1_path):          
+            checkpoint_0_1 = torch.load(model_0_1_path)  
+            model_0_1.load_state_dict(checkpoint_0_1['state_dict'])
+            optimizer_0_1.load_state_dict(checkpoint_0_1['optimizer'])
 
         # 开始训练
         for epoch in range(start_epoch , start_epoch + epochs):
@@ -148,7 +159,7 @@ class main():
 
                 # 计算 FK_loss_batch
                 FK_loss_batch = torch.tensor(0.0, requires_grad=True)
-                # IK_loss2 = torch.tensor(0.0, requires_grad=True)
+                IK_loss2 = torch.tensor(0.0, requires_grad=True)
                 # IK_loss3 = torch.tensor(0.0, requires_grad=True)
                 loss_fn = torch.nn.MSELoss()
 
@@ -162,7 +173,9 @@ class main():
                     # print(inputs_xx6_no_random, inputs_xx6_no_random.size())
                     # inputs = shaping_inputs_xx6_to_1xx(inputs_xx6)
                     inputs = inputs_xx6
-                    intermediate_outputs_chasis, intermediate_outputs_angel = model(inputs)
+                    xxxxxx = model_0_1(inputs)
+                    # print(xxxxxx, inputs)
+                    intermediate_outputs_chasis, intermediate_outputs_angel = model(inputs, xxxxxx)
                     # print(intermediate_outputs_chasis.size(), intermediate_outputs_chasis)
 
                     # # 推出归一化
@@ -276,10 +289,10 @@ class main():
                     # min(max(0, outputs_tensor[4] - 0.503), max(0, 1.953 - outputs_tensor[4]))
                     
 
-                    FK_loss_batch = FK_loss_batch + min(
-                        min(max(0, outputs_tensor[3] - (-0.55)), max(0, 2.05 - outputs_tensor[3])),
-                        min(max(0, outputs_tensor[4] - 0.503), max(0, 1.953 - outputs_tensor[4]))
-                        )
+                    # FK_loss_batch = FK_loss_batch + min(
+                    #     min(max(0, outputs_tensor[3] - (-0.55)), max(0, 2.05 - outputs_tensor[3])),
+                    #     min(max(0, outputs_tensor[4] - 0.503), max(0, 1.953 - outputs_tensor[4]))
+                    #     )
 
                     # FK_loss_batch = FK_loss_batch + \
                     #     min(torch.relu(outputs_tensor[3] - (-0.55)), torch.relu(2.05 - outputs_tensor[3])) * \
@@ -292,54 +305,6 @@ class main():
                     # FK_loss_batch = FK_loss_batch + (x_low_penalty + x_high_penalty + y_low_penalty + y_high_penalty).mean()
 
                     # FK_loss_batch = FK_loss_batch + loss_fn(outputs_tensor, lables[num_zu_in_epoch - 1])
-
-
-                    # # 获取预测的底盘位置x, y
-                    # x = outputs_tensor[3]  # 假设索引0为x
-                    # y = outputs_tensor[4]  # 假设索引1为y
-
-                    # # 桌子边界参数
-                    # x_left, x_right = -0.55, 2.05
-                    # y_bottom, y_top = 0.503, 1.953
-
-                    # # 判断是否在桌子内部
-                    # is_inside = (x >= x_left) & (x <= x_right) & (y >= y_bottom) & (y <= y_top)
-
-                    # # 内部损失：推动内部点至最近边界
-                    # if is_inside:
-                    #     # 计算到最近x边界的距离
-                    #     dx = min(x - x_left, x_right - x)
-                    #     # 计算到最近y边界的距离
-                    #     dy = min(y - y_bottom, y_top - y)
-                    #     # 内部损失为最近边界距离
-                    #     internal_loss = min(dx, dy)
-                    # else:
-                    #     internal_loss = 0.0
-
-                    # # 外部正则项：鼓励远离桌子，分散到四周
-                    # reg_x = 0.0
-                    # reg_y = 0.0
-
-                    # # x方向的正则
-                    # if x < x_left:
-                    #     reg_x = x_left - x  # 左外部，鼓励更左
-                    # elif x > x_right:
-                    #     reg_x = x - x_right  # 右外部，鼓励更右
-
-                    # # y方向的正则
-                    # if y < y_bottom:
-                    #     reg_y = y_bottom - y  # 下外部，鼓励更下
-                    # elif y > y_top:
-                    #     reg_y = y - y_top  # 上外部，鼓励更上
-
-                    # # 总正则损失（负号使梯度推动远离）
-                    # external_reg_loss = -(reg_x + reg_y)
-
-                    # # 合并损失，加权正则项防止过度影响主任务
-                    # total_loss = internal_loss + 0.1 * external_reg_loss
-
-                    # FK_loss_batch = FK_loss_batch + total_loss
-
 
 
                 FK_loss_batch.retain_grad()
@@ -414,7 +379,8 @@ class main():
                     for inputs_xx6_test in inputs_bxxx6_test:
                         # inputs_xx6_test = inputs_xx6_test[torch.randperm(inputs_xx6_test.size(0))]
                         inputs_test = inputs_xx6_test
-                        intermediate_outputs_chasis_test, intermediate_outputs_angel_tese = model(inputs_test)
+                        xxxxxx_test = model_0_1(inputs_test)
+                        intermediate_outputs_chasis_test, intermediate_outputs_angel_tese = model(inputs_test, xxxxxx_test)
                         # print(inputs_xx6_test.size())
                         input_tar_test = shaping(inputs_xx6_test)
                         outputs_test = torch.empty((0, 6))

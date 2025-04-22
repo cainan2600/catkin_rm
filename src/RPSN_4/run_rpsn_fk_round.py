@@ -7,7 +7,7 @@ import numpy as np
 import argparse
 from torch.utils.data import Dataset, DataLoader, TensorDataset
 
-from models import MLP_for_fk, MLP_9_for_fk, MLP_for_fk_no
+from models import MLP_for_fk, MLP_9_for_fk
 from lib.trans_all import *
 from lib import FK_diff, FK_loss
 import torch
@@ -36,8 +36,8 @@ class main():
         # self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
         
         # 训练集数据导入
-        self.load_train_data = torch.load('/home/cn/catkin_rm/src/RPSN_4/data/data_cainan/rm-fk-ik-all-random-with-dipan-norm/train-{}-1/train_dataset_{}.pt'.format(self.args.num_train, self.args.num_train))
-        self.data_loader_train_dipan = torch.load('/home/cn/catkin_rm/src/RPSN_4/data/data_cainan/rm-fk-ik-all-random-with-dipan-norm/train-{}-1/train_dataset_dipan_{}.pt'.format(self.args.num_train, self.args.num_train))
+        self.load_train_data = torch.load('/home/cn/catkin_rm/src/RPSN_4/data/data_cainan/rm-fk-ik-all-random-with-dipan-round0.74/train-{}-1/train_dataset_{}.pt'.format(self.args.num_train, self.args.num_train))
+        self.data_loader_train_dipan = torch.load('/home/cn/catkin_rm/src/RPSN_4/data/data_cainan/rm-fk-ik-all-random-with-dipan-round0.74/train-{}-1/train_dataset_dipan_{}.pt'.format(self.args.num_train, self.args.num_train))
         # self.load_train_data = torch.load('/home/cn/RPSN_4/data/data_cainan/5000-fk-ik-all-random-with-dipan/train/train_dataset_5000.pt')
         # self.data_loader_train_dipan = torch.load('/home/cn/RPSN_4/data/data_cainan/5000-fk-ik-all-random-with-dipan/train/train_dataset_dipan_5000.pt')
 
@@ -46,12 +46,12 @@ class main():
         self.data_loader_train = DataLoader(self.data_train, batch_size=self.args.batch_size, shuffle=True)
 
         # 测试集数据导入
-        self.load_test_data = torch.load('/home/cn/catkin_rm/src/RPSN_4/data/data_cainan/rm-fk-ik-all-random-with-dipan-norm/test-400-1/test_dataset_400.pt')
+        self.load_test_data = torch.load('/home/cn/catkin_rm/src/RPSN_4/data/data_cainan/rm-fk-ik-all-random-with-dipan-round0.74/test-400-1/test_dataset_400.pt')
         self.data_test = TensorDataset(self.load_test_data[:self.args.num_test])
         self.data_loader_test = DataLoader(self.data_test, batch_size=self.args.batch_size, shuffle=False)
 
         # 定义训练权重保存文件路径
-        self.checkpoint_dir = r'/home/cn/catkin_rm/src/RPSN_4/work_dir/test03-1-new-chasis-los1'
+        self.checkpoint_dir = r'/home/cn/catkin_rm/src/RPSN_4/work_dir/test08-1-chasis-loss'
         # 多少伦保存一次
         self.num_epoch_save = 100
 
@@ -59,7 +59,7 @@ class main():
         self.num_i = 6
         self.num_h = 128
         self.num_o = 3
-        self.model = MLP_for_fk_no
+        self.model = MLP_for_fk
         
         # 如果是接着训练则输入前面的权重路径
         self.model_path = r''
@@ -257,9 +257,8 @@ class main():
 
                     if NUM_correct_obj == NUM_obj:
                         NUM_all_have_solution += 1
-                        if -0.55<intermediate_outputs_list[1]<2.05:
-                            if 0.503<intermediate_outputs_list[2]<1.953:
-                                num_all_correct_but_dipan_in_tabel += 1
+                        if torch.sqrt((outputs_tensor[3] - 0.75)**2 + (outputs_tensor[4] - 1.228)**2) <= 0.74:
+                            num_all_correct_but_dipan_in_tabel += 1
                     
                     else:
                         if epoch == start_epoch + epochs - 1:
@@ -271,15 +270,21 @@ class main():
                             for save_data_incorrect in save_end_eff_calcu_by_FK:
                                 INCORRECT_obj.append(save_data_incorrect.detach().numpy())
 
+
+                    if torch.sqrt((outputs_tensor[3] - 0.75)**2 + (outputs_tensor[4] - 1.228)**2) <= 0.74:
+                        FK_loss_batch = FK_loss_batch + (0.74 - torch.sqrt((outputs_tensor[3] - 0.75)**2 + (outputs_tensor[4] - 1.228)**2))
+                    else:
+                        FK_loss_batch = FK_loss_batch + 0
+
                     # FK_loss_batch = FK_loss_batch + \
                     # min(max(0, outputs_tensor[3] - (-0.55)), max(0, 2.05 - outputs_tensor[3])) + \
                     # min(max(0, outputs_tensor[4] - 0.503), max(0, 1.953 - outputs_tensor[4]))
                     
 
-                    FK_loss_batch = FK_loss_batch + min(
-                        min(max(0, outputs_tensor[3] - (-0.55)), max(0, 2.05 - outputs_tensor[3])),
-                        min(max(0, outputs_tensor[4] - 0.503), max(0, 1.953 - outputs_tensor[4]))
-                        )
+                    # FK_loss_batch = FK_loss_batch + min(
+                    #     min(max(0, outputs_tensor[3] - (-0.55)), max(0, 2.05 - outputs_tensor[3])),
+                    #     min(max(0, outputs_tensor[4] - 0.503), max(0, 1.953 - outputs_tensor[4]))
+                    #     )
 
                     # FK_loss_batch = FK_loss_batch + \
                     #     min(torch.relu(outputs_tensor[3] - (-0.55)), torch.relu(2.05 - outputs_tensor[3])) * \
@@ -450,7 +455,7 @@ class main():
                                 num_correct_test = num_correct_test + IK_loss_test_correct
                                 if not IK_loss_test_correct==0:
                                     NUM_correct_obj_test += 1
-                        if NUM_correct_obj_test== NUM_obj_test:
+                        if NUM_correct_obj_test == NUM_obj_test:
                             NUM_all_have_solution_test += 1
               
 
