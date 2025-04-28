@@ -284,19 +284,19 @@ class main():
 
 
                     # print(FK_loss_batch_1)
-                    # FK_loss_batch_1 = FK_loss_batch_1 + min(
-                    #     min(max(0, outputs_tensor[3] - (-0.55)), max(0, 2.05 - outputs_tensor[3])),
-                    #     min(max(0, outputs_tensor[4] - 0.503), max(0, 1.953 - outputs_tensor[4]))
-                    #     )
-                    # print(FK_loss_batch_1)
-                    # make_dot(FK_loss_batch_1).view()
-                    # FK_loss_batch = FK_loss_batch + FK_loss_batch_1
-                    # # print(FK_loss_batch)
-
-                    FK_loss_batch = FK_loss_batch + min(
+                    FK_loss_batch_1 = FK_loss_batch_1 + min(
                         min(max(0, outputs_tensor[3] - (-0.55)), max(0, 2.05 - outputs_tensor[3])),
                         min(max(0, outputs_tensor[4] - 0.503), max(0, 1.953 - outputs_tensor[4]))
                         )
+                    # print(FK_loss_batch_1)
+                    # make_dot(FK_loss_batch_1).view()
+                    FK_loss_batch = FK_loss_batch + FK_loss_batch_1
+                    # print(FK_loss_batch)
+
+                    # FK_loss_batch = FK_loss_batch + min(
+                    #     min(max(0, outputs_tensor[3] - (-0.55)), max(0, 2.05 - outputs_tensor[3])),
+                    #     min(max(0, outputs_tensor[4] - 0.503), max(0, 1.953 - outputs_tensor[4]))
+                    #     )
 
                     # # 获取预测的底盘位置x, y
                     # x = outputs_tensor[3]  # 假设索引0为x
