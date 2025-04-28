@@ -3,7 +3,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 # 文件名，可替换为实际使用的文件名
-filename = "/home/cn/catkin_rm/src/RPSN_4/work_dir/100data/test01-1-chasis-loss-have-if/NET_output.txt"
+filename = "/home/cn/catkin_rm/src/RPSN_4/work_dir/100data/test01-1-chasis-loss-have-if-1000/NET_output.txt"
 
 # 用于存储解析后的数据
 data = []
@@ -49,7 +49,7 @@ plt.plot([-0.25, 1.75, 1.75, -0.25, -0.25], [0.803, 0.803, 1.653, 1.653, 0.803],
 
 
 fig = ax.get_figure()
-fig.savefig('/home/cn/catkin_rm/src/RPSN_4/work_dir/100data/test01-1-chasis-loss-have-if/NET_output.png')
+fig.savefig('/home/cn/catkin_rm/src/RPSN_4/work_dir/100data/test01-1-chasis-loss-have-if-1000/NET_output.png')
 
 plt.show()
 

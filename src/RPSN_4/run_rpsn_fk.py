@@ -51,7 +51,7 @@ class main():
         self.data_loader_test = DataLoader(self.data_test, batch_size=self.args.batch_size, shuffle=False)
 
         # 定义训练权重保存文件路径
-        self.checkpoint_dir = r'/home/cn/catkin_rm/src/RPSN_4/work_dir/100data/test01-1-chasis-loss-have-if'
+        self.checkpoint_dir = r'/home/cn/catkin_rm/src/RPSN_4/work_dir/100data/test01-1-chasis-loss'
         # 多少伦保存一次
         self.num_epoch_save = 100
 
