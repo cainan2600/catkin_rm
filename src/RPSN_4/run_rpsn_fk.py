@@ -291,7 +291,7 @@ class main():
                     # print(FK_loss_batch_1)
                     # make_dot(FK_loss_batch_1).view()
                     # FK_loss_batch = FK_loss_batch + FK_loss_batch_1
-                    # print(FK_loss_batch)
+                    # # print(FK_loss_batch)
 
                     FK_loss_batch = FK_loss_batch + min(
                         min(max(0, outputs_tensor[3] - (-0.55)), max(0, 2.05 - outputs_tensor[3])),
@@ -338,7 +338,7 @@ class main():
 
                     # make_dot(FK_loss_batch_1).view()
                     
-                    FK_loss_batch = FK_loss_batch + FK_loss_batch_1
+                    # FK_loss_batch = FK_loss_batch + FK_loss_batch_1
 
                 FK_loss_batch.retain_grad()
                 # make_dot(FK_loss_batch_1).view()
