@@ -43,7 +43,7 @@ class main():
 
 
         self.data_train = TensorDataset(self.load_train_data[:self.args.num_train], self.data_loader_train_dipan[:self.args.num_train])
-        self.data_loader_train = DataLoader(self.data_train, batch_size=self.args.batch_size, shuffle=True)
+        self.data_loader_train = DataLoader(self.data_train, batch_size=self.args.batch_size, shuffle=False)
 
         # 测试集数据导入
         self.load_test_data = torch.load('/home/cn/catkin_rm/src/RPSN_4/data/data_cainan/rm-fk-ik-all-random-with-dipan-round0.74/test-400-1/test_dataset_400.pt')
@@ -51,7 +51,7 @@ class main():
         self.data_loader_test = DataLoader(self.data_test, batch_size=self.args.batch_size, shuffle=False)
 
         # 定义训练权重保存文件路径
-        self.checkpoint_dir = r'/home/cn/catkin_rm/src/RPSN_4/work_dir/test08-1-chasis-loss'
+        self.checkpoint_dir = r'/home/cn/catkin_rm/src/RPSN_4/work_dir/test08-1-chasis-loss-2'
         # 多少伦保存一次
         self.num_epoch_save = 100
 
@@ -228,7 +228,7 @@ class main():
                             save_end_eff_calcu_by_FK.append(end_eff_calcu_by_FK[:3, 3])
 
                             # 计算单IK_loss
-                            FK_loss_batch, num_Error1, num_Error2, num_NOError1, num_NOError2= FK_loss.calculate_FK_loss(
+                            FK_loss_1, num_Error1, num_Error2, num_NOError1, num_NOError2= FK_loss.calculate_FK_loss(
                                 intermediate_outputs_angel[i], 
                                 end_eff_calcu_by_FK, 
                                 inputs[i], 
@@ -236,7 +236,7 @@ class main():
                             # make_dot(IK_loss1).view()
 
                             # 总loss
-                            FK_loss_batch = FK_loss_batch + FK_loss_batch
+                            FK_loss_batch = FK_loss_batch + FK_loss_1
 
                             numError1 = numError1 + num_Error1
                             numError2 = numError2 + num_Error2
@@ -261,7 +261,17 @@ class main():
                             num_all_correct_but_dipan_in_tabel += 1
                     
                     else:
-                        if epoch == start_epoch + epochs - 1:
+                        # if epoch == start_epoch + epochs - 1:
+                        #     for save_dddd in inputs_xx6_no_random.detach().numpy():
+                        #         CORRECT_obj.append(save_dddd)
+                        #     CORRECT_chasis.append(lables[num_zu_in_epoch - 1].detach().numpy())
+                            
+                        #     INCORRECT_chasis.append(outputs_tensor.detach().numpy())
+                        #     for save_data_incorrect in save_end_eff_calcu_by_FK:
+                        #         INCORRECT_obj.append(save_data_incorrect.detach().numpy())
+
+                        # 每10轮保存一次
+                        if 200 % epoch == 0:
                             for save_dddd in inputs_xx6_no_random.detach().numpy():
                                 CORRECT_obj.append(save_dddd)
                             CORRECT_chasis.append(lables[num_zu_in_epoch - 1].detach().numpy())
@@ -272,8 +282,9 @@ class main():
 
 
                     if torch.sqrt((outputs_tensor[3] - 0.75)**2 + (outputs_tensor[4] - 1.228)**2) <= 0.74:
+
                         FK_loss_batch = FK_loss_batch + (0.74 - torch.sqrt((outputs_tensor[3] - 0.75)**2 + (outputs_tensor[4] - 1.228)**2))
-                    else:
+                    else:  
                         FK_loss_batch = FK_loss_batch + 0
 
                     # FK_loss_batch = FK_loss_batch + \
@@ -403,6 +414,21 @@ class main():
 
             current_lr = optimizer.param_groups[0]['lr']
             print(f"Current Learning Rate: {current_lr}")
+
+            if 200 % epoch == 0:
+                epoc_path = '{}'.format(epoch)
+                dir_save = self.checkpoint_dir + '/' + epoc_path
+                if not os.path.exists(dir_save):
+                    os.makedirs(dir_save)
+                save_MLP_output(INCORRECT_obj, dir_save, "INCORRECT_obj.txt")
+                save_MLP_output(INCORRECT_chasis, dir_save, "INCORRECT_chasis.txt")
+                save_MLP_output(CORRECT_obj, dir_save, "CORRECT_obj.txt")
+                save_MLP_output(CORRECT_chasis, dir_save, "CORRECT_chasis.txt")
+                CORRECT_obj = []
+                CORRECT_chasis = []
+                INCORRECT_obj = []
+                INCORRECT_chasis = []
+
 
 
             model.eval()

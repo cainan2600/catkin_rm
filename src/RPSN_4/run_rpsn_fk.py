@@ -7,7 +7,7 @@ import numpy as np
 import argparse
 from torch.utils.data import Dataset, DataLoader, TensorDataset
 
-from models import MLP_for_fk, MLP_9_for_fk, MLP_for_fk_no
+from models import MLP_for_fk, MLP_9_for_fk
 from lib.trans_all import *
 from lib import FK_diff, FK_loss
 import torch
@@ -28,16 +28,16 @@ class main():
         self.parser.add_argument('--learning_rate', type=float, default=0.03, help='learning rate (default: 0.003)')
         self.parser.add_argument('--epochs', type=int, default=200, help='gradient clip value (default: 300)')
         self.parser.add_argument('--clip', type=float, default=1, help='gradient clip value (default: 1)')
-        self.parser.add_argument('--num_train', type=int, default=1000)
-        self.parser.add_argument('--num_test', type=int, default=400)
+        self.parser.add_argument('--num_train', type=int, default=100)
+        self.parser.add_argument('--num_test', type=int, default=40)
         self.args = self.parser.parse_args()
 
         # 使用cuda!!!!!!!!!!!!!!!未补齐
         # self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
         
         # 训练集数据导入
-        self.load_train_data = torch.load('/home/cn/catkin_rm/src/RPSN_4/data/data_cainan/rm-fk-ik-all-random-with-dipan-norm/train-{}-1/train_dataset_{}.pt'.format(self.args.num_train, self.args.num_train))
-        self.data_loader_train_dipan = torch.load('/home/cn/catkin_rm/src/RPSN_4/data/data_cainan/rm-fk-ik-all-random-with-dipan-norm/train-{}-1/train_dataset_dipan_{}.pt'.format(self.args.num_train, self.args.num_train))
+        self.load_train_data = torch.load('/home/cn/catkin_rm/src/RPSN_4/data/data_cainan/rm-fk-ik-all-random-with-dipan-norm-100/train-{}-1/train_dataset_{}.pt'.format(self.args.num_train, self.args.num_train))
+        self.data_loader_train_dipan = torch.load('/home/cn/catkin_rm/src/RPSN_4/data/data_cainan/rm-fk-ik-all-random-with-dipan-norm-100/train-{}-1/train_dataset_dipan_{}.pt'.format(self.args.num_train, self.args.num_train))
         # self.load_train_data = torch.load('/home/cn/RPSN_4/data/data_cainan/5000-fk-ik-all-random-with-dipan/train/train_dataset_5000.pt')
         # self.data_loader_train_dipan = torch.load('/home/cn/RPSN_4/data/data_cainan/5000-fk-ik-all-random-with-dipan/train/train_dataset_dipan_5000.pt')
 
@@ -46,12 +46,12 @@ class main():
         self.data_loader_train = DataLoader(self.data_train, batch_size=self.args.batch_size, shuffle=True)
 
         # 测试集数据导入
-        self.load_test_data = torch.load('/home/cn/catkin_rm/src/RPSN_4/data/data_cainan/rm-fk-ik-all-random-with-dipan-norm/test-400-1/test_dataset_400.pt')
+        self.load_test_data = torch.load('/home/cn/catkin_rm/src/RPSN_4/data/data_cainan/rm-fk-ik-all-random-with-dipan-norm-100/test-40-1/test_dataset_40.pt')
         self.data_test = TensorDataset(self.load_test_data[:self.args.num_test])
         self.data_loader_test = DataLoader(self.data_test, batch_size=self.args.batch_size, shuffle=False)
 
         # 定义训练权重保存文件路径
-        self.checkpoint_dir = r'/home/cn/catkin_rm/src/RPSN_4/work_dir/test03-1-new-chasis-los1'
+        self.checkpoint_dir = r'/home/cn/catkin_rm/src/RPSN_4/work_dir/100data/test01-1-chasis-loss-have-if'
         # 多少伦保存一次
         self.num_epoch_save = 100
 
@@ -59,7 +59,7 @@ class main():
         self.num_i = 6
         self.num_h = 128
         self.num_o = 3
-        self.model = MLP_for_fk_no
+        self.model = MLP_for_fk
         
         # 如果是接着训练则输入前面的权重路径
         self.model_path = r''
@@ -142,12 +142,13 @@ class main():
             for data in data_loader_train:  # 读入数据开始训练
                 data, lables = data
                 inputs_bxxx6 = data
-                # print("11111",data)
+                # print("11111", inputs_bxxx6.size())
                 # 将batch_size中的每一组数据输入网络
                 num_zu_in_epoch = 0
 
                 # 计算 FK_loss_batch
                 FK_loss_batch = torch.tensor(0.0, requires_grad=True)
+                FK_loss_batch_1 = torch.tensor(0.0, requires_grad=True)
                 # IK_loss2 = torch.tensor(0.0, requires_grad=True)
                 # IK_loss3 = torch.tensor(0.0, requires_grad=True)
                 loss_fn = torch.nn.MSELoss()
@@ -228,7 +229,7 @@ class main():
                             save_end_eff_calcu_by_FK.append(end_eff_calcu_by_FK[:3, 3])
 
                             # 计算单IK_loss
-                            FK_loss_batch, num_Error1, num_Error2, num_NOError1, num_NOError2= FK_loss.calculate_FK_loss(
+                            FK_loss_1, num_Error1, num_Error2, num_NOError1, num_NOError2= FK_loss.calculate_FK_loss(
                                 intermediate_outputs_angel[i], 
                                 end_eff_calcu_by_FK, 
                                 inputs[i], 
@@ -236,7 +237,7 @@ class main():
                             # make_dot(IK_loss1).view()
 
                             # 总loss
-                            FK_loss_batch = FK_loss_batch + FK_loss_batch
+                            FK_loss_batch = FK_loss_batch + FK_loss_1
 
                             numError1 = numError1 + num_Error1
                             numError2 = numError2 + num_Error2
@@ -262,7 +263,17 @@ class main():
                                 num_all_correct_but_dipan_in_tabel += 1
                     
                     else:
-                        if epoch == start_epoch + epochs - 1:
+                        # if epoch == start_epoch + epochs - 1:
+                        #     for save_dddd in inputs_xx6_no_random.detach().numpy():
+                        #         CORRECT_obj.append(save_dddd)
+                        #     CORRECT_chasis.append(lables[num_zu_in_epoch - 1].detach().numpy())
+                            
+                        #     INCORRECT_chasis.append(outputs_tensor.detach().numpy())
+                        #     for save_data_incorrect in save_end_eff_calcu_by_FK:
+                        #         INCORRECT_obj.append(save_data_incorrect.detach().numpy())
+
+                        # 每10轮保存一次
+                        if 200 % epoch == 0:
                             for save_dddd in inputs_xx6_no_random.detach().numpy():
                                 CORRECT_obj.append(save_dddd)
                             CORRECT_chasis.append(lables[num_zu_in_epoch - 1].detach().numpy())
@@ -271,28 +282,21 @@ class main():
                             for save_data_incorrect in save_end_eff_calcu_by_FK:
                                 INCORRECT_obj.append(save_data_incorrect.detach().numpy())
 
-                    # FK_loss_batch = FK_loss_batch + \
-                    # min(max(0, outputs_tensor[3] - (-0.55)), max(0, 2.05 - outputs_tensor[3])) + \
-                    # min(max(0, outputs_tensor[4] - 0.503), max(0, 1.953 - outputs_tensor[4]))
-                    
+
+                    # print(FK_loss_batch_1)
+                    # FK_loss_batch_1 = FK_loss_batch_1 + min(
+                    #     min(max(0, outputs_tensor[3] - (-0.55)), max(0, 2.05 - outputs_tensor[3])),
+                    #     min(max(0, outputs_tensor[4] - 0.503), max(0, 1.953 - outputs_tensor[4]))
+                    #     )
+                    # print(FK_loss_batch_1)
+                    # make_dot(FK_loss_batch_1).view()
+                    # FK_loss_batch = FK_loss_batch + FK_loss_batch_1
+                    # print(FK_loss_batch)
 
                     FK_loss_batch = FK_loss_batch + min(
                         min(max(0, outputs_tensor[3] - (-0.55)), max(0, 2.05 - outputs_tensor[3])),
                         min(max(0, outputs_tensor[4] - 0.503), max(0, 1.953 - outputs_tensor[4]))
                         )
-
-                    # FK_loss_batch = FK_loss_batch + \
-                    #     min(torch.relu(outputs_tensor[3] - (-0.55)), torch.relu(2.05 - outputs_tensor[3])) * \
-                    #     min(torch.relu(outputs_tensor[4] - 0.503), torch.relu(1.953 - outputs_tensor[4]))
-
-                    # x_low_penalty = torch.relu(outputs_tensor[3] - (-0.55))  # x < -0.55时为正
-                    # x_high_penalty = torch.relu(2.05 - outputs_tensor[3])  # x >2.05时为正
-                    # y_low_penalty = torch.relu(outputs_tensor[4] - 0.503)
-                    # y_high_penalty = torch.relu(1.953 - outputs_tensor[4])
-                    # FK_loss_batch = FK_loss_batch + (x_low_penalty + x_high_penalty + y_low_penalty + y_high_penalty).mean()
-
-                    # FK_loss_batch = FK_loss_batch + loss_fn(outputs_tensor, lables[num_zu_in_epoch - 1])
-
 
                     # # 获取预测的底盘位置x, y
                     # x = outputs_tensor[3]  # 假设索引0为x
@@ -304,46 +308,40 @@ class main():
 
                     # # 判断是否在桌子内部
                     # is_inside = (x >= x_left) & (x <= x_right) & (y >= y_bottom) & (y <= y_top)
+                    # # print(is_inside, outputs_tensor)
 
                     # # 内部损失：推动内部点至最近边界
                     # if is_inside:
                     #     # 计算到最近x边界的距离
-                    #     dx = min(x - x_left, x_right - x)
+                    #     dx_letf, dx_right = x - x_left, x_right - x
                     #     # 计算到最近y边界的距离
-                    #     dy = min(y - y_bottom, y_top - y)
-                    #     # 内部损失为最近边界距离
-                    #     internal_loss = min(dx, dy)
+                    #     dy_bottom, dy_top = y - y_bottom, y_top - y
+                    #     mini_dx = min(dx_letf, dx_right)
+                    #     mini_dy = min(dy_bottom, dy_top)
+
+                    #     all_zero = torch.all(inputs == 0, dim=1)
+                    #     matrix = inputs[~all_zero]
+                    #     # print(inputs, matrix)
+                    #     matrix = matrix.mean(dim=0)
+                    #     dxx_letf, dxx_right = matrix[3] - x_left, x_right - matrix[3]
+                    #     dyy_bottom, dyy_top = matrix[4] - y_bottom, y_top - matrix[4]
+                    #     mini_dxx = min(dxx_letf, dxx_right) / 1.3
+                    #     mini_dyy = min(dyy_bottom, dyy_top) / 0.725
+                    #     mini_edge = min(mini_dxx, mini_dyy)
+
+                    #     if mini_dxx <= mini_dyy:
+                    #         FK_loss_batch_1 = FK_loss_batch_1 + mini_dx
+                    #     else:
+                    #         FK_loss_batch_1 = FK_loss_batch_1 + mini_dy
                     # else:
-                    #     internal_loss = 0.0
+                    #     FK_loss_batch_1 = FK_loss_batch_1 + 0.0
 
-                    # # 外部正则项：鼓励远离桌子，分散到四周
-                    # reg_x = 0.0
-                    # reg_y = 0.0
-
-                    # # x方向的正则
-                    # if x < x_left:
-                    #     reg_x = x_left - x  # 左外部，鼓励更左
-                    # elif x > x_right:
-                    #     reg_x = x - x_right  # 右外部，鼓励更右
-
-                    # # y方向的正则
-                    # if y < y_bottom:
-                    #     reg_y = y_bottom - y  # 下外部，鼓励更下
-                    # elif y > y_top:
-                    #     reg_y = y - y_top  # 上外部，鼓励更上
-
-                    # # 总正则损失（负号使梯度推动远离）
-                    # external_reg_loss = -(reg_x + reg_y)
-
-                    # # 合并损失，加权正则项防止过度影响主任务
-                    # total_loss = internal_loss + 0.1 * external_reg_loss
-
-                    # FK_loss_batch = FK_loss_batch + total_loss
-
-
+                    # make_dot(FK_loss_batch_1).view()
+                    
+                    FK_loss_batch = FK_loss_batch + FK_loss_batch_1
 
                 FK_loss_batch.retain_grad()
-                # make_dot(FK_loss_batch).view()
+                # make_dot(FK_loss_batch_1).view()
 
                 optimizer.zero_grad()  # 梯度初始化为零，把loss关于weight的导数变成0
 
@@ -399,6 +397,19 @@ class main():
             current_lr = optimizer.param_groups[0]['lr']
             print(f"Current Learning Rate: {current_lr}")
 
+            if 200 % epoch == 0:
+                epoc_path = '{}'.format(epoch)
+                dir_save = self.checkpoint_dir + '/' + epoc_path
+                if not os.path.exists(dir_save):
+                    os.makedirs(dir_save)
+                save_MLP_output(INCORRECT_obj, dir_save, "INCORRECT_obj.txt")
+                save_MLP_output(INCORRECT_chasis, dir_save, "INCORRECT_chasis.txt")
+                save_MLP_output(CORRECT_obj, dir_save, "CORRECT_obj.txt")
+                save_MLP_output(CORRECT_chasis, dir_save, "CORRECT_chasis.txt")
+                CORRECT_obj = []
+                CORRECT_chasis = []
+                INCORRECT_obj = []
+                INCORRECT_chasis = []
 
             model.eval()
 
@@ -439,7 +450,7 @@ class main():
                                     self.link_twist)
 
                                 # 计算单IK_loss
-                                FK_loss_batch, IK_loss_test_incorrect, IK_loss_test_correct= FK_loss.calculate_FK_loss_test(
+                                FK_loss_2, IK_loss_test_incorrect, IK_loss_test_correct= FK_loss.calculate_FK_loss_test(
                                     intermediate_outputs_angel_tese[i], 
                                     end_eff_calcu_by_FK_test, 
                                     inputs_test[i], 

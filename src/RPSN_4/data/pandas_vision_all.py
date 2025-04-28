@@ -14,7 +14,8 @@ def plot_correct_and_incorrct(filename):
     with open(filename_CORRECT_chasis, 'r', encoding='utf-8') as file:
         lines = file.readlines()
         len_lines = len(lines) - 1
-    num_data = np.random.randint(0, len_lines) +1
+    # num_data = np.random.randint(0, len_lines) + 1
+    num_data = len_lines
     print("num_data", num_data)
     # print(len_lines)
     # num_data = 1
@@ -146,10 +147,15 @@ def plot_correct_and_incorrct(filename):
 
     # plt.show()
 
-    print(data_inco_obj[0],data_inco_obj[0])
+    # print(data_inco_obj[0],data_inco_obj[0])
 
     plt.figure()
-    plt.plot([-0.25, 1.75, 1.75, -0.25, -0.25], [0.803, 0.803, 1.653, 1.653, 0.803], 'r')
+    # plt.plot([-0.25, 1.75, 1.75, -0.25, -0.25], [0.803, 0.803, 1.653, 1.653, 0.803], 'r')
+    theta = np.linspace(0, 2 * np.pi, 1000)  # 生成1000个角度采样点
+    r = 0.44  # 指定半径
+    x = r * np.cos(theta) + 0.75
+    y = r * np.sin(theta) + 1.228
+    plt.plot(x, y, 'r-', linewidth=2, label='r=0.44 circle')
     
     plt.scatter(data_co_obj[0][0], data_co_obj[0][1], c='y', label='data_co_obj')
     plt.scatter(data_co_chasis[0][0], data_co_chasis[0][1], c='k', label='data_co_chasis')
@@ -162,12 +168,17 @@ def plot_correct_and_incorrct(filename):
     plt.legend()
 
     plt.savefig('{}/pic_incorr-corr-1.png'.format(filename))
-    plt.show()
+    # plt.show()
 
 
 
 if __name__ == "__main__":
-    filename = "/home/cn/catkin_rm/src/RPSN_4/work_dir/test01-1-output5-1111111"
-    plot_correct_and_incorrct(filename)
+    # filename = "/home/cn/catkin_rm/src/RPSN_4/work_dir/test01-1-output5-1111111"
+    # plot_correct_and_incorrct(filename)
+
+    for iiiiiiii in range(1, 201):
+        if 200 % iiiiiiii == 0:
+            filename = "/home/cn/catkin_rm/src/RPSN_4/work_dir/test08-1-chasis-loss-2/{}".format(iiiiiiii)
+            plot_correct_and_incorrct(filename)
 
 

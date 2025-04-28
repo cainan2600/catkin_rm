@@ -69,20 +69,20 @@ def data_generate(i):
 
             list_0 = [0, 0, 0, 0, 0, 0]
             iiiii = 0
-            while  num_data < 1:
-                # # 按顺序用前面的填充
-                # element = data_echo[iiiii]
-                # data_echo.append(element)
-                # iiiii += 1
-                # num_data += 1
-                # 用最后一个填充
-                element = data_echo[-1]
-                data_echo.append(element)
-                num_data += 1
-                # 用0填充
-                # element = list_0
-                # data_echo.append(element)
-                # num_data += 1
+            # while  num_data < 1:
+            #     # # 按顺序用前面的填充
+            #     # element = data_echo[iiiii]
+            #     # data_echo.append(element)
+            #     # iiiii += 1
+            #     # num_data += 1
+            #     # 用最后一个填充
+            #     element = data_echo[-1]
+            #     data_echo.append(element)
+            #     num_data += 1
+            #     # 用0填充
+            #     # element = list_0
+            #     # data_echo.append(element)
+            #     # num_data += 1
             while num_data < 6:
                 # 用0填充
                 element = list_0
@@ -232,17 +232,17 @@ def save_data_tensor(data_tensor, save_dir, file_name_tensor):
 
 if __name__ == "__main__":
 
-    # save_dir_train = '/home/cn/catkin_rm/src/RPSN_4/data/data_cainan/rm-fk-ik-all-random-with-dipan-norm/train-1000-2-same'
-    # file_name_txt = 'train_dataset_1000.txt'
-    # file_name_tensor = 'train_dataset_1000.pt'
-    # file_name_dipan_txt = 'train_dataset_dipan_1000.txt'
-    # file_name_dipan_tensor = "train_dataset_dipan_1000.pt"
+    save_dir_train = '/home/cn/catkin_rm/src/RPSN_4/data/data_cainan/rm-fk-ik-all-random-with-dipan-norm-10/train-10-1'
+    file_name_txt = 'train_dataset_10.txt'
+    file_name_tensor = 'train_dataset_10.pt'
+    file_name_dipan_txt = 'train_dataset_dipan_10.txt'
+    file_name_dipan_tensor = "train_dataset_dipan_10.pt"
 
-    save_dir_train = '/home/cn/catkin_rm/src/RPSN_4/data/data_cainan/rm-fk-ik-all-random-with-dipan-norm/test-400-2-same'
-    file_name_txt = 'test_dataset_400.txt'
-    file_name_tensor = 'test_dataset_400.pt'
-    file_name_dipan_txt = 'test_dataset_dipan_400.txt'
-    file_name_dipan_tensor = "test_dataset_dipan_400.pt"
+    # save_dir_train = '/home/cn/catkin_rm/src/RPSN_4/data/data_cainan/rm-fk-ik-all-random-with-dipan-norm-100/test-40-1'
+    # file_name_txt = 'test_dataset_40.txt'
+    # file_name_tensor = 'test_dataset_40.pt'
+    # file_name_dipan_txt = 'test_dataset_dipan_40.txt'
+    # file_name_dipan_tensor = "test_dataset_dipan_40.pt"
 
     # save_dir_train = '/home/cn/catkin_rm/src/RPSN_4/data/data_cainan/test_2/train-1000'
     # file_name_txt = 'train_dataset_1000.txt'
@@ -256,7 +256,7 @@ if __name__ == "__main__":
     # file_name_dipan_txt = 'test_dataset_dipan_400.txt'
     # file_name_dipan_tensor = "test_dataset_dipan_400.pt"
 
-    data, data_tensor, data_dipan, data_dipan_tensor = data_generate(400)
+    data, data_tensor, data_dipan, data_dipan_tensor = data_generate(10)
 
     save_data(data, save_dir_train, file_name_txt)
     save_MLP_output(data_dipan, save_dir_train, file_name_dipan_txt)
