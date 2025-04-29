@@ -51,7 +51,7 @@ class main():
         self.data_loader_test = DataLoader(self.data_test, batch_size=self.args.batch_size, shuffle=False)
 
         # 定义训练权重保存文件路径
-        self.checkpoint_dir = r'/home/cn/catkin_rm/src/RPSN_4/work_dir/test08-1-chasis-loss-2'
+        self.checkpoint_dir = r'/home/cn/catkin_rm/src/RPSN_4/work_dir/test08-1-chasis-loss-new-2'
         # 多少伦保存一次
         self.num_epoch_save = 100
 
@@ -148,6 +148,7 @@ class main():
 
                 # 计算 FK_loss_batch
                 FK_loss_batch = torch.tensor(0.0, requires_grad=True)
+                FK_loss_batch_1 = torch.tensor(0.0, requires_grad=True)
                 # IK_loss2 = torch.tensor(0.0, requires_grad=True)
                 # IK_loss3 = torch.tensor(0.0, requires_grad=True)
                 loss_fn = torch.nn.MSELoss()
@@ -281,11 +282,19 @@ class main():
                                 INCORRECT_obj.append(save_data_incorrect.detach().numpy())
 
 
-                    if torch.sqrt((outputs_tensor[3] - 0.75)**2 + (outputs_tensor[4] - 1.228)**2) <= 0.74:
+                    relu = nn.ReLU(inplace=True)
+                    output_position = outputs_tensor[3:5]
+                    # print(outputs_tensor, output_position)
+                    table_center = torch.tensor([0.75, 1.228])
+                    distance = torch.sqrt(torch.sum(torch.square(output_position - table_center)))
+                    FK_loss_batch_1 = FK_loss_batch_1 + relu(torch.tensor([0.74]) - distance)
+                    FK_loss_batch = FK_loss_batch + FK_loss_batch_1
 
-                        FK_loss_batch = FK_loss_batch + (0.74 - torch.sqrt((outputs_tensor[3] - 0.75)**2 + (outputs_tensor[4] - 1.228)**2))
-                    else:  
-                        FK_loss_batch = FK_loss_batch + 0
+                    # if torch.sqrt((outputs_tensor[3] - 0.75)**2 + (outputs_tensor[4] - 1.228)**2) <= 0.74:
+
+                    #     FK_loss_batch = FK_loss_batch + (0.74 - torch.sqrt((outputs_tensor[3] - 0.75)**2 + (outputs_tensor[4] - 1.228)**2))
+                    # else:  
+                    #     FK_loss_batch = FK_loss_batch + 0
 
                     # FK_loss_batch = FK_loss_batch + \
                     # min(max(0, outputs_tensor[3] - (-0.55)), max(0, 2.05 - outputs_tensor[3])) + \
@@ -359,7 +368,7 @@ class main():
 
 
                 FK_loss_batch.retain_grad()
-                # make_dot(FK_loss_batch).view()
+                make_dot(FK_loss_batch).view()
 
                 optimizer.zero_grad()  # 梯度初始化为零，把loss关于weight的导数变成0
 

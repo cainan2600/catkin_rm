@@ -3,7 +3,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 # 文件名，可替换为实际使用的文件名
-filename = "/home/cn/catkin_rm/src/RPSN_4/work_dir/100data/test01-1-chasis-loss-have-if-1000/NET_output.txt"
+filename = "/home/cn/catkin_rm/src/RPSN_4/work_dir/test08-1-chasis-loss-new/NET_output.txt"
 
 # 用于存储解析后的数据
 data = []
@@ -36,20 +36,20 @@ ax = df.plot.scatter(x='x', y='y', c='blue', label='Data Points')
 ax.set_xlabel('X')
 ax.set_ylabel('Y')
 ax.set_title('Scatter Plot from 1400 data')
-plt.plot([-0.25, 1.75, 1.75, -0.25, -0.25], [0.803, 0.803, 1.653, 1.653, 0.803], 'r')
+# plt.plot([-0.25, 1.75, 1.75, -0.25, -0.25], [0.803, 0.803, 1.653, 1.653, 0.803], 'r')
 
 
-# theta = np.linspace(0, 2 * np.pi, 1000)  # 生成1000个角度采样点
-# r = 0.44  # 指定半径
-# x = r * np.cos(theta) + 0.75
-# y = r * np.sin(theta) + 1.228
+theta = np.linspace(0, 2 * np.pi, 1000)  # 生成1000个角度采样点
+r = 0.44  # 指定半径
+x = r * np.cos(theta) + 0.75
+y = r * np.sin(theta) + 1.228
 
-# plt.plot(x, y, 'r-', linewidth=2, label='r=0.44 circle')
+plt.plot(x, y, 'r-', linewidth=2, label='r=0.44 circle')
 # plt.plot([-1.4, 1.4, 1.4, -1.4, -1.4], [-0.825 -0.825, 0.825, 0.825, -0.825], 'r')
 
 
 fig = ax.get_figure()
-fig.savefig('/home/cn/catkin_rm/src/RPSN_4/work_dir/100data/test01-1-chasis-loss-have-if-1000/NET_output.png')
+fig.savefig('/home/cn/catkin_rm/src/RPSN_4/work_dir/test08-1-chasis-loss-new/NET_output.png')
 
 plt.show()
 

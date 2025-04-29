@@ -3,17 +3,22 @@ import torch.nn as nn
 
 def calculate_FK_loss(angles, FK_results, input_target,intermediate_output):
 
+    relu = nn.ReLU(inplace=True)
     num_Error1 = 0
     num_Error2 = 0
     num_NOError1 = 0
     num_NOError2 = 0
-    fanwei = [torch.pi * 178/180, torch.pi * 130/180, torch.pi * 135/180, torch.pi * 178/180, torch.pi * 128/180, torch.pi]
+    fanwei = torch.tensor([torch.pi * 178/180, torch.pi * 130/180, torch.pi * 135/180, torch.pi * 178/180, torch.pi * 128/180, torch.pi])
 
     # print(angles, FK_results, input_target)
     FK_loss = torch.tensor([0.0], requires_grad=True)
+    FK_loss_11 = torch.tensor([0.0], requires_grad=True)
+    FK_loss_22 = torch.tensor([0.0], requires_grad=True)
+    FK_loss_33 = torch.tensor([0.0], requires_grad=True)
 
     for iii, angle in enumerate(angles):
-        FK_loss = FK_loss + 1 * (max(0, - fanwei[iii] - angle)**2 + max(0, angle - fanwei[iii])**2)
+        # FK_loss = FK_loss + 1 * (max(0, - fanwei[iii] - angle)**2 + max(0, angle - fanwei[iii])**2)
+        FK_loss_11 = FK_loss_11 + relu(- fanwei[iii] - angle) + relu(angle - fanwei[iii])
 
     if FK_loss != 0:
         num_Error1 = num_Error1 + 1
@@ -23,16 +28,10 @@ def calculate_FK_loss(angles, FK_results, input_target,intermediate_output):
     # 网络输出的底盘位置和真实物品位置距离
     if MSELoss(intermediate_output , input_target[3:5]) > 0.2738:
         num_Error2 = num_Error2 + 1
-        FK_loss = FK_loss + (MSELoss(intermediate_output , input_target[3:5])) *10
-    # print('1:', MSELoss(intermediate_output , input_target[1:3])-torch.tensor([1.5]), intermediate_output, input_target[3:5])
-    # MSELoss = nn.MSELoss()
-    # FK_loss = FK_loss + MSELoss(FK_results[:3, 3], input_target[3:6])
-    # if MSELoss(FK_results[:3, 3], input_target[3:6]) > 0.01:
-    #     global num_NOError1
-    #     num_NOError1 = num_NOError1 + 1
-    # else:
-    #     global num_NOError2
-    #     num_NOError2 = num_NOError2 + 1
+        # FK_loss = FK_loss + (MSELoss(intermediate_output , input_target[3:5])) *10
+
+    FK_loss_22 = FK_loss_22 + relu(MSELoss(intermediate_output , input_target[3:5]) - torch.tensor([0.2738])) * 10
+
 
     # FK输出和真实的差距
     if MSELoss(FK_results[:3, 3] , input_target[3:6]) > 0.001:
@@ -40,11 +39,14 @@ def calculate_FK_loss(angles, FK_results, input_target,intermediate_output):
         # print('FK_results[:3, 3]', FK_results[:3, 3])
         # print(MSELoss(FK_results[:3, 3] , input_target[3:6]))
 
-        FK_loss = FK_loss + MSELoss(FK_results[:3, 3] , input_target[3:6])
+        # FK_loss = FK_loss + MSELoss(FK_results[:3, 3] , input_target[3:6])
         # print('2:', MSELoss(FK_results[:3, 3] , input_target[3:6]))
     else:
         num_NOError2 = num_NOError2 + 1
 
+    FK_loss_33 = FK_loss_33 + relu(MSELoss(FK_results[:3, 3] , input_target[3:6]) - torch.tensor([0.001]))
+
+    FK_loss = FK_loss + FK_loss_11 + FK_loss_22 + FK_loss_33
 
     return FK_loss, num_Error1, num_Error2, num_NOError1, num_NOError2
 
