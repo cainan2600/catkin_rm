@@ -1,5 +1,6 @@
 import torch
 import torch.nn as nn
+from torchviz import make_dot
 
 def calculate_FK_loss(angles, FK_results, input_target,intermediate_output):
 
@@ -30,7 +31,7 @@ def calculate_FK_loss(angles, FK_results, input_target,intermediate_output):
         num_Error2 = num_Error2 + 1
         # FK_loss = FK_loss + (MSELoss(intermediate_output , input_target[3:5])) *10
 
-    FK_loss_22 = FK_loss_22 + relu(MSELoss(intermediate_output , input_target[3:5]) - torch.tensor([0.2738])) * 10
+    FK_loss_22 = FK_loss_22 + relu(MSELoss(intermediate_output , input_target[3:5]) - torch.tensor([0.2738])) * 1000
 
 
     # FK输出和真实的差距
@@ -44,11 +45,13 @@ def calculate_FK_loss(angles, FK_results, input_target,intermediate_output):
     else:
         num_NOError2 = num_NOError2 + 1
 
-    FK_loss_33 = FK_loss_33 + relu(MSELoss(FK_results[:3, 3] , input_target[3:6]) - torch.tensor([0.001]))
+    FK_loss_33 = FK_loss_33 + relu(MSELoss(FK_results[:3, 3] , input_target[3:6]) - torch.tensor([0.001])) * 100
 
     FK_loss = FK_loss + FK_loss_11 + FK_loss_22 + FK_loss_33
 
-    return FK_loss, num_Error1, num_Error2, num_NOError1, num_NOError2
+    # make_dot(FK_loss_33).view()
+
+    return FK_loss, num_Error1, num_Error2, num_NOError1, num_NOError2, FK_loss_11, FK_loss_22, FK_loss_33
 
 
 def calculate_FK_loss_test(angles, FK_results, input_target,intermediate_output):
@@ -62,7 +65,7 @@ def calculate_FK_loss_test(angles, FK_results, input_target,intermediate_output)
         FK_loss = FK_loss + 1 * (max(0, - fanwei[iii] - angle)**2 + max(0, angle - fanwei[iii])**2)
 
     MSELoss = nn.MSELoss()
-    if FK_loss != 0 or MSELoss(intermediate_output , input_target[3:5]) > 1.2 or MSELoss(FK_results[:3, 3] , input_target[3:6]) > 0.001:
+    if FK_loss != 0 or MSELoss(intermediate_output , input_target[3:5]) > 0.2738 or MSELoss(FK_results[:3, 3] , input_target[3:6]) > 0.001:
         # global incorrect
         IK_loss_test_incorrect = IK_loss_test_incorrect + 1
 

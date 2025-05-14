@@ -178,7 +178,7 @@ if __name__ == "__main__":
 
     for iiiiiiii in range(1, 201):
         if 200 % iiiiiiii == 0:
-            filename = "/home/cn/catkin_rm/src/RPSN_4/work_dir/test08-1-chasis-loss-2/{}".format(iiiiiiii)
+            filename = "src/RPSN_4/work_dir/test08-1-chasis-loss-new/{}".format(iiiiiiii)
             plot_correct_and_incorrct(filename)
 
 

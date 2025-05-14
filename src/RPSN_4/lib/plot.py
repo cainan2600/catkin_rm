@@ -272,3 +272,32 @@ def save_INCORRECT_obj(data_complite, save_dir, file_name):
             f.write(tensor_str + '\n')
             f.write('\n')
         f.write('\n')
+
+def plot_loss_all(checkpoint_dir, start_epoch, epochs, num_train, all_NUMError1_loss, all_NUMError2_loss, all_NUMError3_loss, all_chasis_loss, all_loss):
+    draw_epochs = list(range(start_epoch, start_epoch + epochs))
+    plt.figure()
+
+    plt.plot(draw_epochs, all_NUMError1_loss, 'b-', label='all_NUMError1_los')
+    plt.plot(draw_epochs, all_NUMError2_loss, 'r-', label='all_NUMError2_los')
+    plt.plot(draw_epochs, all_NUMError3_loss, 'g-', label='all_NUMError3_los')
+
+    plt.plot(draw_epochs, all_chasis_loss, 'y-', label='all_chasis_los')
+    plt.plot(draw_epochs, all_loss, 'k-', label='all_los')
+
+
+    plt.annotate('{} data sets'.format(num_train), xy=(0.4, 0.5), xycoords='axes fraction', fontsize=12,
+                 color='gray', horizontalalignment='center', verticalalignment='center')
+    # if epoch == 400:
+    #     plt.annotate(str(numNOError2[399]), xy=(draw_epochs[399], numNOError2[399]),
+    #                  xytext=(draw_epochs[399] - 0.1, numNOError2[399] + 0.8),
+    #                  fontsize=8)
+
+    plt.xlabel('Epoch')
+    plt.ylabel('Value')
+    plt.title('Training Process loss')
+    plt.legend()
+
+    if not os.path.exists(checkpoint_dir):
+        os.makedirs(checkpoint_dir)
+    file_path = os.path.join(checkpoint_dir, 'Training Process loss.png')
+    plt.savefig(file_path)
