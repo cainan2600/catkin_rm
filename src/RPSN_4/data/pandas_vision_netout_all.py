@@ -44,17 +44,18 @@ def pandas_plt(dir):
     ax.set_ylabel('Y')
     ax.set_title('Scatter Plot from 1400 data')
     # plt.plot([-0.25, 1.75, 1.75, -0.25, -0.25], [0.803, 0.803, 1.653, 1.653, 0.803], 'r')
+    plt.plot([-1, 1, 1, -1, -1], [-0.425, -0.425, 0.425, 0.425, -0.425], 'r')
 
 
-    theta = np.linspace(0, 2 * np.pi, 1000)  # 生成1000个角度采样点
-    r = 0.44  # 指定半径
-    # x = r * np.cos(theta) + 0.75
-    # y = r * np.sin(theta) + 1.228
-    x = r * np.cos(theta)
-    y = r * np.sin(theta)
+    # theta = np.linspace(0, 2 * np.pi, 1000)  # 生成1000个角度采样点
+    # r = 0.44  # 指定半径
+    # # x = r * np.cos(theta) + 0.75
+    # # y = r * np.sin(theta) + 1.228
+    # x = r * np.cos(theta)
+    # y = r * np.sin(theta)
 
-    plt.plot(x, y, 'r-',  label='r=0.44 circle')
-    # plt.plot([-1.4, 1.4, 1.4, -1.4, -1.4], [-0.825 -0.825, 0.825, 0.825, -0.825], 'r')
+    # plt.plot(x, y, 'r-',  label='r=0.44 circle')
+    # # # plt.plot([-1.4, 1.4, 1.4, -1.4, -1.4], [-0.825 -0.825, 0.825, 0.825, -0.825], 'r')
 
 
     fig = ax.get_figure()
@@ -64,10 +65,10 @@ def pandas_plt(dir):
 
 if __name__ == "__main__":
 
-    source_dir = "/home/cn/catkin_rm/src/RPSN_4/work_dir/test08-12-round0.74-chasis-loss-new-2-more-more-more-layer-2rand-2copy-0.0ori-10chasisloss"
+    source_dir = "/home/cn/catkin_rm/src/RPSN_4/work_dir/squre/test06-1-chasis-loss-2random-10chasisloss-9lr"
 
-    for i in range(2, 201):
-        if  i % 2 ==0:
+    for i in range(1, 201):
+        if  i % 1 == 0:
             # print("{}/{}/NET_output".format(source_dir,i))
             pandas_plt("{}/{}/NET_output".format(source_dir,i))
 
@@ -79,7 +80,7 @@ if __name__ == "__main__":
     os.makedirs(target_dir, exist_ok=True)
     
     # 生成200以内（包含200）除0以外的2的倍数列表
-    valid_folders = {str(num) for num in range(2, 201, 2)}
+    valid_folders = {str(num) for num in range(1, 201, 1)}
     
     # 遍历源目录下的所有条目
     for entry in os.scandir(source_dir):

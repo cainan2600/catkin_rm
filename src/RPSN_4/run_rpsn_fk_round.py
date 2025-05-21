@@ -20,6 +20,7 @@ from data.data_generate_fk_ik import save_data, save_MLP_output
 
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 
+from lib.hook_save_grad import save_grad
 
 class main():
     def __init__(self):
@@ -51,7 +52,7 @@ class main():
         self.data_loader_test = DataLoader(self.data_test, batch_size=self.args.batch_size, shuffle=False)
 
         # 定义训练权重保存文件路径
-        self.checkpoint_dir = r'/home/cn/catkin_rm/src/RPSN_4/work_dir/test08-12-round0.74-chasis-loss-new-2-layer-2rand-2copy-0.0ori-10chasisloss'
+        self.checkpoint_dir = r'/home/cn/catkin_rm/src/RPSN_4/work_dir/test08-14-round0.74-chasis-loss-new-2-layer-2rand-2copy-0.0ori-10chasisloss'
         # 多少伦保存一次
         self.num_epoch_save = 100
 
@@ -71,9 +72,9 @@ class main():
         self.link_length = torch.tensor([0, 0, 0.256, 0, 0, 0])
         self.link_offset = torch.tensor([0.2405, 0, 0, 0.210, 0, 0.274])
         self.link_twist = torch.FloatTensor([0, math.pi / 2, 0, math.pi / 2, -math.pi / 2, math.pi / 2])
-        
 
     def train(self):
+        grads = {}
         num_i = self.num_i
         num_h = self.num_h
         num_o = self.num_o
@@ -167,6 +168,7 @@ class main():
                 loss_fn = torch.nn.MSELoss()
 
                 for inputs_xx6 in inputs_bxxx6:
+                    count_distance = 0
                     # print(inputs_xx6)
                     num_zu_in_epoch += 1
                     # inputs = inputs_xx6
@@ -190,7 +192,7 @@ class main():
 
                     intermediate_outputs_list = intermediate_outputs_chasis.detach().numpy()
                     # print(intermediate_outputs, intermediate_outputs_list)
-                    if epoch % 2 == 0:
+                    if epoch % 1 == 0:
                         NET_output.append(intermediate_outputs_list)
                     # print(intermediate_outputs_list)
 
@@ -218,6 +220,7 @@ class main():
                     # print(outputs.size(), outputs_tensor.size())
 
                     intermediate_outputs_chasis.retain_grad()
+                    # intermediate_outputs_chasis.register_hook(save_grad('intermediate_outputs_chasis', grads))
                     outputs.retain_grad()
 
                     MLP_output_base = shaping(outputs)  # 对输出做shaping运算-1X6变为4X4
@@ -301,21 +304,37 @@ class main():
 
                     # 底盘在桌子内的loss
                     relu = nn.ReLU(inplace=True)
-                    output_position = outputs_tensor[3:5]
+                    output_position = intermediate_outputs_chasis[1:3]
                     # print(outputs_tensor, output_position)
                     table_center = torch.tensor([0, 0])
                     distance = torch.sqrt(torch.sum(torch.square(output_position - table_center)))
                     FK_loss_batch_1 = FK_loss_batch_1 + relu(torch.tensor([0.74]) - distance) * 10
-                    # FK_loss_batch_2 = FK_loss_batch_2 + (distance - torch.tensor([0.74]))**2
-                    FK_loss_batch = FK_loss_batch + FK_loss_batch_1
+                    # FK_loss_batch_2 = FK_loss_batch_2 + (distance - torch.tensor([0.84]))**2
+                    # FK_loss_batch = FK_loss_batch + FK_loss_batch_1
+                    
+                    # print(distance)
+                    # FK_loss_batch_1.register_hook(save_grad('FK_loss_batch_1', grads))
+                    # print("[grads]distance:", grads, "--", distance, "--", output_position)
+
+                    # output_position.register_hook(save_grad('output_position', grads))
+                    # intermediate_outputs_chasis.register_hook(save_grad('intermediate_outputs_chasis', grads))
+                    # # print("[grads]output_position:", grads)
+
+                    # distance.register_hook(save_grad('distance', grads))
+                    # print("[grads]:", grads, "--", distance, "--", output_position)
+                    # print(distance, "--", output_position)
 
                     # make_dot(FK_loss_batch_1).view()
+                    
+                    # count_distance = count_distance + output_position[0].detach().numpy() / distance.detach().numpy()
 
-                    # FK_loss_batch = FK_loss_batch + loss_fn(outputs_tensor, lables[num_zu_in_epoch - 1])
+                # print(count_distance)
+                # output_position.register_hook(save_grad('output_position', grads))
+                # intermediate_outputs_chasis.register_hook(save_grad('intermediate_outputs_chasis', grads))
+                # print("[grads]:", grads)
 
-                    count_loss_chasis1 = count_loss_chasis1 + FK_loss_batch_1.detach().numpy()
-
-
+                count_loss_chasis1 = count_loss_chasis1 + FK_loss_batch_1.detach().numpy()
+                FK_loss_batch = FK_loss_batch + FK_loss_batch_1
 
                 FK_loss_batch.retain_grad()
                 # make_dot(FK_loss_batch_1).view()
@@ -345,6 +364,7 @@ class main():
                 nn.utils.clip_grad_norm_(model.parameters(), max_norm=self.args.clip)  # 进行梯度裁剪
                 optimizer.step()  # 更新所有梯度
                 sum_loss = sum_loss + loss.data
+
 
             # 记录x轮以后网络模型checkpoint，用来查看数据流
             if epoch % self.num_epoch_save == 0:
@@ -380,7 +400,7 @@ class main():
             current_lr = optimizer.param_groups[0]['lr']
             print(f"Current Learning Rate: {current_lr}")
 
-            if epoch % 2 == 0:
+            if epoch % 1 == 0:
                 epoc_path = '{}'.format(epoch)
                 dir_save = self.checkpoint_dir + '/' + epoc_path
                 if not os.path.exists(dir_save):

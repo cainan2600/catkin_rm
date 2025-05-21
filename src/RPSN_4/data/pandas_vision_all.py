@@ -139,7 +139,7 @@ def plot_correct_and_incorrct(filename):
     # ax.set_ylabel('Y')
     # ax.set_title('Scatter Plot from 1400 data')
     # plt.plot([-0.25, 1.75, 1.75, -0.25, -0.25], [0.803, 0.803, 1.653, 1.653, 0.803], 'r')
-    # # plt.plot([-1.4, 1.4, 1.4, -1.4, -1.4], [-0.825 -0.825, 0.825, 0.825, -0.825], 'r')
+    # plt.plot([-1, 1, 1, -1, -1], [-0.425, -0.425, 0.425, 0.425, -0.425], 'r')
 
 
     # fig = ax.get_figure()
@@ -150,12 +150,13 @@ def plot_correct_and_incorrct(filename):
     # print(data_inco_obj[0],data_inco_obj[0])
 
     plt.figure()
+    plt.plot([-1, 1, 1, -1, -1], [-0.425, -0.425, 0.425, 0.425, -0.425], 'r')
     # plt.plot([-0.25, 1.75, 1.75, -0.25, -0.25], [0.803, 0.803, 1.653, 1.653, 0.803], 'r')
-    theta = np.linspace(0, 2 * np.pi, 1000)  # 生成1000个角度采样点
-    r = 0.44  # 指定半径
-    x = r * np.cos(theta) + 0.75
-    y = r * np.sin(theta) + 1.228
-    plt.plot(x, y, 'r-', linewidth=2, label='r=0.44 circle')
+    # theta = np.linspace(0, 2 * np.pi, 1000)  # 生成1000个角度采样点
+    # r = 0.44  # 指定半径
+    # x = r * np.cos(theta) + 0.75
+    # y = r * np.sin(theta) + 1.228
+    # plt.plot(x, y, 'r-', linewidth=2, label='r=0.44 circle')
     
     plt.scatter(data_co_obj[0][0], data_co_obj[0][1], c='y', label='data_co_obj')
     plt.scatter(data_co_chasis[0][0], data_co_chasis[0][1], c='k', label='data_co_chasis')
@@ -177,8 +178,8 @@ if __name__ == "__main__":
     # plot_correct_and_incorrct(filename)
 
     for iiiiiiii in range(1, 201):
-        if 200 % iiiiiiii == 0:
-            filename = "src/RPSN_4/work_dir/test08-1-chasis-loss-new/{}".format(iiiiiiii)
+        # if 200 % iiiiiiii == 0:
+            filename = "/home/cn/catkin_rm/src/RPSN_4/work_dir/squre/test02-1-chasis-loss-2random-10chasisloss/{}".format(iiiiiiii)
             plot_correct_and_incorrct(filename)
 
 
