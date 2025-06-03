@@ -7,7 +7,7 @@ import sys
 import shutil
 
 
-# matplotlib.use("Agg")
+matplotlib.use("Agg")
 # 文件名，可替换为实际使用的文件名
 def pandas_plt(dir):
     filename = "{}.txt".format(dir)
@@ -65,12 +65,13 @@ def pandas_plt(dir):
 
 if __name__ == "__main__":
 
-    source_dir = "/home/cn/catkin_rm/src/RPSN_4/work_dir/squre/test06-1-chasis-loss-2random-10chasisloss-9lr"
+    source_dir = "/home/cn/catkin_rm/src/RPSN_4/work_dir/squre/test02-12-0.0ori-7random-7copy-10chasisloss"
 
-    for i in range(1, 201):
+    for i in range(1, 51):
         if  i % 1 == 0:
             # print("{}/{}/NET_output".format(source_dir,i))
             pandas_plt("{}/{}/NET_output".format(source_dir,i))
+            # pandas_plt("{}/{}/NET_output_test".format(source_dir,i))
 
 
     # 目标目录路径（与源目录相同）
@@ -80,7 +81,7 @@ if __name__ == "__main__":
     os.makedirs(target_dir, exist_ok=True)
     
     # 生成200以内（包含200）除0以外的2的倍数列表
-    valid_folders = {str(num) for num in range(1, 201, 1)}
+    valid_folders = {str(num) for num in range(1, 51, 1)}
     
     # 遍历源目录下的所有条目
     for entry in os.scandir(source_dir):
@@ -88,6 +89,7 @@ if __name__ == "__main__":
         if entry.is_dir() and entry.name in valid_folders:
             folder_name = entry.name
             image_path = os.path.join(entry.path, "NET_output.png")
+            # image_path = os.path.join(entry.path, "NET_output_test.png")
             
             # 检查图片文件是否存在
             if os.path.isfile(image_path):

@@ -71,8 +71,8 @@ def generrate_yuanxin(x):
     # 外延范围（距离桌子边缘不超过的距离）
     outer_range = 0.3
 
-    num_left_right = int(0.2 * x)
-    num_top_bottom = int(0.3 * x)
+    num_left_right = int(0.1 * x)
+    num_top_bottom = int(0.4 * x)
 
     # 用于存储所有符合要求的点的列表
     points = []

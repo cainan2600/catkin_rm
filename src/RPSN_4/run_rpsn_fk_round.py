@@ -27,7 +27,7 @@ class main():
         self.parser = argparse.ArgumentParser(description="Training MLP")
         self.parser.add_argument('--batch_size', type=int, default=5, help='input batch size for training (default: 1)')
         self.parser.add_argument('--learning_rate', type=float, default=0.03, help='learning rate (default: 0.003)')
-        self.parser.add_argument('--epochs', type=int, default=200, help='gradient clip value (default: 300)')
+        self.parser.add_argument('--epochs', type=int, default=600, help='gradient clip value (default: 300)')
         self.parser.add_argument('--clip', type=float, default=1, help='gradient clip value (default: 1)')
         self.parser.add_argument('--num_train', type=int, default=1000)
         self.parser.add_argument('--num_test', type=int, default=400)
@@ -37,8 +37,8 @@ class main():
         # self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
         
         # 训练集数据导入
-        self.load_train_data = torch.load('/home/cn/catkin_rm/src/RPSN_4/data/data_cainan/rm-fk-ik-all-random-with-dipan-round0.74-2rand-2copy-0.0ori/train-{}-1/train_dataset_{}.pt'.format(self.args.num_train, self.args.num_train))
-        self.data_loader_train_dipan = torch.load('/home/cn/catkin_rm/src/RPSN_4/data/data_cainan/rm-fk-ik-all-random-with-dipan-round0.74-2rand-2copy-0.0ori/train-{}-1/train_dataset_dipan_{}.pt'.format(self.args.num_train, self.args.num_train))
+        self.load_train_data = torch.load('/home/cn/catkin_rm/src/RPSN_4/data/data_cainan/rm-fk-ik-all-random-with-dipan-round0.74-7rand-copy-0.0ori/train-{}-1/train_dataset_{}.pt'.format(self.args.num_train, self.args.num_train))
+        self.data_loader_train_dipan = torch.load('/home/cn/catkin_rm/src/RPSN_4/data/data_cainan/rm-fk-ik-all-random-with-dipan-round0.74-7rand-copy-0.0ori/train-{}-1/train_dataset_dipan_{}.pt'.format(self.args.num_train, self.args.num_train))
         # self.load_train_data = torch.load('/home/cn/RPSN_4/data/data_cainan/5000-fk-ik-all-random-with-dipan/train/train_dataset_5000.pt')
         # self.data_loader_train_dipan = torch.load('/home/cn/RPSN_4/data/data_cainan/5000-fk-ik-all-random-with-dipan/train/train_dataset_dipan_5000.pt')
 
@@ -47,12 +47,12 @@ class main():
         self.data_loader_train = DataLoader(self.data_train, batch_size=self.args.batch_size, shuffle=False)
 
         # 测试集数据导入
-        self.load_test_data = torch.load('/home/cn/catkin_rm/src/RPSN_4/data/data_cainan/rm-fk-ik-all-random-with-dipan-round0.74-2rand-2copy-0.0ori/test-400-1/test_dataset_400.pt')
+        self.load_test_data = torch.load('/home/cn/catkin_rm/src/RPSN_4/data/data_cainan/rm-fk-ik-all-random-with-dipan-round0.74-7rand-copy-0.0ori/test-400-1/test_dataset_400.pt')
         self.data_test = TensorDataset(self.load_test_data[:self.args.num_test])
         self.data_loader_test = DataLoader(self.data_test, batch_size=self.args.batch_size, shuffle=False)
 
         # 定义训练权重保存文件路径
-        self.checkpoint_dir = r'/home/cn/catkin_rm/src/RPSN_4/work_dir/test08-14-round0.74-chasis-loss-new-2-layer-2rand-2copy-0.0ori-10chasisloss'
+        self.checkpoint_dir = r'/home/cn/catkin_rm/src/RPSN_4/work_dir/test01-15-round0.74-0.0ori-7rand-7copy-10chasisloss'
         # 多少伦保存一次
         self.num_epoch_save = 100
 
@@ -71,7 +71,7 @@ class main():
         # self.link_twist = torch.FloatTensor([math.pi / 2, 0, 0, math.pi / 2, -math.pi / 2, 0])
         self.link_length = torch.tensor([0, 0, 0.256, 0, 0, 0])
         self.link_offset = torch.tensor([0.2405, 0, 0, 0.210, 0, 0.274])
-        self.link_twist = torch.FloatTensor([0, math.pi / 2, 0, math.pi / 2, -math.pi / 2, math.pi / 2])
+        self.link_twist = torch.tensor([0, math.pi / 2, 0, math.pi / 2, -math.pi / 2, math.pi / 2])
 
     def train(self):
         grads = {}
@@ -120,7 +120,7 @@ class main():
         model = self.model.MLP_self(num_i , num_h, num_o, num_heads) 
         optimizer = torch.optim.Adagrad(model.parameters(), lr=learning_rate, weight_decay=0.000)  # 定义优化器
         # optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate, weight_decay=0.000)
-        scheduler = ReduceLROnPlateau(optimizer, mode='max', factor=0.75, patience=10, min_lr=0.09)
+        scheduler = ReduceLROnPlateau(optimizer, mode='max', factor=0.75, patience=10, min_lr=0.01)
         model_path = self.model_path
 
         if os.path.exists(model_path):          
@@ -230,56 +230,55 @@ class main():
                     NUM_correct_obj = 0
                     save_end_eff_calcu_by_FK = []
                     for i in range(len(input_tar)):
-                        if torch.all(inputs_xx6[i].ne(0)):
+                        # if torch.all(inputs_xx6[i].ne(0)):
+                        NUM_obj += 1
 
-                            NUM_obj += 1
+                        end_eff_calcu_by_FK = FK_diff.FK(
+                            intermediate_outputs_angel[i], 
+                            MLP_output_base[0], 
+                            self.link_length, 
+                            self.link_offset, 
+                            self.link_twist)
 
-                            end_eff_calcu_by_FK = FK_diff.FK(
-                                intermediate_outputs_angel[i], 
-                                MLP_output_base[0], 
-                                self.link_length, 
-                                self.link_offset, 
-                                self.link_twist)
+                        # print(end_eff_calcu_by_FK, end_eff_calcu_by_FK[:3, 3])
+                        save_end_eff_calcu_by_FK.append(end_eff_calcu_by_FK[:3, 3])
 
-                            # print(end_eff_calcu_by_FK, end_eff_calcu_by_FK[:3, 3])
-                            save_end_eff_calcu_by_FK.append(end_eff_calcu_by_FK[:3, 3])
+                        # 计算单IK_loss
+                        FK_loss_1, num_Error1, num_Error2, num_NOError1, num_NOError2, FK_loss_11, FK_loss_22, FK_loss_33 = FK_loss.calculate_FK_loss(
+                            intermediate_outputs_angel[i], 
+                            end_eff_calcu_by_FK, 
+                            inputs[i], 
+                            intermediate_outputs_chasis[1:3])
+                        # make_dot(FK_loss_1).view()
 
-                            # 计算单IK_loss
-                            FK_loss_1, num_Error1, num_Error2, num_NOError1, num_NOError2, FK_loss_11, FK_loss_22, FK_loss_33 = FK_loss.calculate_FK_loss(
-                                intermediate_outputs_angel[i], 
-                                end_eff_calcu_by_FK, 
-                                inputs[i], 
-                                intermediate_outputs_chasis[1:3])
-                            # make_dot(FK_loss_1).view()
+                        # 总loss
+                        FK_loss_batch = FK_loss_batch + FK_loss_1
 
-                            # 总loss
-                            FK_loss_batch = FK_loss_batch + FK_loss_1
+                        numError1 = numError1 + num_Error1
+                        numError2 = numError2 + num_Error2
+                        num_incorrect = num_incorrect + num_NOError1
+                        num_correct = num_correct + num_NOError2
 
-                            numError1 = numError1 + num_Error1
-                            numError2 = numError2 + num_Error2
-                            num_incorrect = num_incorrect + num_NOError1
-                            num_correct = num_correct + num_NOError2
+                        count_loss11 = count_loss11 + FK_loss_11.detach().numpy()
+                        count_loss22 = count_loss22 + FK_loss_22.detach().numpy()
+                        count_loss33 = count_loss33 + FK_loss_33.detach().numpy()
+                        
 
-                            count_loss11 = count_loss11 + FK_loss_11.detach().numpy()
-                            count_loss22 = count_loss22 + FK_loss_22.detach().numpy()
-                            count_loss33 = count_loss33 + FK_loss_33.detach().numpy()
-                            
+                        if not num_NOError2 == 0:
+                            NUM_correct_obj += 1
 
-                            if not num_NOError2==0:
-                                NUM_correct_obj += 1
-
-                    # 打印
-                    list_0 = torch.tensor([0, 0, 0])
-                    num_data = len(save_end_eff_calcu_by_FK)
-                    while num_data < 7:
-                        # 用0填充
-                        element = list_0
-                        save_end_eff_calcu_by_FK.append(element)
-                        num_data += 1
+                    # # 打印
+                    # list_0 = torch.tensor([0, 0, 0])
+                    # num_data = len(save_end_eff_calcu_by_FK)
+                    # while num_data < 7:
+                    #     # 用0填充
+                    #     element = list_0
+                    #     save_end_eff_calcu_by_FK.append(element)
+                    #     num_data += 1
 
                     if NUM_correct_obj == NUM_obj:
                         NUM_all_have_solution += 1
-                        if torch.sqrt((outputs_tensor[3] - torch.tensor([0]))**2 + (outputs_tensor[4] - torch.tensor([0]))**2) <= 0.74:
+                        if np.sqrt((outputs_tensor[3].detach().numpy() - 0)**2 + (outputs_tensor[4].detach().numpy() - 0)**2) < 0.74:
                             num_all_correct_but_dipan_in_tabel += 1
                     
                     else:
@@ -308,7 +307,7 @@ class main():
                     # print(outputs_tensor, output_position)
                     table_center = torch.tensor([0, 0])
                     distance = torch.sqrt(torch.sum(torch.square(output_position - table_center)))
-                    FK_loss_batch_1 = FK_loss_batch_1 + relu(torch.tensor([0.74]) - distance) * 10
+                    FK_loss_batch_1 = FK_loss_batch_1 + relu(torch.tensor([0.74]) - distance) * torch.tensor([10])
                     # FK_loss_batch_2 = FK_loss_batch_2 + (distance - torch.tensor([0.84]))**2
                     # FK_loss_batch = FK_loss_batch + FK_loss_batch_1
                     
@@ -318,7 +317,7 @@ class main():
 
                     # output_position.register_hook(save_grad('output_position', grads))
                     # intermediate_outputs_chasis.register_hook(save_grad('intermediate_outputs_chasis', grads))
-                    # # print("[grads]output_position:", grads)
+                    # print("[grads]output_position:", grads)
 
                     # distance.register_hook(save_grad('distance', grads))
                     # print("[grads]:", grads, "--", distance, "--", output_position)
@@ -333,17 +332,18 @@ class main():
                 # intermediate_outputs_chasis.register_hook(save_grad('intermediate_outputs_chasis', grads))
                 # print("[grads]:", grads)
 
+                # print(FK_loss_batch_1, FK_loss_batch)
                 count_loss_chasis1 = count_loss_chasis1 + FK_loss_batch_1.detach().numpy()
                 FK_loss_batch = FK_loss_batch + FK_loss_batch_1
 
                 FK_loss_batch.retain_grad()
-                # make_dot(FK_loss_batch_1).view()
+                # make_dot(FK_loss_batch).view()
 
                 optimizer.zero_grad()  # 梯度初始化为零，把loss关于weight的导数变成0
 
                 # 定义总loss函数
-                # loss = FK_loss_batch / len(inputs_bxxx6)
-                loss = FK_loss_batch
+                loss = FK_loss_batch / len(inputs_bxxx6)
+                # loss = FK_loss_batch
                 loss.retain_grad()
 
                 # assert torch.isnan(loss).sum() == 0
@@ -353,12 +353,13 @@ class main():
 
                 loss.backward()  # 反向传播求梯度
 
+                # # 查看网络层梯度
                 # for name, weight in model.named_parameters():
                 #     # print("weight:", weight) # 打印权重，看是否在变化
                 #     if weight.requires_grad:
                 #         # print("weight:", weight.grad) # 打印梯度，看是否丢失
                 #         # 直接打印梯度会出现太多输出，可以选择打印梯度的均值、极值，但如果梯度为None会报错
-                #         print("weight.grad:", weight.grad.mean(), weight.grad.min(), weight.grad.max())
+                #         print("weight.grad:", name, weight.grad.mean(), weight.grad.min(), weight.grad.max())
 
 
                 nn.utils.clip_grad_norm_(model.parameters(), max_norm=self.args.clip)  # 进行梯度裁剪
@@ -376,12 +377,19 @@ class main():
             # print(sum_loss)
             sum_loss_array = np.array(sum_loss)
             # echo_loss.append(sum_loss_array / len(data_loader_train))
-            echo_loss.append(sum_loss_array)
 
-            count_loss1.append(np.array(count_loss11))
-            count_loss2.append(np.array(count_loss22))
-            count_loss3.append(np.array(count_loss33))
-            count_loss_chasis.append(np.array(count_loss_chasis1))
+            if epoch >= 5:
+                echo_loss.append(sum_loss_array)
+                count_loss1.append(np.array(count_loss11))
+                count_loss2.append(np.array(count_loss22))
+                count_loss3.append(np.array(count_loss33))
+                count_loss_chasis.append(np.array(count_loss_chasis1))
+            else:
+                echo_loss.append([0])
+                count_loss1.append([0])
+                count_loss2.append([0])
+                count_loss3.append([0])
+                count_loss_chasis.append([0])
             
             NUMError1.append(numError1)
             NUMError2.append(numError2)
@@ -447,27 +455,27 @@ class main():
                         NUM_obj_test = 0
                         NUM_correct_obj_test = 0                      
                         for i in range(len(input_tar_test)):
-                            if torch.all(inputs_xx6_test[i].ne(0)):                          
-                                NUM_obj_test += 1
-                                end_eff_calcu_by_FK_test = FK_diff.FK(
-                                    intermediate_outputs_angel_tese[i], 
-                                    MLP_output_base_test[0], 
-                                    self.link_length, 
-                                    self.link_offset, 
-                                    self.link_twist)
+                            # if torch.all(inputs_xx6_test[i].ne(0)):                          
+                            NUM_obj_test += 1
+                            end_eff_calcu_by_FK_test = FK_diff.FK(
+                                intermediate_outputs_angel_tese[i], 
+                                MLP_output_base_test[0], 
+                                self.link_length, 
+                                self.link_offset, 
+                                self.link_twist)
 
-                                # 计算单IK_loss
-                                FK_loss_batch, IK_loss_test_incorrect, IK_loss_test_correct= FK_loss.calculate_FK_loss_test(
-                                    intermediate_outputs_angel_tese[i], 
-                                    end_eff_calcu_by_FK_test, 
-                                    inputs_test[i], 
-                                    intermediate_outputs_chasis_test[1:3])
-                                # 计算IK_loss时存在的错误与正确的打印
+                            # 计算单IK_loss
+                            FK_loss_batch, IK_loss_test_incorrect, IK_loss_test_correct= FK_loss.calculate_FK_loss_test(
+                                intermediate_outputs_angel_tese[i], 
+                                end_eff_calcu_by_FK_test, 
+                                inputs_test[i], 
+                                intermediate_outputs_chasis_test[1:3])
+                            # 计算IK_loss时存在的错误与正确的打印
 
-                                num_incorrect_test = num_incorrect_test + IK_loss_test_incorrect
-                                num_correct_test = num_correct_test + IK_loss_test_correct
-                                if not IK_loss_test_correct==0:
-                                    NUM_correct_obj_test += 1
+                            num_incorrect_test = num_incorrect_test + IK_loss_test_incorrect
+                            num_correct_test = num_correct_test + IK_loss_test_correct
+                            if not IK_loss_test_correct==0:
+                                NUM_correct_obj_test += 1
                         if NUM_correct_obj_test == NUM_obj_test:
                             NUM_all_have_solution_test += 1
               

@@ -19,10 +19,10 @@ def pandas_plt(dir):
                 line = line.strip()
                 if line:  # 只处理非空行
                     parts = line.split(' ')
-                    x = float(parts[1])
-                    y = float(parts[2])
-                    # x = float(parts[3])
-                    # y = float(parts[4])
+                    # x = float(parts[1])
+                    # y = float(parts[2])
+                    x = float(parts[3])
+                    y = float(parts[4])
                     data.append([x, y])
                     current_row += 1
                     if current_row == 7:  # 每处理7行数据后，下一行是空格行，直接跳过
@@ -61,6 +61,6 @@ def pandas_plt(dir):
     plt.show()
 
 if __name__ == "__main__":
-    pandas_plt("/home/cn/catkin_rm/src/RPSN_4/work_dir/test08-14-round0.74-chasis-loss-new-2-layer-2rand-2copy-0.0ori-10chasisloss/1/NET_output")
+    pandas_plt("/home/cn/catkin_rm/src/RPSN_4/data/data_cainan/rm-fk-ik-all-random-with-dipan-norm-squre-2rand-2/test-400/test_dataset_dipan_400")
 
 
