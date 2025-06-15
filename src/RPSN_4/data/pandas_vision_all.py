@@ -178,10 +178,10 @@ def plot_correct_and_incorrct(filename):
 if __name__ == "__main__":
     # filename = "/home/cn/catkin_rm/src/RPSN_4/work_dir/test01-1-output5-1111111"
     # plot_correct_and_incorrct(filename)
-    iiiiiiii = 100
+    iiiiiiii = 20
     # for iiiiiiii in range(1, 201):
         # if 200 % iiiiiiii == 0:
-    filename = "/home/cn/catkin_rm/src/RPSN_4/work_dir/squre/test02-11-0.0ori-7random-7copy-10chasisloss/{}".format(iiiiiiii)
+    filename = "/home/cn/catkin_rm/src/RPSN_4/work_dir/squre/test02-7-0.0ori-2random-2copy-10chasisloss/{}".format(iiiiiiii)
     plot_correct_and_incorrct(filename)
 
 

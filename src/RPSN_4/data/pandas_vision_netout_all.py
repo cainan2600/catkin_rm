@@ -65,9 +65,9 @@ def pandas_plt(dir):
 
 if __name__ == "__main__":
 
-    source_dir = "/home/cn/catkin_rm/src/RPSN_4/work_dir/squre/test02-12-0.0ori-7random-7copy-10chasisloss"
+    source_dir = "/home/cn/catkin_rm/src/RPSN_4/work_dir/squre/test02-17-0.0ori-7random-7copy-10chasisloss"
 
-    for i in range(1, 51):
+    for i in range(1, 21):
         if  i % 1 == 0:
             # print("{}/{}/NET_output".format(source_dir,i))
             pandas_plt("{}/{}/NET_output".format(source_dir,i))
@@ -81,7 +81,7 @@ if __name__ == "__main__":
     os.makedirs(target_dir, exist_ok=True)
     
     # 生成200以内（包含200）除0以外的2的倍数列表
-    valid_folders = {str(num) for num in range(1, 51, 1)}
+    valid_folders = {str(num) for num in range(1, 21, 1)}
     
     # 遍历源目录下的所有条目
     for entry in os.scandir(source_dir):

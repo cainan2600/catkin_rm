@@ -51,7 +51,7 @@ class main():
         self.data_loader_test = DataLoader(self.data_test, batch_size=self.args.batch_size, shuffle=False)
 
         # 定义训练权重保存文件路径
-        self.checkpoint_dir = r'/home/cn/catkin_rm/src/RPSN_4/work_dir/squre/test02-12-0.0ori-7random-7copy-10chasisloss'
+        self.checkpoint_dir = r'/home/cn/catkin_rm/src/RPSN_4/work_dir/squre/test02-17-0.0ori-7random-7copy-10chasisloss'
         # 多少伦保存一次
         self.num_epoch_save = 100
 
@@ -68,16 +68,15 @@ class main():
         # self.link_length = torch.tensor([0, -0.6127, -0.57155, 0, 0, 0])
         # self.link_offset = torch.tensor([0.1807, 0, 0, 0.17415, 0.11985, 0.11655])
         # self.link_twist = torch.FloatTensor([math.pi / 2, 0, 0, math.pi / 2, -math.pi / 2, 0])
-        self.link_length = torch.tensor([0, 0, 0.256, 0, 0, 0])
-        self.link_offset = torch.tensor([0.2405, 0, 0, 0.210, 0, 0.274])
-        self.link_twist = torch.tensor([0, math.pi / 2, 0, math.pi / 2, -math.pi / 2, math.pi / 2])
+        self.link_length = torch.tensor([0.0, 0.0, 0.256, 0.0, 0.0, 0.0])
+        self.link_offset = torch.tensor([0.2405, 0.0, 0.0, 0.210, 0.0, 0.274])
+        self.link_twist = torch.tensor([0.0, torch.pi/2, 0.0, torch.pi/2, -torch.pi/2, torch.pi/2])
 
     def train(self):
         grads = {}
         num_i = self.num_i
         num_h = self.num_h
         num_o = self.num_o
-        num_heads = 4
 
         NUMError1 = []
         NUMError2 = []
@@ -119,7 +118,7 @@ class main():
         epochs = self.args.epochs
         data_loader_train = self.data_loader_train
         learning_rate = self.args.learning_rate
-        model = self.model.MLP_self(num_i , num_h, num_o, num_heads) 
+        model = self.model.MLP_self(num_i , num_h, num_o) 
         optimizer = torch.optim.Adagrad(model.parameters(), lr=learning_rate, weight_decay=0.000)  # 定义优化器
         # optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate, weight_decay=0.000)
         scheduler = ReduceLROnPlateau(optimizer, mode='max', factor=0.75, patience=6, min_lr=0.03)
@@ -181,17 +180,8 @@ class main():
                     intermediate_outputs_chasis, intermediate_outputs_angel = model(inputs)
                     # print(intermediate_outputs_chasis.size(), intermediate_outputs_chasis)
 
-                    intermediate_outputs_chasis_xyz = torch.cat([intermediate_outputs_chasis, torch.tensor([0.2405])])
+                    # intermediate_outputs_chasis_xyz = torch.cat([intermediate_outputs_chasis, torch.tensor([0.2405])])
                     # print(intermediate_outputs_chasis_xyz[1:4])
-
-                    # # 推出归一化
-                    # intermediate_outputs_chasis = (intermediate_outputs_chasis + 1) / 2
-                    # intermediate_outputs_chasis_x = intermediate_outputs_chasis[1] * 3.48 + (-0.99)
-                    # intermediate_outputs_chasis_y = intermediate_outputs_chasis[2] * 2.33 + 0.063
-                    # intermediate_outputs_chasis_w = intermediate_outputs_chasis[0] * torch.pi
-                    # intermediate_outputs_chasis = torch.stack([intermediate_outputs_chasis_w, intermediate_outputs_chasis_x, intermediate_outputs_chasis_y], dim=-1)
-
-                    # intermediate_outputs_angel = intermediate_outputs_angel * torch.pi
 
                     intermediate_outputs_list = intermediate_outputs_chasis.detach().numpy()
                     # print(intermediate_outputs, intermediate_outputs_list)
@@ -250,8 +240,8 @@ class main():
                             intermediate_outputs_angel[i], 
                             end_eff_calcu_by_FK, 
                             inputs[i], 
-                            intermediate_outputs_chasis_xyz[1:4])
-                            # intermediate_outputs_chasis[1:3])
+                            # intermediate_outputs_chasis_xyz[1:4])
+                            intermediate_outputs_chasis[1:3])
                         # make_dot(FK_loss_1).view()
 
                         # 总loss
@@ -278,7 +268,7 @@ class main():
                     
                     else:
                         # 每10轮保存一次
-                        if epoch % 100 == 0:
+                        if epoch % 20 == 0:
                             for save_dddd in inputs_xx6_no_random.detach().numpy():
                                 CORRECT_obj.append(save_dddd)
                             CORRECT_chasis.append(lables[num_zu_in_epoch - 1].detach().numpy())
@@ -287,11 +277,13 @@ class main():
                             for save_data_incorrect in save_end_eff_calcu_by_FK:
                                 INCORRECT_obj.append(save_data_incorrect.detach().numpy())
 
-                    # # # 底盘可能与桌子碰撞
-                    # FK_loss_batch_1 = FK_loss_batch_1 + torch.tensor([10]) * torch.min(
-                    #     torch.min(torch.max(torch.tensor([0]), outputs_tensor[3] - torch.tensor([-1.3])), torch.max(torch.tensor([0]), torch.tensor([1.3]) - outputs_tensor[3])) / torch.tensor([1.3]),
-                    #     torch.min(torch.max(torch.tensor([0]), outputs_tensor[4] - torch.tensor([-0.725])), torch.max(torch.tensor([0]), torch.tensor([0.725]) - outputs_tensor[4])) / torch.tensor([0.725])
-                    #     ) 
+                    # # 底盘可能与桌子碰撞
+                    FK_loss_batch_1 = FK_loss_batch_1 + torch.tensor([10]) * torch.min(
+                        torch.min(torch.max(torch.tensor([0]), outputs_tensor[3] - torch.tensor([-1.3])), torch.max(torch.tensor([0]), torch.tensor([1.3]) - outputs_tensor[3])) / torch.tensor([1.3]),
+                        torch.min(torch.max(torch.tensor([0]), outputs_tensor[4] - torch.tensor([-0.725])), torch.max(torch.tensor([0]), torch.tensor([0.725]) - outputs_tensor[4])) / torch.tensor([0.725])
+                        ) 
+
+                    # print(FK_loss_batch_1, count_loss22)
 
                     # relu = nn.ReLU(inplace=True)
 
@@ -313,8 +305,8 @@ class main():
                     #                                     torch.tensor([10])*relu(relu(side_para_y - side_para_x) * (relu(dxx_left - dxx_right)*(torch.tensor([1.3]) - outputs_tensor[3]) + relu(dxx_right - dxx_left)*(outputs_tensor[3] - torch.tensor([-1.3]))))
 
 
-                # count_loss_chasis1 = count_loss_chasis1 + FK_loss_batch_1.detach().numpy()
-                # FK_loss_batch = FK_loss_batch + FK_loss_batch_1
+                count_loss_chasis1 = count_loss_chasis1 + FK_loss_batch_1.detach().numpy()
+                FK_loss_batch = FK_loss_batch + FK_loss_batch_1
 
                 FK_loss_batch.retain_grad()
                 # make_dot(FK_loss_batch_1).view()
@@ -410,7 +402,7 @@ class main():
                         inputs_test = inputs_xx6_test
                         intermediate_outputs_chasis_test, intermediate_outputs_angel_tese = model(inputs_test)
 
-                        intermediate_outputs_chasis_test_xyz = torch.cat([intermediate_outputs_chasis_test, torch.tensor([0.2405])])
+                        # intermediate_outputs_chasis_test_xyz = torch.cat([intermediate_outputs_chasis_test, torch.tensor([0.2405])])
 
                         intermediate_outputs_list_test = intermediate_outputs_chasis_test.detach().numpy()
                         # print(intermediate_outputs, intermediate_outputs_list)
@@ -425,8 +417,6 @@ class main():
 
                         MLP_output_base_test = shaping(outputs_test)
 
-                        # 计算 FK_loss_batch
-                        FK_loss_batch_test = torch.tensor(0.0, requires_grad=True)
                         NUM_obj_test = 0
                         NUM_correct_obj_test = 0                      
                         for i in range(len(input_tar_test)):
@@ -444,8 +434,8 @@ class main():
                                 intermediate_outputs_angel_tese[i], 
                                 end_eff_calcu_by_FK_test, 
                                 inputs_test[i], 
-                                intermediate_outputs_chasis_test_xyz[1:4])
-                                # intermediate_outputs_chasis_test[1:3])
+                                # intermediate_outputs_chasis_test_xyz[1:4])
+                                intermediate_outputs_chasis_test[1:3])
                             # 计算IK_loss时存在的错误与正确的打印
 
                             num_incorrect_test = num_incorrect_test + IK_loss_test_incorrect

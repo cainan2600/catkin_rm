@@ -61,6 +61,6 @@ def pandas_plt(dir):
     plt.show()
 
 if __name__ == "__main__":
-    pandas_plt("/home/cn/catkin_rm/src/RPSN_4/data/data_cainan/rm-fk-ik-all-random-with-dipan-norm-squre-2rand-2/test-400/test_dataset_dipan_400")
+    pandas_plt("/home/cn/catkin_rm/src/RPSN_4/data/data_cainan/rm-fk-ik-all-random-with-dipan-norm-squre-2000data/train-2000/train_dataset_dipan_2000")
 
 
